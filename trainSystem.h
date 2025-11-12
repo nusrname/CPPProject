@@ -5,22 +5,22 @@
 #include <string>
 using namespace std;
 
-class TrainManager 
+class TrainManager
 {
 private:
 	list<Train> firstLine;
 	list<Train> secondLine;
 	list<Train> leftDepot;
 	list<Train> rightDepot;
-	list<Station> stations;
+	list<Waypoint*> stations;
 	int N;
 	int currentTime;
 
 public:
-	void SetN(int n) 
+	void SetN(int n)
 	{
-		N = n; 
-		list<Station> st(N);
+		N = n;
+		list<Waypoint*> st(N);
 		stations = st;
 	}
 	bool Simulation()
@@ -46,8 +46,6 @@ public:
 				throw "ѕоезд " + to_string(train.GetID()) + " не смог выехать из правого депо!";
 		}
 	}
-
-
 };
 
 class Train
@@ -58,7 +56,7 @@ private:
 	bool inTime = true;
 	static int id;
 public:
-	Train() 
+	Train()
 	{
 		id++;
 	}
@@ -69,13 +67,31 @@ public:
 	int GetID() { return id; }
 };
 
-class Station 
+class Waypoint
 {
-private:
+protected:
 	int arriveTime;
 	int stayTime;
-	Train *currentTrain;
+	Train* currentTrain;
 public:
-	Station(int arriveTime, int stayTime) : arriveTime(arriveTime), stayTime(stayTime), currentTrain(NULL) {}
+	Waypoint(int arriveTime, int stayTime) : arriveTime(arriveTime), stayTime(stayTime), currentTrain(NULL) {}
 	bool IsOccupied() { return currentTrain != NULL; }
+	virtual bool LeaveStation() {}
+};
+
+class Station : protected Waypoint
+{
+private:
+	int passengers;
+public:
+	int BoardPassengers(int passengers) {}
+	bool LeaveStation() override {}
+};
+
+class Depot : public Waypoint
+{
+private:
+	list<Train> waitingTrains;
+public:
+	bool LeaveStation() override {}
 };
