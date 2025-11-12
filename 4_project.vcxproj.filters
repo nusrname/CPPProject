@@ -13,24 +13,93 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Исходные файлы\source">
+      <UniqueIdentifier>{44f4d62f-1d2e-44ed-8381-0c1dafd0f84f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\source\core">
+      <UniqueIdentifier>{3de73180-feaf-4191-8414-d3f77c5a6658}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\source\ui">
+      <UniqueIdentifier>{158ee8af-db7d-49c4-bc0b-4df13926d62f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\source">
+      <UniqueIdentifier>{c6d41847-8324-4e42-9411-c7c5e380fa2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\source\core">
+      <UniqueIdentifier>{4f55ae4e-a133-4fb1-96ff-00ec1038c6e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\source\ui">
+      <UniqueIdentifier>{45a0f0b4-8d38-4b91-809d-517dd5ec4598}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="trainManager.cpp">
-      <Filter>Исходные файлы</Filter>
+    <ClCompile Include="Metro.cpp">
+      <Filter>Исходные файлы\source\core</Filter>
     </ClCompile>
-    <ClCompile Include="train.cpp">
-      <Filter>Исходные файлы</Filter>
+    <ClCompile Include="Line.cpp">
+      <Filter>Исходные файлы\source\core</Filter>
     </ClCompile>
-    <ClCompile Include="inputManager.cpp">
-      <Filter>Исходные файлы</Filter>
+    <ClCompile Include="Station.cpp">
+      <Filter>Исходные файлы\source\core</Filter>
+    </ClCompile>
+    <ClCompile Include="Depot.cpp">
+      <Filter>Исходные файлы\source\core</Filter>
+    </ClCompile>
+    <ClCompile Include="Train.cpp">
+      <Filter>Исходные файлы\source\core</Filter>
+    </ClCompile>
+    <ClCompile Include="TrainManager.cpp">
+      <Filter>Исходные файлы\source\core</Filter>
+    </ClCompile>
+    <ClCompile Include="Schedule.cpp">
+      <Filter>Исходные файлы\source\core</Filter>
+    </ClCompile>
+    <ClCompile Include="RandomEventGenerator.cpp">
+      <Filter>Исходные файлы\source\core</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleUI.cpp">
+      <Filter>Исходные файлы\source\ui</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeController.cpp">
+      <Filter>Исходные файлы\source\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="trainSystem.h">
       <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Metro.h">
+      <Filter>Файлы заголовков\source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Line.h">
+      <Filter>Файлы заголовков\source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Station.h">
+      <Filter>Файлы заголовков\source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Depot.h">
+      <Filter>Файлы заголовков\source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Train.h">
+      <Filter>Файлы заголовков\source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="TrainManager.h">
+      <Filter>Файлы заголовков\source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Schedule.h">
+      <Filter>Файлы заголовков\source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeController.h">
+      <Filter>Файлы заголовков\source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="RandomEventGenerator.h">
+      <Filter>Файлы заголовков\source\core</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleUI.h">
+      <Filter>Файлы заголовков\source\ui</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

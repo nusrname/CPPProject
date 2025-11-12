@@ -123,12 +123,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="inputManager.cpp" />
+    <ClCompile Include="ConsoleUI.cpp" />
+    <ClCompile Include="Depot.cpp" />
+    <ClCompile Include="Line.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="train.cpp" />
-    <ClCompile Include="trainManager.cpp" />
+    <ClCompile Include="Metro.cpp" />
+    <ClCompile Include="RandomEventGenerator.cpp" />
+    <ClCompile Include="Schedule.cpp" />
+    <ClCompile Include="Station.cpp" />
+    <ClCompile Include="TimeController.cpp" />
+    <ClCompile Include="Train.cpp" />
+    <ClCompile Include="TrainManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ConsoleUI.h" />
+    <ClInclude Include="Depot.h" />
+    <ClInclude Include="Line.h" />
+    <ClInclude Include="Metro.h" />
+    <ClInclude Include="RandomEventGenerator.h" />
+    <ClInclude Include="Schedule.h" />
+    <ClInclude Include="Station.h" />
+    <ClInclude Include="TimeController.h" />
+    <ClInclude Include="Train.h" />
+    <ClInclude Include="TrainManager.h" />
     <ClInclude Include="trainSystem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
