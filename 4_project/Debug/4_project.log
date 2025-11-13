@@ -1,2 +1,6 @@
 ﻿  main.cpp
+  Metro.cpp
+  TimeController.cpp
+  TrainManager.cpp
+  Создание кода...
   4_project.vcxproj -> D:\university\Dev\4_project\Debug\4_project.exe

@@ -3,8 +3,8 @@
 
 static class ConsoleUI 
 {
-public:
-	void displayLineStatus(const Line& line);
-	void displayTrainStatus(const Train& train);
-	void displaySummary(const Metro& metro);
+//public:
+//	void displayLineStatus(const Line& line);
+//	void displayTrainStatus(const Train& train);
+//	void displaySummary(const Metro& metro);
 };

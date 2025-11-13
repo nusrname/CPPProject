@@ -2,13 +2,13 @@
 #include <iostream>
 using namespace std;
 
-static class RandomEventGenerator 
+class RandomEventGenerator 
 {
-private:
-	double rushHourProbability;
-	double normalProbability;
-	//mt19937 rng;
-public:
-	bool isDelayEvent(int currentTime);
-	int getRandomDelay();
+//private:
+//	double rushHourProbability;
+//	double normalProbability;
+//	//mt19937 rng;
+//public:
+//	bool isDelayEvent(int currentTime);
+//	int getRandomDelay();
 };

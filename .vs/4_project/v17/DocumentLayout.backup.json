@@ -3,6 +3,38 @@
   "WorkspaceRootPath": "D:\\university\\Dev\\4_project\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\Line.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:Line.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\Train.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:Train.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\Line.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:Line.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\ConsoleUI.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:ConsoleUI.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\Schedule.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:Schedule.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\RandomEventGenerator.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:RandomEventGenerator.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\TrainManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:TrainManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\TimeController.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:TimeController.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
@@ -15,44 +47,8 @@
       "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:Metro.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\TrainManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:TrainManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\Station.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:Station.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\TimeController.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:TimeController.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\Schedule.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:Schedule.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\TrainManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:TrainManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\Depot.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:Depot.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\Line.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:Line.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\Train.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:Train.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\ConsoleUI.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:ConsoleUI.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\RandomEventGenerator.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:RandomEventGenerator.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -62,31 +58,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 10,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Station.h",
-              "DocumentMoniker": "D:\\university\\Dev\\4_project\\Station.h",
-              "RelativeDocumentMoniker": "Station.h",
-              "ToolTip": "D:\\university\\Dev\\4_project\\Station.h",
-              "RelativeToolTip": "Station.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAASAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-11-12T17:04:24.995Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "TimeController.h",
               "DocumentMoniker": "D:\\university\\Dev\\4_project\\TimeController.h",
               "RelativeDocumentMoniker": "TimeController.h",
               "ToolTip": "D:\\university\\Dev\\4_project\\TimeController.h",
               "RelativeToolTip": "TimeController.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAbAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-11-13T08:49:36.205Z",
               "IsPinned": true,
@@ -94,13 +76,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
               "Title": "TrainManager.h",
               "DocumentMoniker": "D:\\university\\Dev\\4_project\\TrainManager.h",
               "RelativeDocumentMoniker": "TrainManager.h",
               "ToolTip": "D:\\university\\Dev\\4_project\\TrainManager.h",
               "RelativeToolTip": "TrainManager.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAACAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-11-12T17:04:51.87Z",
               "IsPinned": true,
@@ -108,20 +90,21 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 5,
               "Title": "RandomEventGenerator.h",
               "DocumentMoniker": "D:\\university\\Dev\\4_project\\RandomEventGenerator.h",
               "RelativeDocumentMoniker": "RandomEventGenerator.h",
               "ToolTip": "D:\\university\\Dev\\4_project\\RandomEventGenerator.h",
               "RelativeToolTip": "RandomEventGenerator.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAADwvwQAAAAHAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvwQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-11-12T17:06:16.469Z",
-              "IsPinned": true
+              "IsPinned": true,
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 4,
               "Title": "Schedule.h",
               "DocumentMoniker": "D:\\university\\Dev\\4_project\\Schedule.h",
               "RelativeDocumentMoniker": "Schedule.h",
@@ -130,43 +113,74 @@
               "ViewState": "AgIAAAAAAAAAAAAAAADwvwMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-11-12T17:05:07.871Z",
-              "IsPinned": true
+              "IsPinned": true,
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 3,
               "Title": "ConsoleUI.h",
               "DocumentMoniker": "D:\\university\\Dev\\4_project\\ConsoleUI.h",
               "RelativeDocumentMoniker": "ConsoleUI.h",
               "ToolTip": "D:\\university\\Dev\\4_project\\ConsoleUI.h",
               "RelativeToolTip": "ConsoleUI.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAASAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-11-12T17:06:31.452Z",
-              "IsPinned": true
+              "IsPinned": true,
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 2,
               "Title": "Line.h",
               "DocumentMoniker": "D:\\university\\Dev\\4_project\\Line.h",
               "RelativeDocumentMoniker": "Line.h",
               "ToolTip": "D:\\university\\Dev\\4_project\\Line.h",
               "RelativeToolTip": "Line.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAIAAAAAAAAAA==",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAACoAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-11-12T17:04:10.821Z",
-              "IsPinned": true
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Line.cpp",
+              "DocumentMoniker": "D:\\university\\Dev\\4_project\\Line.cpp",
+              "RelativeDocumentMoniker": "Line.cpp",
+              "ToolTip": "D:\\university\\Dev\\4_project\\Line.cpp",
+              "RelativeToolTip": "Line.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-11-13T10:42:31.142Z",
+              "IsPinned": true,
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "Train.h",
+              "DocumentMoniker": "D:\\university\\Dev\\4_project\\Train.h",
+              "RelativeDocumentMoniker": "Train.h",
+              "ToolTip": "D:\\university\\Dev\\4_project\\Train.h",
+              "RelativeToolTip": "Train.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-11-12T17:04:41.101Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "Metro.h",
               "DocumentMoniker": "D:\\university\\Dev\\4_project\\Metro.h",
               "RelativeDocumentMoniker": "Metro.h",
               "ToolTip": "D:\\university\\Dev\\4_project\\Metro.h",
               "RelativeToolTip": "Metro.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAdAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-11-12T17:04:00.855Z",
               "IsPinned": true,
@@ -175,41 +189,27 @@
             {
               "$type": "Document",
               "DocumentIndex": 8,
-              "Title": "Depot.h",
-              "DocumentMoniker": "D:\\university\\Dev\\4_project\\Depot.h",
-              "RelativeDocumentMoniker": "Depot.h",
-              "ToolTip": "D:\\university\\Dev\\4_project\\Depot.h",
-              "RelativeToolTip": "Depot.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-11-12T17:04:33.662Z",
-              "IsPinned": true
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "Train.h",
-              "DocumentMoniker": "D:\\university\\Dev\\4_project\\Train.h",
-              "RelativeDocumentMoniker": "Train.h",
-              "ToolTip": "D:\\university\\Dev\\4_project\\Train.h",
-              "RelativeToolTip": "Train.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAADwvxIAAAAbAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-11-12T17:04:41.101Z",
-              "IsPinned": true
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
               "Title": "main.cpp",
               "DocumentMoniker": "D:\\university\\Dev\\4_project\\main.cpp",
               "RelativeDocumentMoniker": "main.cpp",
               "ToolTip": "D:\\university\\Dev\\4_project\\main.cpp",
               "RelativeToolTip": "main.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAQwAoAAAAPAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-11-13T08:27:35.479Z",
-              "IsPinned": true,
+              "WhenOpened": "2025-11-13T10:39:12.479Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "TrainManager.cpp",
+              "DocumentMoniker": "D:\\university\\Dev\\4_project\\trainManager.cpp",
+              "RelativeDocumentMoniker": "trainManager.cpp",
+              "ToolTip": "D:\\university\\Dev\\4_project\\trainManager.cpp",
+              "RelativeToolTip": "trainManager.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-11-13T10:28:01.773Z",
               "EditorCaption": ""
             },
             {
@@ -237,12 +237,8 @@
               "Name": "ST:2:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:1:0:{e8b06f52-6d01-11d2-aa7d-00c04f990343}"
-            },
-            {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 10,
               "Title": "Metro.cpp",
               "DocumentMoniker": "D:\\university\\Dev\\4_project\\Metro.cpp",
               "RelativeDocumentMoniker": "Metro.cpp",
@@ -254,16 +250,8 @@
               "EditorCaption": ""
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "TrainManager.cpp",
-              "DocumentMoniker": "D:\\university\\Dev\\4_project\\trainManager.cpp",
-              "RelativeDocumentMoniker": "trainManager.cpp",
-              "ToolTip": "D:\\university\\Dev\\4_project\\trainManager.cpp",
-              "RelativeToolTip": "trainManager.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-11-13T08:45:34.814Z"
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{e8b06f52-6d01-11d2-aa7d-00c04f990343}"
             }
           ]
         }
