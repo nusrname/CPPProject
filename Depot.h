@@ -1,8 +1,5 @@
 #pragma once
-#include <iostream>
-#include "Line.h"
-#include "Train.h"
-using namespace std;
+#include "Metro.h"
 
 class Depot : protected Waypoint
 {

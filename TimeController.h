@@ -1,14 +1,14 @@
 #pragma once
-#include <iostream>
-using namespace std;
+#include "Metro.h"
 
-static class TimeController 
+class TimeController 
 {
 private:
 	int currentTime;
 	int step;
 public:
+	TimeController(int time, int step) : currentTime(time), step(step) {}
 	void advance();
-	string getFormattedTime() const;
-	int getCurrent();
+	string getFormattedTime();
+	int getCurrent() const;
 };

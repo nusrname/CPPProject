@@ -1,8 +1,5 @@
 #pragma once
-#include <iostream>
-#include "Line.h"
 #include "Metro.h"
-using namespace std;
 
 static class ConsoleUI 
 {

@@ -1,11 +1,5 @@
 #pragma once
-#include <iostream>
-#include <vector>
-#include "Station.h"
-#include "Depot.h"
-#include "Train.h"
-#include "Schedule.h"
-using namespace std;
+#include "Metro.h"
 
 class Line 
 {
@@ -14,7 +8,7 @@ private:
 	vector<shared_ptr<Station>> stations;
 	shared_ptr<Depot> depotStart, depotEnd;
 	vector<shared_ptr<Train>> activeTrains;
-	Schedule schedule;
+	shared_ptr<Schedule> schedule;
 	int standardSegmentTime;
 public:
 	void addStation(shared_ptr<Station> station);

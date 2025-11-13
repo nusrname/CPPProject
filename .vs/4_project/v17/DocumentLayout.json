@@ -1,50 +1,58 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "F:\\C\u002B\u002B\\Smirnov_211_4\\",
+  "WorkspaceRootPath": "D:\\university\\Dev\\4_project\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|F:\\C\u002B\u002B\\Smirnov_211_4\\Metro.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\Metro.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:Metro.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|F:\\C\u002B\u002B\\Smirnov_211_4\\Line.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:Line.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|F:\\C\u002B\u002B\\Smirnov_211_4\\TrainManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:TrainManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|F:\\C\u002B\u002B\\Smirnov_211_4\\TimeController.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:TimeController.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|F:\\C\u002B\u002B\\Smirnov_211_4\\RandomEventGenerator.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:RandomEventGenerator.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|F:\\C\u002B\u002B\\Smirnov_211_4\\ConsoleUI.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:ConsoleUI.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|F:\\C\u002B\u002B\\Smirnov_211_4\\Metro.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\Metro.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:Metro.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|F:\\C\u002B\u002B\\Smirnov_211_4\\Schedule.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:Schedule.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\TrainManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:TrainManager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|F:\\C\u002B\u002B\\Smirnov_211_4\\Station.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\Station.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:Station.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|F:\\C\u002B\u002B\\Smirnov_211_4\\Train.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\TimeController.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:TimeController.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\Schedule.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:Schedule.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\TrainManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:TrainManager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\Depot.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:Depot.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\Line.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:Line.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\Train.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:Train.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|F:\\C\u002B\u002B\\Smirnov_211_4\\Depot.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:Depot.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\ConsoleUI.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:ConsoleUI.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|D:\\university\\Dev\\4_project\\RandomEventGenerator.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{FA21D2F4-D7A2-4767-867C-07563B12D4A8}|4_project.vcxproj|solutionrelative:RandomEventGenerator.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -54,17 +62,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 10,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 4,
               "Title": "Station.h",
-              "DocumentMoniker": "F:\\C\u002B\u002B\\Smirnov_211_4\\Station.h",
+              "DocumentMoniker": "D:\\university\\Dev\\4_project\\Station.h",
               "RelativeDocumentMoniker": "Station.h",
-              "ToolTip": "F:\\C\u002B\u002B\\Smirnov_211_4\\Station.h",
+              "ToolTip": "D:\\university\\Dev\\4_project\\Station.h",
               "RelativeToolTip": "Station.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAWAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-11-12T17:04:24.995Z",
               "IsPinned": true,
@@ -72,69 +80,27 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "Depot.h",
-              "DocumentMoniker": "F:\\C\u002B\u002B\\Smirnov_211_4\\Depot.h",
-              "RelativeDocumentMoniker": "Depot.h",
-              "ToolTip": "F:\\C\u002B\u002B\\Smirnov_211_4\\Depot.h",
-              "RelativeToolTip": "Depot.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAUAAAAAAAAAA==",
+              "DocumentIndex": 5,
+              "Title": "TimeController.h",
+              "DocumentMoniker": "D:\\university\\Dev\\4_project\\TimeController.h",
+              "RelativeDocumentMoniker": "TimeController.h",
+              "ToolTip": "D:\\university\\Dev\\4_project\\TimeController.h",
+              "RelativeToolTip": "TimeController.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-11-12T17:04:33.662Z",
+              "WhenOpened": "2025-11-13T08:49:36.205Z",
               "IsPinned": true,
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Train.h",
-              "DocumentMoniker": "F:\\C\u002B\u002B\\Smirnov_211_4\\Train.h",
-              "RelativeDocumentMoniker": "Train.h",
-              "ToolTip": "F:\\C\u002B\u002B\\Smirnov_211_4\\Train.h",
-              "RelativeToolTip": "Train.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAADwvxIAAAAbAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-11-12T17:04:41.101Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Metro.h",
-              "DocumentMoniker": "F:\\C\u002B\u002B\\Smirnov_211_4\\Metro.h",
-              "RelativeDocumentMoniker": "Metro.h",
-              "ToolTip": "F:\\C\u002B\u002B\\Smirnov_211_4\\Metro.h",
-              "RelativeToolTip": "Metro.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAADwvwkAAAAHAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-11-12T17:04:00.855Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Line.h",
-              "DocumentMoniker": "F:\\C\u002B\u002B\\Smirnov_211_4\\Line.h",
-              "RelativeDocumentMoniker": "Line.h",
-              "ToolTip": "F:\\C\u002B\u002B\\Smirnov_211_4\\Line.h",
-              "RelativeToolTip": "Line.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAASAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-11-12T17:04:10.821Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "TrainManager.h",
-              "DocumentMoniker": "F:\\C\u002B\u002B\\Smirnov_211_4\\TrainManager.h",
+              "DocumentMoniker": "D:\\university\\Dev\\4_project\\TrainManager.h",
               "RelativeDocumentMoniker": "TrainManager.h",
-              "ToolTip": "F:\\C\u002B\u002B\\Smirnov_211_4\\TrainManager.h",
+              "ToolTip": "D:\\university\\Dev\\4_project\\TrainManager.h",
               "RelativeToolTip": "TrainManager.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAADwvwUAAAAHAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAACAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-11-12T17:04:51.87Z",
               "IsPinned": true,
@@ -142,72 +108,113 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "TimeController.h",
-              "DocumentMoniker": "F:\\C\u002B\u002B\\Smirnov_211_4\\TimeController.h",
-              "RelativeDocumentMoniker": "TimeController.h",
-              "ToolTip": "F:\\C\u002B\u002B\\Smirnov_211_4\\TimeController.h",
-              "RelativeToolTip": "TimeController.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAADwvwQAAAAHAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-11-12T17:05:43.621Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 12,
               "Title": "RandomEventGenerator.h",
-              "DocumentMoniker": "F:\\C\u002B\u002B\\Smirnov_211_4\\RandomEventGenerator.h",
+              "DocumentMoniker": "D:\\university\\Dev\\4_project\\RandomEventGenerator.h",
               "RelativeDocumentMoniker": "RandomEventGenerator.h",
-              "ToolTip": "F:\\C\u002B\u002B\\Smirnov_211_4\\RandomEventGenerator.h",
+              "ToolTip": "D:\\university\\Dev\\4_project\\RandomEventGenerator.h",
               "RelativeToolTip": "RandomEventGenerator.h",
               "ViewState": "AgIAAAAAAAAAAAAAAADwvwQAAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-11-12T17:06:16.469Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Schedule.h",
-              "DocumentMoniker": "F:\\C\u002B\u002B\\Smirnov_211_4\\Schedule.h",
-              "RelativeDocumentMoniker": "Schedule.h",
-              "ToolTip": "F:\\C\u002B\u002B\\Smirnov_211_4\\Schedule.h",
-              "RelativeToolTip": "Schedule.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAADwvwMAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-11-12T17:05:07.871Z",
-              "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "ConsoleUI.h",
-              "DocumentMoniker": "F:\\C\u002B\u002B\\Smirnov_211_4\\ConsoleUI.h",
-              "RelativeDocumentMoniker": "ConsoleUI.h",
-              "ToolTip": "F:\\C\u002B\u002B\\Smirnov_211_4\\ConsoleUI.h",
-              "RelativeToolTip": "ConsoleUI.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-11-12T17:06:31.452Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
-              "Title": "Metro.cpp",
-              "DocumentMoniker": "F:\\C\u002B\u002B\\Smirnov_211_4\\Metro.cpp",
-              "RelativeDocumentMoniker": "Metro.cpp",
-              "ToolTip": "F:\\C\u002B\u002B\\Smirnov_211_4\\Metro.cpp",
-              "RelativeToolTip": "Metro.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-11-12T17:40:45.929Z",
+              "Title": "Schedule.h",
+              "DocumentMoniker": "D:\\university\\Dev\\4_project\\Schedule.h",
+              "RelativeDocumentMoniker": "Schedule.h",
+              "ToolTip": "D:\\university\\Dev\\4_project\\Schedule.h",
+              "RelativeToolTip": "Schedule.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvwMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-11-12T17:05:07.871Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "ConsoleUI.h",
+              "DocumentMoniker": "D:\\university\\Dev\\4_project\\ConsoleUI.h",
+              "RelativeDocumentMoniker": "ConsoleUI.h",
+              "ToolTip": "D:\\university\\Dev\\4_project\\ConsoleUI.h",
+              "RelativeToolTip": "ConsoleUI.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-11-12T17:06:31.452Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Line.h",
+              "DocumentMoniker": "D:\\university\\Dev\\4_project\\Line.h",
+              "RelativeDocumentMoniker": "Line.h",
+              "ToolTip": "D:\\university\\Dev\\4_project\\Line.h",
+              "RelativeToolTip": "Line.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-11-12T17:04:10.821Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Metro.h",
+              "DocumentMoniker": "D:\\university\\Dev\\4_project\\Metro.h",
+              "RelativeDocumentMoniker": "Metro.h",
+              "ToolTip": "D:\\university\\Dev\\4_project\\Metro.h",
+              "RelativeToolTip": "Metro.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-11-12T17:04:00.855Z",
+              "IsPinned": true,
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Depot.h",
+              "DocumentMoniker": "D:\\university\\Dev\\4_project\\Depot.h",
+              "RelativeDocumentMoniker": "Depot.h",
+              "ToolTip": "D:\\university\\Dev\\4_project\\Depot.h",
+              "RelativeToolTip": "Depot.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-11-12T17:04:33.662Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Train.h",
+              "DocumentMoniker": "D:\\university\\Dev\\4_project\\Train.h",
+              "RelativeDocumentMoniker": "Train.h",
+              "ToolTip": "D:\\university\\Dev\\4_project\\Train.h",
+              "RelativeToolTip": "Train.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAADwvxIAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-11-12T17:04:41.101Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "main.cpp",
+              "DocumentMoniker": "D:\\university\\Dev\\4_project\\main.cpp",
+              "RelativeDocumentMoniker": "main.cpp",
+              "ToolTip": "D:\\university\\Dev\\4_project\\main.cpp",
+              "RelativeToolTip": "main.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAQwAsAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-11-13T08:27:35.479Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             },
             {
               "$type": "Bookmark",
@@ -223,10 +230,6 @@
             },
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
-            },
-            {
-              "$type": "Bookmark",
               "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
             },
             {
@@ -236,6 +239,31 @@
             {
               "$type": "Bookmark",
               "Name": "ST:1:0:{e8b06f52-6d01-11d2-aa7d-00c04f990343}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Metro.cpp",
+              "DocumentMoniker": "D:\\university\\Dev\\4_project\\Metro.cpp",
+              "RelativeDocumentMoniker": "Metro.cpp",
+              "ToolTip": "D:\\university\\Dev\\4_project\\Metro.cpp",
+              "RelativeToolTip": "Metro.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-11-12T17:40:45.929Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "TrainManager.cpp",
+              "DocumentMoniker": "D:\\university\\Dev\\4_project\\trainManager.cpp",
+              "RelativeDocumentMoniker": "trainManager.cpp",
+              "ToolTip": "D:\\university\\Dev\\4_project\\trainManager.cpp",
+              "RelativeToolTip": "trainManager.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-11-13T08:45:34.814Z"
             }
           ]
         }

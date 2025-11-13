@@ -1,0 +1,534 @@
+﻿  main.cpp
+D:\university\Dev\4_project\Line.h(7,9): error C3646: name: неизвестный спецификатор переопределения
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Line.h(7,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Line.h(8,8): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Line.h(8,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Line.h(8,38): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Line.h(9,12): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Line.h(9,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Line.h(9,40): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Line.h(10,8): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Line.h(10,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Line.h(10,40): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Line.h(11,12): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Line.h(11,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Line.h(11,31): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Line.h(14,18): error C2061: синтаксическая ошибка: идентификатор "shared_ptr"
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Line.h(23,9): error C3646: name: неизвестный спецификатор переопределения
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Line.h(23,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Line.h(25,8): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Line.h(25,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Line.h(25,38): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Line.h(27,22): error C2061: синтаксическая ошибка: идентификатор "shared_ptr"
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Line.h(28,22): error C2061: синтаксическая ошибка: идентификатор "shared_ptr"
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(7,8): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(7,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(7,37): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(8,12): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(8,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(8,45): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(10,21): error C2061: синтаксическая ошибка: идентификатор "shared_ptr"
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(12,24): error C2061: синтаксическая ошибка: идентификатор "shared_ptr"
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\ConsoleUI.h(8,26): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\ConsoleUI.h(8,37): error C2143: синтаксическая ошибка: отсутствие "," перед "&"
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\ConsoleUI.h(9,22): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\ConsoleUI.h(9,33): error C2143: синтаксическая ошибка: отсутствие "," перед "&"
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\ConsoleUI.h(4,14): warning C4091: static : пропускается слева от "ConsoleUI", когда ни одна переменная не объявлена
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Station.h(14,25): error C2065: Train: необъявленный идентификатор
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Station.h(14,14): error C2923: std::shared_ptr: "Train" не является допустимым аргументом типа шаблон для параметра "_Ty"
+  (компиляция исходного файла "main.cpp")
+      D:\university\Dev\4_project\Station.h(14,25):
+       см. объявление "Train"
+  
+D:\university\Dev\4_project\Station.h(15,25): error C2065: Train: необъявленный идентификатор
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Station.h(15,14): error C2923: std::shared_ptr: "Train" не является допустимым аргументом типа шаблон для параметра "_Ty"
+  (компиляция исходного файла "main.cpp")
+      D:\university\Dev\4_project\Station.h(15,25):
+       см. объявление "Train"
+  
+D:\university\Dev\4_project\Station.h(14,7): error C3668: Station::arrive: метод со спецификатором переопределения "override" не переопределяет какие-либо методы базового класса
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Station.h(15,7): error C3668: Station::depart: метод со спецификатором переопределения "override" не переопределяет какие-либо методы базового класса
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Depot.h(7,20): error C2065: Train: необъявленный идентификатор
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Depot.h(7,9): error C2923: std::shared_ptr: "Train" не является допустимым аргументом типа шаблон для параметра "_Ty"
+  (компиляция исходного файла "main.cpp")
+      D:\university\Dev\4_project\Depot.h(7,20):
+       см. объявление "Train"
+  
+D:\university\Dev\4_project\Depot.h(7,9): error C3203: "shared_ptr": неспециализированный класс шаблон нельзя использовать в качестве аргумента шаблон для параметра шаблон "_Ty", требуется действительный тип
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Depot.h(9,13): error C2065: Train: необъявленный идентификатор
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Depot.h(9,2): error C2923: std::shared_ptr: "Train" не является допустимым аргументом типа шаблон для параметра "_Ty"
+  (компиляция исходного файла "main.cpp")
+      D:\university\Dev\4_project\Depot.h(9,13):
+       см. объявление "Train"
+  
+D:\university\Dev\4_project\Depot.h(10,29): error C2065: Train: необъявленный идентификатор
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Depot.h(10,18): error C2923: std::shared_ptr: "Train" не является допустимым аргументом типа шаблон для параметра "_Ty"
+  (компиляция исходного файла "main.cpp")
+      D:\university\Dev\4_project\Depot.h(10,29):
+       см. объявление "Train"
+  
+D:\university\Dev\4_project\RandomEventGenerator.h(5,14): warning C4091: static : пропускается слева от "RandomEventGenerator", когда ни одна переменная не объявлена
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Schedule.h(2,14): warning C4091: static : пропускается слева от "Schedule", когда ни одна переменная не объявлена
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Metro.h(20,13): error C2065: TimeController: необъявленный идентификатор
+  (компиляция исходного файла "main.cpp")
+  
+D:\university\Dev\4_project\Metro.h(20,2): error C2923: std::shared_ptr: "TimeController" не является допустимым аргументом типа шаблон для параметра "_Ty"
+  (компиляция исходного файла "main.cpp")
+      D:\university\Dev\4_project\Metro.h(20,13):
+       см. объявление "TimeController"
+  
+D:\university\Dev\4_project\Metro.h(16,14): warning C4091: static : пропускается слева от "Metro", когда ни одна переменная не объявлена
+  (компиляция исходного файла "main.cpp")
+  
+  Metro.cpp
+D:\university\Dev\4_project\Line.h(7,9): error C3646: name: неизвестный спецификатор переопределения
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Line.h(7,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Line.h(8,8): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Line.h(8,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Line.h(8,38): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Line.h(9,12): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Line.h(9,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Line.h(9,40): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Line.h(10,8): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Line.h(10,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Line.h(10,40): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Line.h(11,12): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Line.h(11,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Line.h(11,31): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Line.h(14,18): error C2061: синтаксическая ошибка: идентификатор "shared_ptr"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Line.h(23,9): error C3646: name: неизвестный спецификатор переопределения
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Line.h(23,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Line.h(25,8): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Line.h(25,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Line.h(25,38): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Line.h(27,22): error C2061: синтаксическая ошибка: идентификатор "shared_ptr"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Line.h(28,22): error C2061: синтаксическая ошибка: идентификатор "shared_ptr"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\TimeController.h(12,9): error C3646: getFormattedTime: неизвестный спецификатор переопределения
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\TimeController.h(12,25): error C2059: синтаксическая ошибка: (
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\TimeController.h(12,33): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(7,8): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(7,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(7,37): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(8,12): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(8,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(8,45): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(10,21): error C2061: синтаксическая ошибка: идентификатор "shared_ptr"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(12,24): error C2061: синтаксическая ошибка: идентификатор "shared_ptr"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\ConsoleUI.h(8,26): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\ConsoleUI.h(8,37): error C2143: синтаксическая ошибка: отсутствие "," перед "&"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\ConsoleUI.h(9,22): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\ConsoleUI.h(9,33): error C2143: синтаксическая ошибка: отсутствие "," перед "&"
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\ConsoleUI.h(4,14): warning C4091: static : пропускается слева от "ConsoleUI", когда ни одна переменная не объявлена
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Station.h(14,25): error C2065: Train: необъявленный идентификатор
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Station.h(14,14): error C2923: std::shared_ptr: "Train" не является допустимым аргументом типа шаблон для параметра "_Ty"
+  (компиляция исходного файла "Metro.cpp")
+      D:\university\Dev\4_project\Station.h(14,25):
+       см. объявление "Train"
+  
+D:\university\Dev\4_project\Station.h(15,25): error C2065: Train: необъявленный идентификатор
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Station.h(15,14): error C2923: std::shared_ptr: "Train" не является допустимым аргументом типа шаблон для параметра "_Ty"
+  (компиляция исходного файла "Metro.cpp")
+      D:\university\Dev\4_project\Station.h(15,25):
+       см. объявление "Train"
+  
+D:\university\Dev\4_project\Station.h(14,7): error C3668: Station::arrive: метод со спецификатором переопределения "override" не переопределяет какие-либо методы базового класса
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Station.h(15,7): error C3668: Station::depart: метод со спецификатором переопределения "override" не переопределяет какие-либо методы базового класса
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Depot.h(7,20): error C2065: Train: необъявленный идентификатор
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Depot.h(7,9): error C2923: std::shared_ptr: "Train" не является допустимым аргументом типа шаблон для параметра "_Ty"
+  (компиляция исходного файла "Metro.cpp")
+      D:\university\Dev\4_project\Depot.h(7,20):
+       см. объявление "Train"
+  
+D:\university\Dev\4_project\Depot.h(7,9): error C3203: "shared_ptr": неспециализированный класс шаблон нельзя использовать в качестве аргумента шаблон для параметра шаблон "_Ty", требуется действительный тип
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Depot.h(9,13): error C2065: Train: необъявленный идентификатор
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Depot.h(9,2): error C2923: std::shared_ptr: "Train" не является допустимым аргументом типа шаблон для параметра "_Ty"
+  (компиляция исходного файла "Metro.cpp")
+      D:\university\Dev\4_project\Depot.h(9,13):
+       см. объявление "Train"
+  
+D:\university\Dev\4_project\Depot.h(10,29): error C2065: Train: необъявленный идентификатор
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Depot.h(10,18): error C2923: std::shared_ptr: "Train" не является допустимым аргументом типа шаблон для параметра "_Ty"
+  (компиляция исходного файла "Metro.cpp")
+      D:\university\Dev\4_project\Depot.h(10,29):
+       см. объявление "Train"
+  
+D:\university\Dev\4_project\RandomEventGenerator.h(5,14): warning C4091: static : пропускается слева от "RandomEventGenerator", когда ни одна переменная не объявлена
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Schedule.h(2,14): warning C4091: static : пропускается слева от "Schedule", когда ни одна переменная не объявлена
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Metro.h(16,14): warning C4091: static : пропускается слева от "Metro", когда ни одна переменная не объявлена
+  (компиляция исходного файла "Metro.cpp")
+  
+D:\university\Dev\4_project\Metro.cpp(7,8): error C2039: "advance": не является членом "std::shared_ptr<TimeController>".
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
+       см. объявление "std::shared_ptr<TimeController>"
+  
+D:\university\Dev\4_project\Metro.cpp(10,22): error C2039: "getCurrent": не является членом "std::shared_ptr<TimeController>".
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
+       см. объявление "std::shared_ptr<TimeController>"
+  
+D:\university\Dev\4_project\Metro.cpp(13,11): error C2039: "updateAllTrains": не является членом "std::shared_ptr<TrainManager>".
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
+       см. объявление "std::shared_ptr<TrainManager>"
+  
+D:\university\Dev\4_project\Metro.cpp(13,32): error C2039: "getCurrent": не является членом "std::shared_ptr<TimeController>".
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(1565,7):
+       см. объявление "std::shared_ptr<TimeController>"
+  
+  TimeController.cpp
+D:\university\Dev\4_project\Line.h(7,9): error C3646: name: неизвестный спецификатор переопределения
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Line.h(7,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Line.h(8,8): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Line.h(8,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Line.h(8,38): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Line.h(9,12): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Line.h(9,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Line.h(9,40): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Line.h(10,8): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Line.h(10,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Line.h(10,40): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Line.h(11,12): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Line.h(11,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Line.h(11,31): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Line.h(14,18): error C2061: синтаксическая ошибка: идентификатор "shared_ptr"
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Line.h(23,9): error C3646: name: неизвестный спецификатор переопределения
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Line.h(23,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Line.h(25,8): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Line.h(25,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Line.h(25,38): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Line.h(27,22): error C2061: синтаксическая ошибка: идентификатор "shared_ptr"
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Line.h(28,22): error C2061: синтаксическая ошибка: идентификатор "shared_ptr"
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(7,8): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(7,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(7,37): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(8,12): error C2143: синтаксическая ошибка: отсутствие ";" перед "<"
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(8,2): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(8,45): error C2238: непредвиденные лексемы перед ";"
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(10,21): error C2061: синтаксическая ошибка: идентификатор "shared_ptr"
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\TrainManager.h(12,24): error C2061: синтаксическая ошибка: идентификатор "shared_ptr"
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\ConsoleUI.h(8,26): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\ConsoleUI.h(8,37): error C2143: синтаксическая ошибка: отсутствие "," перед "&"
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\ConsoleUI.h(9,22): error C4430: отсутствует спецификатор типа - предполагается int. Примечание. C++ не поддерживает int по умолчанию
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\ConsoleUI.h(9,33): error C2143: синтаксическая ошибка: отсутствие "," перед "&"
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\ConsoleUI.h(4,14): warning C4091: static : пропускается слева от "ConsoleUI", когда ни одна переменная не объявлена
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Station.h(14,25): error C2065: Train: необъявленный идентификатор
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Station.h(14,14): error C2923: std::shared_ptr: "Train" не является допустимым аргументом типа шаблон для параметра "_Ty"
+  (компиляция исходного файла "TimeController.cpp")
+      D:\university\Dev\4_project\Station.h(14,25):
+       см. объявление "Train"
+  
+D:\university\Dev\4_project\Station.h(15,25): error C2065: Train: необъявленный идентификатор
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Station.h(15,14): error C2923: std::shared_ptr: "Train" не является допустимым аргументом типа шаблон для параметра "_Ty"
+  (компиляция исходного файла "TimeController.cpp")
+      D:\university\Dev\4_project\Station.h(15,25):
+       см. объявление "Train"
+  
+D:\university\Dev\4_project\Station.h(14,7): error C3668: Station::arrive: метод со спецификатором переопределения "override" не переопределяет какие-либо методы базового класса
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Station.h(15,7): error C3668: Station::depart: метод со спецификатором переопределения "override" не переопределяет какие-либо методы базового класса
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Depot.h(7,20): error C2065: Train: необъявленный идентификатор
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Depot.h(7,9): error C2923: std::shared_ptr: "Train" не является допустимым аргументом типа шаблон для параметра "_Ty"
+  (компиляция исходного файла "TimeController.cpp")
+      D:\university\Dev\4_project\Depot.h(7,20):
+       см. объявление "Train"
+  
+D:\university\Dev\4_project\Depot.h(7,9): error C3203: "shared_ptr": неспециализированный класс шаблон нельзя использовать в качестве аргумента шаблон для параметра шаблон "_Ty", требуется действительный тип
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Depot.h(9,13): error C2065: Train: необъявленный идентификатор
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Depot.h(9,2): error C2923: std::shared_ptr: "Train" не является допустимым аргументом типа шаблон для параметра "_Ty"
+  (компиляция исходного файла "TimeController.cpp")
+      D:\university\Dev\4_project\Depot.h(9,13):
+       см. объявление "Train"
+  
+D:\university\Dev\4_project\Depot.h(10,29): error C2065: Train: необъявленный идентификатор
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Depot.h(10,18): error C2923: std::shared_ptr: "Train" не является допустимым аргументом типа шаблон для параметра "_Ty"
+  (компиляция исходного файла "TimeController.cpp")
+      D:\university\Dev\4_project\Depot.h(10,29):
+       см. объявление "Train"
+  
+D:\university\Dev\4_project\RandomEventGenerator.h(5,14): warning C4091: static : пропускается слева от "RandomEventGenerator", когда ни одна переменная не объявлена
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Schedule.h(2,14): warning C4091: static : пропускается слева от "Schedule", когда ни одна переменная не объявлена
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Metro.h(20,13): error C2065: TimeController: необъявленный идентификатор
+  (компиляция исходного файла "TimeController.cpp")
+  
+D:\university\Dev\4_project\Metro.h(20,2): error C2923: std::shared_ptr: "TimeController" не является допустимым аргументом типа шаблон для параметра "_Ty"
+  (компиляция исходного файла "TimeController.cpp")
+      D:\university\Dev\4_project\Metro.h(20,13):
+       см. объявление "TimeController"
+  
+D:\university\Dev\4_project\Metro.h(16,14): warning C4091: static : пропускается слева от "Metro", когда ни одна переменная не объявлена
+  (компиляция исходного файла "TimeController.cpp")
+  
+  Создание кода...
