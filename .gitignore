@@ -1,3 +1,44 @@
-*.sln
-*.vcxproj
-.*
+# Visual Studio temporary files, build results, and
+# user-specific files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build folders
+[Bb]uild/
+[Bb]in/
+[Oo]bj/
+out/
+Debug/
+Release/
+x64/
+x86/
+
+# Visual C++ generated
+*.vcxproj.user
+*.vcxproj.filters
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+build/
+
+# Qt
+*.pro.user
+*.qmake.stash
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# logs, temporary
+*.log
+*.tmp
+
+# Editor folders
+.vscode/
+.idea/
