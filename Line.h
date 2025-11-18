@@ -2,20 +2,24 @@
 #include <vector>
 #include "Train.h"
 
+class Station;
+class Depot;
+
 class Line
 {
-	//private:
-	//	string name;
-	//	vector<shared_ptr<Station>> stations;
-	//	shared_ptr<Depot> depotStart, depotEnd;
-	//	vector<shared_ptr<Train>> activeTrains;
+private:
+	string name;
+	vector<shared_ptr<Station>> stations;
+	shared_ptr<Depot> depotStart, depotEnd;
+	vector<shared_ptr<Train>> activeTrains;
 	//	shared_ptr<Schedule> schedule;
 	//	int standardSegmentTime;
-	//public:
-	//	void addStation(shared_ptr<Station> station);
+public:
+	Line() : name("line"), stations() {}
+	void addStation(shared_ptr<Station> station);
 	//	void dispatchTrain(bool directionForward);
 	//	void update(int currentTime);
-	//	void printStatus() const;
+	void printStatus() const;
 };
 
 class Waypoint
@@ -42,15 +46,15 @@ public:
 	Station(string name, int position, int stopTimeStandard = 120, int stopTimeMin = 30) : Waypoint(name, position), stopTimeStandard(stopTimeStandard), stopTimeMin(stopTimeMin) {}
 	void arrive(shared_ptr<Train> train) override;
 	void depart(shared_ptr<Train> train) override;
-	void applyDelay(int seconds);
+	//void applyDelay(int seconds);
 	void printStatus() const;
 };
 
 class Depot : protected Waypoint
 {
-	//private:
-	//	vector<shared_ptr<Train>> storedTrains;
-	//public:
-	//	shared_ptr<Train> releaseTrain();
-	//	void storeTrain(shared_ptr<Train> train);
+private:
+	vector<shared_ptr<Train>> storedTrains;
+public:
+	shared_ptr<Train> releaseTrain();
+	void storeTrain(shared_ptr<Train> train);
 };

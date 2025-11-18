@@ -4,18 +4,18 @@ using namespace std;
 
 class Train 
 {
-//private:
-//	string id;
+private:
+	string id;
 //	Line* line;
 //	int currentStationIndex;
 //	bool directionForward;
 //	int timeToNextEvent;
 //	bool isDelayed;
 //	int totalDelay;
-//public:
+public:
 //	void moveStep(int stepSeconds);
 //	void accelerateIfDelayed();
 //	void adjustStopTime();
 //	void reportStatus() const;
-	void getID() const;
+	string getID() const;
 };
