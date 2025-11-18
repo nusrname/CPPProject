@@ -39,9 +39,6 @@
     <ClCompile Include="ConsoleUI.cpp">
       <Filter>Исходные файлы\source\ui</Filter>
     </ClCompile>
-    <ClCompile Include="Depot.cpp">
-      <Filter>Исходные файлы\source\core</Filter>
-    </ClCompile>
     <ClCompile Include="Line.cpp">
       <Filter>Исходные файлы\source\core</Filter>
     </ClCompile>
@@ -52,9 +49,6 @@
       <Filter>Исходные файлы\source\core</Filter>
     </ClCompile>
     <ClCompile Include="Schedule.cpp">
-      <Filter>Исходные файлы\source\core</Filter>
-    </ClCompile>
-    <ClCompile Include="Station.cpp">
       <Filter>Исходные файлы\source\core</Filter>
     </ClCompile>
     <ClCompile Include="TimeController.cpp">
@@ -71,9 +65,6 @@
     <ClInclude Include="ConsoleUI.h">
       <Filter>Файлы заголовков\source\ui</Filter>
     </ClInclude>
-    <ClInclude Include="Depot.h">
-      <Filter>Файлы заголовков\source\core</Filter>
-    </ClInclude>
     <ClInclude Include="Line.h">
       <Filter>Файлы заголовков\source\core</Filter>
     </ClInclude>
@@ -84,9 +75,6 @@
       <Filter>Файлы заголовков\source\core</Filter>
     </ClInclude>
     <ClInclude Include="Schedule.h">
-      <Filter>Файлы заголовков\source\core</Filter>
-    </ClInclude>
-    <ClInclude Include="Station.h">
       <Filter>Файлы заголовков\source\core</Filter>
     </ClInclude>
     <ClInclude Include="TimeController.h">
