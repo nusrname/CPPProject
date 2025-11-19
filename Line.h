@@ -1,7 +1,10 @@
 #pragma once
+#include <iostream>
 #include <vector>
-#include "Train.h"
-
+#include <memory>
+#include <string>
+using namespace std;
+class Train;
 class Station;
 class Depot;
 
@@ -15,11 +18,15 @@ private:
 	//	shared_ptr<Schedule> schedule;
 	//	int standardSegmentTime;
 public:
-	Line() : name("line"), stations() {}
+	Line(string name = "line", shared_ptr<Depot> startDepot = nullptr, shared_ptr<Depot> endDepot = nullptr) :
+		name(name), depotStart(startDepot), depotEnd(endDepot) {
+	}
 	void addStation(shared_ptr<Station> station);
 	//	void dispatchTrain(bool directionForward);
 	//	void update(int currentTime);
 	void printStatus() const;
+	void startTrain(shared_ptr<Train> train);
+	void addTrainToDepot(shared_ptr<Train> train);
 };
 
 class Waypoint
@@ -55,6 +62,10 @@ class Depot : protected Waypoint
 private:
 	vector<shared_ptr<Train>> storedTrains;
 public:
+	Depot(string name = "depot", int position = 120) : Waypoint(name, position) {}
 	shared_ptr<Train> releaseTrain();
 	void storeTrain(shared_ptr<Train> train);
+	void arrive(shared_ptr<Train> train) override {}
+	void depart(shared_ptr<Train> train) override {}
+	vector<shared_ptr<Train>> getTrains()const { return storedTrains; }
 };
