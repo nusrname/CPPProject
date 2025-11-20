@@ -127,21 +127,13 @@
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Metro.cpp" />
-    <ClCompile Include="RandomEventGenerator.cpp" />
-    <ClCompile Include="Schedule.cpp" />
     <ClCompile Include="TimeController.cpp" />
-    <ClCompile Include="Train.cpp" />
-    <ClCompile Include="TrainManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConsoleUI.h" />
     <ClInclude Include="Line.h" />
     <ClInclude Include="Metro.h" />
-    <ClInclude Include="RandomEventGenerator.h" />
-    <ClInclude Include="Schedule.h" />
     <ClInclude Include="TimeController.h" />
-    <ClInclude Include="Train.h" />
-    <ClInclude Include="TrainManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
