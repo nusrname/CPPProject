@@ -1,2 +1,4 @@
 ﻿  Line.cpp
-  4_project.vcxproj -> D:\university\Dev\4_project\x64\Debug\4_project.exe
+F:\C++\Smirnov_211_4\Line.cpp(86,54): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+F:\C++\Smirnov_211_4\Line.cpp(173,65): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+  4_project.vcxproj -> F:\C++\Smirnov_211_4\x64\Debug\4_project.exe

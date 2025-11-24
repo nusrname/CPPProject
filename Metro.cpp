@@ -4,9 +4,14 @@
 
 void Metro::simulate(int periodSeconds, int stepSeconds) 
 {
+	for (auto& line : lines)
+	{
+		ConsoleUI::displayLineStatus(*line);
+	}
+
 	for (int t = 0; t < periodSeconds; t += stepSeconds)
 	{
-		ConsoleUI::ClearConsole();
+		//ConsoleUI::ClearConsole();
 		timeController->advance();
 		cout << endl << timeController->getFormattedTime();
 		for (auto& line : lines)
