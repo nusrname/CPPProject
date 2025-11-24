@@ -75,6 +75,7 @@ public:
 	void update(int currentTime);
 	void printStatus() const;
 	void startTrain(shared_ptr<Train> train, int stationIndex);
+	void removeActiveTrain(const shared_ptr<Train>& train);
 	int moveTrain(shared_ptr<Train> train, int index, bool& direction);
 	shared_ptr<Depot> getStartDepot() const;
 	shared_ptr<Depot> getEndDepot() const;
@@ -93,6 +94,7 @@ private:
 	bool directionForward = false;
 	bool depoted = true;
 	bool movingToDepot = false;
+	bool readyToLeaveDepot = false;
 
 	int timeToNextEvent = 0;
 	bool isDelayed = false;

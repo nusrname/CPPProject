@@ -10,35 +10,34 @@ void Line::printStatus() const
 	for (auto station : stations)
 		station->printStatus();
 
-	cout << "\tѕоездов: "
-		<< activeTrains.size()
-		<< " (в депо: "
-		<< depotStart->getTrains().size()
-		<< " / "
-		<< depotEnd->getTrains().size()
-		<< ")\n"
-		<< "\n\tј именно: " << endl;
-	for (auto train : depotStart->getTrains())
-		cout << train->getID();
-	for (auto& train : activeTrains)
-		cout << train->getID() << endl;
+	cout << "\tѕоездов (активных): " << activeTrains.size()
+		 << "  (в депо: " << (depotStart ? depotStart->getTrains().size() : 0)
+		 << " / " << (depotEnd ? depotEnd->getTrains().size() : 0) << ")\n"
+		 << "\n\tј именно: " << endl;
+
+	if (depotStart)
+		for (const auto& train : depotStart->getTrains())
+			cout << train->getID() << " (в депо start)  ";
+	for (const auto& train : activeTrains)
+		cout << train->getID() << " (в движ.)  ";
+	cout << endl;
 }
 
 void Line::update(int currentTime)
 {
-	for (auto& t : activeTrains)
-		t->moveStep(currentTime);
-	if (depotStart->getTrains().size() > 0)
+	auto activeSnapshot = activeTrains;
+	for (auto& t : activeSnapshot)
+		if (t) t->moveStep(currentTime);
+
+	if (depotStart && !depotStart->getTrains().empty())
 	{
 		auto tr = depotStart->getTrains().front();
-		if (tr != nullptr)
-			tr->moveStep(currentTime);
+		if (tr) tr->moveStep(currentTime);
 	}
-	if (depotEnd->getTrains().size() > 0)
+	if (depotEnd && !depotEnd->getTrains().empty())
 	{
 		auto tr = depotEnd->getTrains().front();
-		if (tr != nullptr)
-			tr->moveStep(currentTime);
+		if (tr) tr->moveStep(currentTime);
 	}
 }
 
@@ -49,20 +48,20 @@ void Line::addStation(shared_ptr<Station> station)
 
 void Line::startTrain(shared_ptr<Train> train, int stationIndex)
 {
-	if (stations.empty()) return;
+	if (stations.empty() || !train) return;
 
 	if (stationIndex < 0 || stationIndex >= stations.size())
 		stationIndex = 0;
 
 	if (std::find(activeTrains.begin(), activeTrains.end(), train) == activeTrains.end())
 		activeTrains.push_back(train);
+
 	stations.at(stationIndex)->arrive(train);
 }
 
 int Line::moveTrain(shared_ptr<Train> train, int index, bool& direction)
 {
-	if (stations.empty())
-		return -1;
+	if (stations.empty() || !train) return -1;
 
 	// ”ход со станции
 	if (index >= 0 && index < stations.size())
@@ -70,38 +69,24 @@ int Line::moveTrain(shared_ptr<Train> train, int index, bool& direction)
 
 	int next = direction ? (index + 1) : (index - 1);
 
-	// ƒостиг конечной Ч разворот
-	if (next >= stations.size())
-	{
-		direction = false;
-		next = index - 1;
-	}
-	else if (next < 0)
-	{
-		direction = true;
-		next = index + 1;
-	}
-
-	if (next < 0) next = 0;
-	if (next >= stations.size()) next = stations.size() - 1;
+	if (next < 0 || next >= stations.size()) return -1;
 
 	stations.at(next)->arrive(train);
 	return next;
 }
 
-shared_ptr<Depot> Line::getStartDepot() const
-{
-	return depotStart;
-}
+shared_ptr<Depot> Line::getStartDepot() const { return depotStart; }
 
-shared_ptr<Depot> Line::getEndDepot() const
-{
-	return depotEnd;
-}
+shared_ptr<Depot> Line::getEndDepot() const { return depotEnd; }
 
-vector<shared_ptr<Station>> Line::getStations() const
+vector<shared_ptr<Station>> Line::getStations() const { return stations; }
+
+void Line::removeActiveTrain(const shared_ptr<Train>& train)
 {
-	return stations;
+	if (!train) return;
+	auto it = std::find(activeTrains.begin(), activeTrains.end(), train);
+	if (it != activeTrains.end())
+		activeTrains.erase(it);
 }
 
 #pragma endregion
@@ -110,7 +95,8 @@ vector<shared_ptr<Station>> Line::getStations() const
 
 void Station::arrive(shared_ptr<Train> train)
 {
-	trainsHere.push_back(train);
+	if (std::find(trainsHere.begin(), trainsHere.end(), train) == trainsHere.end())
+		trainsHere.push_back(train);
 }
 
 void Station::depart(shared_ptr<Train> train)
@@ -136,7 +122,8 @@ void Station::printStatus() const
 
 void Depot::storeTrain(shared_ptr<Train> train)
 {
-	storedTrains.push_back(train);
+	if (std::find(storedTrains.begin(), storedTrains.end(), train) == storedTrains.end())
+		storedTrains.push_back(train);
 }
 
 shared_ptr<Train> Depot::releaseTrain()
@@ -162,52 +149,94 @@ bool Depot::removeTrain(shared_ptr<Train> train)
 
 void Train::addToDepot()
 {
-	initialDepot->storeTrain(shared_from_this());
+	if (initialDepot) initialDepot->storeTrain(shared_from_this());
+	depoted = true;
+	readyToLeaveDepot = false;
+	movingToDepot = false;
+	currentStationIndex = -1;
 }
 
-void Train::moveStep(int stepSeconds)
+void Train::moveStep(int /*stepSeconds*/)
 {
-	if (depoted)  // выезд с депо
+	// ѕоезд находитс€ в депо: первый тик Ч готовность, второй Ч выезд
+	if (depoted)
 	{
-		initialDepot->removeTrain(shared_from_this());
-		currentStationIndex = (initialDepot == line->getStartDepot()) ? 0 : line->getStations().size() - 1;
-		directionForward = (initialDepot == line->getStartDepot());
+		if (!readyToLeaveDepot)
+		{
+			readyToLeaveDepot = true;
+			return; // стоим 1 тик
+		}
+
+		// второй тик Ч выезжаем
+		readyToLeaveDepot = false;
+
+		// удал€ем из депо (если там)
+		if (initialDepot)
+			initialDepot->removeTrain(shared_from_this());
+
+		// определ€ем начальную позицию и направление исход€ из того депо, в котором находилс€ поезд
+		if (initialDepot && initialDepot == line->getStartDepot())
+		{
+			currentStationIndex = 0;
+			directionForward = true;
+		}
+		else
+		{
+			currentStationIndex = static_cast<int>(line->getStations().size()) - 1;
+			directionForward = false;
+		}
+
 		depoted = false;
 		movingToDepot = false;
+
+		// добавл€ем в активные поезда (если ещЄ нет) и помещаем на станцию
 		line->startTrain(shared_from_this(), currentStationIndex);
 		return;
 	}
 
-	// ≈сли поезд должен ехать в депо после конечной станции
+	// ѕоезд едет в депо (после конечной станции)
 	if (movingToDepot)
 	{
+		// целевое депо по направлению движени€
 		shared_ptr<Depot> targetDepot = directionForward ? line->getEndDepot() : line->getStartDepot();
-		targetDepot->storeTrain(shared_from_this());
+
+		// снимаем со станции, если сто€ли
+		if (currentStationIndex >= 0 && currentStationIndex < static_cast<int>(line->getStations().size()))
+			line->getStations()[currentStationIndex]->depart(shared_from_this());
+
+		// кладЄм в депо
+		if (targetDepot) targetDepot->storeTrain(shared_from_this());
+
+		// обновл€ем, чтобы при следующем выезде направление было корректным
+		initialDepot = targetDepot;
+
+		// удал€ем из активных поездов линии
+		line->removeActiveTrain(shared_from_this());
+
 		depoted = true;
 		movingToDepot = false;
+		currentStationIndex = -1;
+		readyToLeaveDepot = false; // готовность снова потребуетс€
 		return;
 	}
 
+	// ќбычное движение: переход станци€ -> станци€
 	int nextIndex = directionForward ? currentStationIndex + 1 : currentStationIndex - 1;
 
-	// ƒостигли конечной станции Ч начинаем движение в депо
-	if (nextIndex >= line->getStations().size())
+	// если следующий индекс выходит за границы Ч помечаем, что едем в депо (следующий тик попадЄм в депо)
+	if (nextIndex < 0 || nextIndex >= static_cast<int>(line->getStations().size()))
 	{
-		line->getStations()[currentStationIndex]->depart(shared_from_this());
-		movingToDepot = true;   // поезд едет в конечное депо
-		return;
-	}
-	else if (nextIndex < 0)
-	{
-		line->getStations()[currentStationIndex]->depart(shared_from_this());
-		movingToDepot = true;   // поезд едет в начальное депо
+		if (currentStationIndex >= 0 && currentStationIndex < static_cast<int>(line->getStations().size()))
+			line->getStations()[currentStationIndex]->depart(shared_from_this());
+
+		movingToDepot = true;
 		return;
 	}
 
-	// ƒвижение между станци€ми
-	currentStationIndex = line->moveTrain(shared_from_this(), currentStationIndex, directionForward);
+	// стандартный переход
+	int newIndex = line->moveTrain(shared_from_this(), currentStationIndex, directionForward);
+	if (newIndex != -1) currentStationIndex = newIndex;
 }
-
 
 string Train::getID() const
 {

@@ -1,4 +1,11 @@
-﻿  Line.cpp
-F:\C++\Smirnov_211_4\Line.cpp(86,54): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-F:\C++\Smirnov_211_4\Line.cpp(173,65): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+﻿  Metro.cpp
+F:\C++\Smirnov_211_4\ConsoleUI.h(4,14): warning C4091: static : пропускается слева от "ConsoleUI", когда ни одна переменная не объявлена
+  (компиляция исходного файла "Metro.cpp")
+  
+F:\C++\Smirnov_211_4\Metro.h(14,14): warning C4091: static : пропускается слева от "TrainManager", когда ни одна переменная не объявлена
+  (компиляция исходного файла "Metro.cpp")
+  
+F:\C++\Smirnov_211_4\TimeController.h(19,14): warning C4091: static : пропускается слева от "Schedule", когда ни одна переменная не объявлена
+  (компиляция исходного файла "Metro.cpp")
+  
   4_project.vcxproj -> F:\C++\Smirnov_211_4\x64\Debug\4_project.exe
