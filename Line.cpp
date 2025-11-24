@@ -152,11 +152,10 @@ void Train::addToDepot()
 	if (initialDepot) initialDepot->storeTrain(shared_from_this());
 	depoted = true;
 	readyToLeaveDepot = false;
-	movingToDepot = false;
 	currentStationIndex = -1;
 }
 
-void Train::moveStep(int /*stepSeconds*/)
+void Train::moveStep(int stepSeconds)
 {
 	// Поезд находится в депо: первый тик — готовность, второй — выезд
 	if (depoted)
@@ -187,16 +186,21 @@ void Train::moveStep(int /*stepSeconds*/)
 		}
 
 		depoted = false;
-		movingToDepot = false;
 
 		// добавляем в активные поезда (если ещё нет) и помещаем на станцию
 		line->startTrain(shared_from_this(), currentStationIndex);
 		return;
 	}
 
-	// Поезд едет в депо (после конечной станции)
-	if (movingToDepot)
+	// Обычное движение: переход станция -> станция
+	int nextIndex = directionForward ? currentStationIndex + 1 : currentStationIndex - 1;
+
+	// если следующий индекс выходит за границы — помечаем, что едем в депо (следующий тик попадём в депо)
+	if (nextIndex < 0 || nextIndex >= static_cast<int>(line->getStations().size()))
 	{
+		if (currentStationIndex >= 0 && currentStationIndex < static_cast<int>(line->getStations().size()))
+			line->getStations()[currentStationIndex]->depart(shared_from_this());
+
 		// целевое депо по направлению движения
 		shared_ptr<Depot> targetDepot = directionForward ? line->getEndDepot() : line->getStartDepot();
 
@@ -214,22 +218,8 @@ void Train::moveStep(int /*stepSeconds*/)
 		line->removeActiveTrain(shared_from_this());
 
 		depoted = true;
-		movingToDepot = false;
 		currentStationIndex = -1;
 		readyToLeaveDepot = false; // готовность снова потребуется
-		return;
-	}
-
-	// Обычное движение: переход станция -> станция
-	int nextIndex = directionForward ? currentStationIndex + 1 : currentStationIndex - 1;
-
-	// если следующий индекс выходит за границы — помечаем, что едем в депо (следующий тик попадём в депо)
-	if (nextIndex < 0 || nextIndex >= static_cast<int>(line->getStations().size()))
-	{
-		if (currentStationIndex >= 0 && currentStationIndex < static_cast<int>(line->getStations().size()))
-			line->getStations()[currentStationIndex]->depart(shared_from_this());
-
-		movingToDepot = true;
 		return;
 	}
 

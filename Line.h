@@ -93,7 +93,6 @@ private:
 	int currentStationIndex = -1;
 	bool directionForward = false;
 	bool depoted = true;
-	bool movingToDepot = false;
 	bool readyToLeaveDepot = false;
 
 	int timeToNextEvent = 0;

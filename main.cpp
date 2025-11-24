@@ -18,8 +18,10 @@ int main()
 	auto st2 = make_shared<Station>("st2", 124);
 	auto l1 = make_shared<Line>("firstLine", sd, ed);
 
-	auto tr2 = make_shared<Train>("id1", l1, sd);
+	auto tr1 = make_shared<Train>("id1", l1, sd);
+	auto tr2 = make_shared<Train>("id2", l1, sd);
 
+	tr1->addToDepot();
 	tr2->addToDepot();
 	l1->addStation(st1);
 	l1->addStation(st2);

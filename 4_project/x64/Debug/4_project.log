@@ -1,11 +1,13 @@
-﻿  Metro.cpp
+﻿  Line.cpp
+  main.cpp
 F:\C++\Smirnov_211_4\ConsoleUI.h(4,14): warning C4091: static : пропускается слева от "ConsoleUI", когда ни одна переменная не объявлена
-  (компиляция исходного файла "Metro.cpp")
+  (компиляция исходного файла "main.cpp")
   
 F:\C++\Smirnov_211_4\Metro.h(14,14): warning C4091: static : пропускается слева от "TrainManager", когда ни одна переменная не объявлена
-  (компиляция исходного файла "Metro.cpp")
+  (компиляция исходного файла "main.cpp")
   
 F:\C++\Smirnov_211_4\TimeController.h(19,14): warning C4091: static : пропускается слева от "Schedule", когда ни одна переменная не объявлена
-  (компиляция исходного файла "Metro.cpp")
+  (компиляция исходного файла "main.cpp")
   
+  Создание кода...
   4_project.vcxproj -> F:\C++\Smirnov_211_4\x64\Debug\4_project.exe
