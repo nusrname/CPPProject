@@ -20,7 +20,7 @@ public:
 	virtual void depart(shared_ptr<Train> train) = 0;
 };
 
-class Station : protected Waypoint
+class Station : public Waypoint
 {
 private:
 	int stopTimeStandard;
@@ -36,7 +36,7 @@ public:
 	void printStatus() const;
 };
 
-class Depot : protected Waypoint
+class Depot : public Waypoint
 {
 private:
 	vector<shared_ptr<Train>> storedTrains;
@@ -71,7 +71,7 @@ public:
 	int moveTrain(shared_ptr<Train> train);
 };
 
-class Train
+class Train : public enable_shared_from_this<Train>
 {
 private:
 	string id;
@@ -84,11 +84,13 @@ private:
 	bool depoted = true;
 public:
 	Train(string id, shared_ptr<Line> line) : id(id), line(line) {}
-	void addToDepot() { line->addTrainToDepot(make_shared<Train>(*this)); }
+	void addToDepot() { line->addTrainToDepot(shared_from_this()); }
 	void moveStep(int stepSeconds);
 	//void accelerateIfDelayed();
 	//void adjustStopTime();
 	//void reportStatus() const;
 	string getID() const;
-	int getCurrentStationIndex() { return currentStationIndex; }
+	int getCurrentStationIndex() const { return currentStationIndex; }
+	bool isForward() const { return directionForward; }
+	void reverse() { directionForward = !directionForward; }
 };

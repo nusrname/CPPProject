@@ -9,18 +9,21 @@ int main()
 	setlocale(LC_ALL, "rus");
 	int time, step;
 	cin >> time >> step;
-	TimeController tc(0, step);
-	ConsoleUI consoleUI;
-	Metro metro(make_shared<TimeController>(tc));
-	Depot sd("sd", 123), ed("ed", 124);
-	Station st1("st1", 123);
-	Station st2("st2", 124);
-	Line l1("firstLine", make_shared<Depot>(sd), make_shared<Depot>(ed));
+	auto tc = make_shared<TimeController>(0, step);
+	Metro metro(tc);
+	auto sd = make_shared<Depot>("sd", 123);
+	auto ed = make_shared<Depot>("ed", 124);
 
-	Train tr2("id1", make_shared<Line>(l1));
-	tr2.addToDepot();
-	l1.addStation(make_shared<Station>(st1));
-	l1.addStation(make_shared<Station>(st2));
-	metro.addLine(make_shared<Line>(l1));
+	auto st1 = make_shared<Station>("st1", 123);
+	auto st2 = make_shared<Station>("st2", 124);
+	auto l1 = make_shared<Line>("firstLine", sd, ed);
+
+	auto tr2 = make_shared<Train>("id1", l1);
+
+	tr2->addToDepot();
+	l1->addStation(st1);
+	l1->addStation(st2);
+
+	metro.addLine(l1);
 	metro.simulate(time, step);
 }
