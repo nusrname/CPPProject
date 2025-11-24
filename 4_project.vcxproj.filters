@@ -45,19 +45,7 @@
     <ClCompile Include="Metro.cpp">
       <Filter>Исходные файлы\source\core</Filter>
     </ClCompile>
-    <ClCompile Include="RandomEventGenerator.cpp">
-      <Filter>Исходные файлы\source\core</Filter>
-    </ClCompile>
-    <ClCompile Include="Schedule.cpp">
-      <Filter>Исходные файлы\source\core</Filter>
-    </ClCompile>
     <ClCompile Include="TimeController.cpp">
-      <Filter>Исходные файлы\source\core</Filter>
-    </ClCompile>
-    <ClCompile Include="Train.cpp">
-      <Filter>Исходные файлы\source\core</Filter>
-    </ClCompile>
-    <ClCompile Include="TrainManager.cpp">
       <Filter>Исходные файлы\source\core</Filter>
     </ClCompile>
   </ItemGroup>
@@ -71,19 +59,7 @@
     <ClInclude Include="Metro.h">
       <Filter>Файлы заголовков\source\core</Filter>
     </ClInclude>
-    <ClInclude Include="RandomEventGenerator.h">
-      <Filter>Файлы заголовков\source\core</Filter>
-    </ClInclude>
-    <ClInclude Include="Schedule.h">
-      <Filter>Файлы заголовков\source\core</Filter>
-    </ClInclude>
     <ClInclude Include="TimeController.h">
-      <Filter>Файлы заголовков\source\core</Filter>
-    </ClInclude>
-    <ClInclude Include="Train.h">
-      <Filter>Файлы заголовков\source\core</Filter>
-    </ClInclude>
-    <ClInclude Include="TrainManager.h">
       <Filter>Файлы заголовков\source\core</Filter>
     </ClInclude>
   </ItemGroup>

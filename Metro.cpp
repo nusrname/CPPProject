@@ -11,7 +11,7 @@ void Metro::simulate(int periodSeconds, int stepSeconds)
 		cout << endl << timeController->getFormattedTime();
 		for (auto& line : lines)
 		{
-			//line->update(time.getCurrent());
+			//line->update(timeController->getCurrent());
 			ConsoleUI::displayLineStatus(*line);
 		}
 		//manager.updateAllTrains(time.getCurrent());
