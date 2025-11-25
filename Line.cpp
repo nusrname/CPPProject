@@ -22,6 +22,9 @@ void Line::printStatus() const
 			cout << train->getID() << " (в депо start)  ";
 	for (const auto& train : activeTrains)
 		cout << train->getID() << " (в движ.)  ";
+	if (depotEnd)
+		for (const auto& train : depotEnd->getTrains())
+			cout << train->getID() << " (в депо end)  ";
 	cout << endl;
 }
 
@@ -419,11 +422,13 @@ void Train::moveStep(int stepSeconds)
 		{
 			currentStationIndex = 0;
 			directionForward = true;
+			position = initialDepot->getPosition();
 		}
 		else
 		{
 			currentStationIndex = line->getStations().size() - 1;
 			directionForward = false;
+			position = line->getEndDepot()->getPosition();
 		}
 
 		depoted = false;
@@ -434,51 +439,74 @@ void Train::moveStep(int stepSeconds)
 	}
 
 	auto stations = line->getStations();
-	stations.at(currentStationIndex)->depart(shared_from_this());
-	shared_ptr<Station> nextStation = stations.at(currentStationIndex + 1);
 
-	// Обычное движение: переход станция -> станция
-	double dist = min(speed * stepSeconds, nextStation->getPosition() - position);
-	position += directionForward ? dist : -dist;
+	// --- Определяем следующую станцию ---
+	int nextIndex = directionForward ? currentStationIndex + 1
+		: currentStationIndex - 1;
 
-	// если следующий индекс выходит за границы — помечаем, что едем в депо (следующий тик попадём в депо)
-	if (position < 0 || position >= line->getStations().back()->getPosition())
+	// --- Если следующей станции нет: движемся в депо ---
+	if (nextIndex < 0 || nextIndex >= stations.size())
 	{
-		if (currentStationIndex >= 0 && currentStationIndex < line->getStations().size())
-			line->getStations()[currentStationIndex]->depart(shared_from_this());
+		shared_ptr<Depot> targetDepot =
+			directionForward ? line->getEndDepot() : line->getStartDepot();
 
-		// целевое депо по направлению движения
-		shared_ptr<Depot> targetDepot = directionForward ? line->getEndDepot() : line->getStartDepot();
+		// позиция целевого депо
+		double depotPos = targetDepot->getPosition();
+		double delta = speed * stepSeconds * (directionForward ? 1 : -1);
+		double nextPos = position + delta;
 
-		// снимаем со станции, если стояли
-		if (currentStationIndex >= 0 && currentStationIndex < line->getStations().size())
-			line->getStations()[currentStationIndex]->depart(shared_from_this());
+		// достигли депо
+		if ((directionForward && nextPos >= depotPos) ||
+			(!directionForward && nextPos <= depotPos))
+		{
+			position = depotPos;
 
-		// кладём в депо
-		if (targetDepot) targetDepot->storeTrain(shared_from_this());
+			// снятие со станции (если стояли на последней)
+			if (currentStationIndex >= 0 && currentStationIndex < stations.size())
+				stations[currentStationIndex]->depart(shared_from_this());
 
-		// обновляем, чтобы при следующем выезде направление было корректным
-		initialDepot = targetDepot;
+			targetDepot->storeTrain(shared_from_this());
+			initialDepot = targetDepot;
 
-		// удаляем из активных поездов линии
-		line->removeActiveTrain(shared_from_this());
+			// снимаем с линии
+			line->removeActiveTrain(shared_from_this());
 
-		depoted = true;
-		currentStationIndex = -1;
-		readyToLeaveDepot = false; // готовность снова потребуется
+			depoted = true;
+			currentStationIndex = -1;
+			readyToLeaveDepot = false;
+			return;
+		}
+
+		// продолжаем ехать к депо
+		position = nextPos;
 		return;
 	}
 
-	// стандартный переход
+	// --- Движение до следующей станции ---
+	auto nextStation = stations[nextIndex];
+	double targetPos = nextStation->getPosition();
 
-	if (position == nextStation->getPosition()) 
-	{ 
-		nextStation->arrive(shared_from_this()); 
-		for (int i = 0; i < stations.size() && stations.at(i) != nextStation; currentStationIndex = ++i);
-		currentStationIndex++;
+	double delta = speed * stepSeconds * (directionForward ? 1 : -1);
+	double nextPos = position + delta;
+
+	// достигли станции
+	if ((directionForward && nextPos >= targetPos) ||
+		(!directionForward && nextPos <= targetPos))
+	{
+		// снимаем со старой станции
+		if (currentStationIndex >= 0)
+			stations[currentStationIndex]->depart(shared_from_this());
+
+		position = targetPos;
+
+		nextStation->arrive(shared_from_this());
+		currentStationIndex = nextIndex;
+
+		return;
 	}
-	/*int newIndex = line->moveTrain(shared_from_this(), currentStationIndex, directionForward);
-	if (newIndex != -1) currentStationIndex = newIndex;*/
+
+	// --- Обычное движение между станциями ---
+	position = nextPos;
 }
 
 string Train::getID() const

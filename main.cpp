@@ -12,10 +12,10 @@ int main()
 	auto tc = make_shared<TimeController>(0, step);
 	Metro metro(tc);
 	auto sd = make_shared<Depot>("sd", 0);
-	auto ed = make_shared<Depot>("ed", 30);
+	auto ed = make_shared<Depot>("ed", 60);
 
-	auto st1 = make_shared<Station>("st1", 10);
-	auto st2 = make_shared<Station>("st2", 20);
+	auto st1 = make_shared<Station>("st1", 20);
+	auto st2 = make_shared<Station>("st2", 40);
 	auto l1 = make_shared<Line>("firstLine", sd, ed);
 
 	auto tr1 = make_shared<Train>("id1", l1, sd, 10);
