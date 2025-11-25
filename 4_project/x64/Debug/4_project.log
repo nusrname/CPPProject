@@ -1,13 +1,14 @@
 ﻿  Line.cpp
-  main.cpp
-F:\C++\Smirnov_211_4\ConsoleUI.h(4,14): warning C4091: static : пропускается слева от "ConsoleUI", когда ни одна переменная не объявлена
-  (компиляция исходного файла "main.cpp")
+D:\university\Dev\4_project\Line.cpp(425,53): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+  Metro.cpp
+D:\university\Dev\4_project\ConsoleUI.h(4,14): warning C4091: static : пропускается слева от "ConsoleUI", когда ни одна переменная не объявлена
+  (компиляция исходного файла "Metro.cpp")
   
-F:\C++\Smirnov_211_4\Metro.h(14,14): warning C4091: static : пропускается слева от "TrainManager", когда ни одна переменная не объявлена
-  (компиляция исходного файла "main.cpp")
+D:\university\Dev\4_project\Metro.h(14,14): warning C4091: static : пропускается слева от "TrainManager", когда ни одна переменная не объявлена
+  (компиляция исходного файла "Metro.cpp")
   
-F:\C++\Smirnov_211_4\TimeController.h(19,14): warning C4091: static : пропускается слева от "Schedule", когда ни одна переменная не объявлена
-  (компиляция исходного файла "main.cpp")
+D:\university\Dev\4_project\TimeController.h(19,14): warning C4091: static : пропускается слева от "Schedule", когда ни одна переменная не объявлена
+  (компиляция исходного файла "Metro.cpp")
   
   Создание кода...
-  4_project.vcxproj -> F:\C++\Smirnov_211_4\x64\Debug\4_project.exe
+  4_project.vcxproj -> D:\university\Dev\4_project\x64\Debug\4_project.exe

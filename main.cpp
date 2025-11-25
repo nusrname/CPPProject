@@ -11,15 +11,15 @@ int main()
 	cin >> time >> step;
 	auto tc = make_shared<TimeController>(0, step);
 	Metro metro(tc);
-	auto sd = make_shared<Depot>("sd", 123);
-	auto ed = make_shared<Depot>("ed", 124);
+	auto sd = make_shared<Depot>("sd", 0);
+	auto ed = make_shared<Depot>("ed", 30);
 
-	auto st1 = make_shared<Station>("st1", 123);
-	auto st2 = make_shared<Station>("st2", 124);
+	auto st1 = make_shared<Station>("st1", 10);
+	auto st2 = make_shared<Station>("st2", 20);
 	auto l1 = make_shared<Line>("firstLine", sd, ed);
 
-	auto tr1 = make_shared<Train>("id1", l1, sd);
-	auto tr2 = make_shared<Train>("id2", l1, sd);
+	auto tr1 = make_shared<Train>("id1", l1, sd, 10);
+	auto tr2 = make_shared<Train>("id2", l1, sd, 10);
 
 	tr1->addToDepot();
 	tr2->addToDepot();

@@ -3,6 +3,8 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <algorithm>
+#define TimeMoving
 using namespace std;
 
 
@@ -18,6 +20,7 @@ public:
 	Waypoint(string name, int position) : name(name), position(position) {}
 	virtual void arrive(shared_ptr<Train> train) = 0;
 	virtual void depart(shared_ptr<Train> train) = 0;
+	int getPosition() const { return position; }
 };
 
 
@@ -95,11 +98,15 @@ private:
 	bool depoted = true;
 	bool readyToLeaveDepot = false;
 
+	double position = 0.0;
+	double speed = 0.0;
+
 	int timeToNextEvent = 0;
 	bool isDelayed = false;
 	int totalDelay = 0;
 public:
-	Train(string id, shared_ptr<Line> line, shared_ptr<Depot> depot) : id(id), line(line), initialDepot(depot) {}
+	Train(string id, shared_ptr<Line> line, shared_ptr<Depot> depot, double speed) :
+		id(id), line(line), initialDepot(depot), speed(speed) {}
 
 	void addToDepot();
 	void moveStep(int stepSeconds);
