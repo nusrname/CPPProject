@@ -1,5 +1,0 @@
-﻿  ConsoleUI.cpp
-D:\university\Dev\4_project\ConsoleUI.h(4,14): warning C4091: static : пропускается слева от "ConsoleUI", когда ни одна переменная не объявлена
-  (компиляция исходного файла "ConsoleUI.cpp")
-  
-  4_project.vcxproj -> D:\university\Dev\4_project\Debug\4_project.exe
