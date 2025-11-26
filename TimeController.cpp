@@ -39,7 +39,7 @@ void Schedule::loadSchedule(const string& file)
     {
         if (line.empty()) continue;
 
-        if (line.rfind("LINE", 0) == 0)
+        if (line.rfind("LINE") == 0)
         {
             istringstream ss(line);
             string word;
@@ -50,7 +50,7 @@ void Schedule::loadSchedule(const string& file)
 
         // Строки формата:
         // TRAIN NAME HH:MM:SS DAY STATION
-        if (line.rfind("TRAIN", 0) == 0)
+        if (line.rfind("TRAIN") == 0)
         {
             istringstream ss(line);
             string word, trainID, timeStr, station;

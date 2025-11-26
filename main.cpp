@@ -8,7 +8,7 @@ int main()
 {
 	setlocale(LC_ALL, "rus");
 	int time, step;
-	try 
+	try
 	{
 		cin >> time >> step;
 		auto tc = make_shared<TimeController>(0, step);
@@ -17,10 +17,8 @@ int main()
 		Metro metro(tc);
 		auto sd = make_shared<Depot>("sd", 0);
 		auto ed = make_shared<Depot>("ed", 60);
-		for (auto lineName : lineSchedule)
-		{
-			metro.addLine(make_shared<Line>(lineName.first, make_shared<Depot>("sd", 0), make_shared<Depot>("ed", 60)));
-		}
+		for (auto line : lineSchedule)
+			metro.addLine(make_shared<Line>(line.first, make_shared<Depot>("sd1", 0), make_shared<Depot>("ed2", 60)));
 
 		auto st1 = make_shared<Station>("st1", 20);
 		auto st2 = make_shared<Station>("st2", 40);

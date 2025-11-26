@@ -119,6 +119,7 @@ void Depot::store(shared_ptr<Train> train)
 {
 	if (std::find(stored.begin(), stored.end(), train) == stored.end())
 		stored.push_back(train);
+	train->addToDepot(shared_from_this());
 }
 
 bool Depot::remove(shared_ptr<Train> train)
@@ -142,9 +143,12 @@ shared_ptr<Train> Depot::release()
 
 #pragma region TrainRegion
 
-void Train::addToDepot()
+void Train::addToDepot(shared_ptr<Depot> depot = nullptr)
 {
-	initialDepot->store(shared_from_this());
+	if (depot)
+		depot->store(shared_from_this());
+	else
+		initialDepot->store(shared_from_this());
 	depoted = true;
 	readyToLeaveDepot = false;
 	currentStationIndex = -1;

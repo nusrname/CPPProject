@@ -49,7 +49,7 @@ public:
 };
 
 
-class Depot : public Waypoint
+class Depot : public Waypoint, enable_shared_from_this<Depot> 
 {
 private:
 	vector<shared_ptr<Train>> stored;
@@ -121,7 +121,7 @@ public:
 	Train(string id, shared_ptr<Line> line, shared_ptr<Depot> depot, double maxSpeed) :
 		id(move(id)), line(line), initialDepot(depot), speed(maxSpeed), maxSpeed(maxSpeed) {}
 
-	void addToDepot();
+	void addToDepot(shared_ptr<Depot> depot = nullptr);
 	void moveStep(int stepSeconds);
 
 	//void accelerateIfDelayed();

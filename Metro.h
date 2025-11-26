@@ -4,6 +4,8 @@
 #include <string>
 #include <time.h>
 #include <thread>
+#include <fstream>
+#include <sstream>
 #include "ConsoleUI.h"
 using namespace std;
 
@@ -34,5 +36,6 @@ public:
 	void addLine(shared_ptr<Line> line);
 	void simulate(int periodSeconds, int stepSeconds);
 	//void printSummary() const;
+	void loadLines();
 };
 
