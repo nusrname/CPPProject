@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <fstream>
+#include <sstream>
 using namespace std;
 
 class Line;
@@ -24,11 +25,20 @@ public:
 /*static*/ class Schedule
 {
 private:
-	static shared_ptr<map<Line, vector<Train>>> schedule;
+	struct Entry 
+	{
+		string trainID;
+		vector<pair<int, string>> timetable;
+	};
 
-	static void loadSchedule(string fileName);
+	map<string, vector<Entry>> data;
+
+	void loadSchedule(const string& file);
+	int parseTime(const string& txt) const;
 public:
-	Schedule() { loadSchedule("Schedule.txt"); }
+	Schedule(const string& file = "Schedule.txt") { loadSchedule(file); }
+
+	const map<string, vector<Entry>>& get() const { return data; }
 };
 
 class RandomEventGenerator

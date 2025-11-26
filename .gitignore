@@ -13,8 +13,8 @@
 out/
 Debug/
 Release/
-x64/
-x86/
+x64/*
+x86/*
 
 # Visual C++ generated
 *.vcxproj.user
