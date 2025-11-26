@@ -1,7 +1,7 @@
 #pragma once
 #include "Line.h"
 
-static class ConsoleUI 
+/*static*/ class ConsoleUI 
 {
 public:
 	void static displayLineStatus(const Line& line);

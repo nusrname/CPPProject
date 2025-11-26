@@ -7,7 +7,7 @@ void TimeController::advance()
 
 int TimeController::getCurrent() const { return currentTime; }
 
-string TimeController::getFormattedTime()
+string TimeController::getFormattedTime() const
 {
 	vector<string> days = { "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье", };
 	string temp = "";
@@ -21,4 +21,17 @@ string TimeController::getFormattedTime()
 	dayNumber = tempCurrentTime % 7;
 	temp = (hours / 10 > 0 ? "" : "0") + to_string(hours) + ":" + (minutes / 10 > 0 ? "" : "0") + to_string(minutes) + ":" + (seconds / 10 > 0 ? "" : "0") + to_string(seconds) + " " + days[dayNumber];
 	return temp;
+}
+
+void Schedule::loadSchedule(string fileName)
+{
+	ifstream in(fileName);
+	if (!in.is_open())
+	{
+		fstream out(fileName);
+		out.close();
+		throw "Ошибка открытия файла";
+	}
+	cout << "Файл считан" << endl;
+	in.close();
 }

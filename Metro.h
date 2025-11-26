@@ -11,7 +11,7 @@ class Line;
 class Train;
 class TimeController;
 
-static class TrainManager
+/*static*/ class TrainManager
 {
 private:
 	//vector<shared_ptr<Train>> allTrains;

@@ -8,24 +8,32 @@ int main()
 {
 	setlocale(LC_ALL, "rus");
 	int time, step;
-	cin >> time >> step;
-	auto tc = make_shared<TimeController>(0, step);
-	Metro metro(tc);
-	auto sd = make_shared<Depot>("sd", 0);
-	auto ed = make_shared<Depot>("ed", 60);
+	try 
+	{
+		cin >> time >> step;
+		auto tc = make_shared<TimeController>(0, step);
+		Schedule schedule;
+		Metro metro(tc);
+		auto sd = make_shared<Depot>("sd", 0);
+		auto ed = make_shared<Depot>("ed", 60);
 
-	auto st1 = make_shared<Station>("st1", 20);
-	auto st2 = make_shared<Station>("st2", 40);
-	auto l1 = make_shared<Line>("firstLine", sd, ed);
+		auto st1 = make_shared<Station>("st1", 20);
+		auto st2 = make_shared<Station>("st2", 40);
+		auto l1 = make_shared<Line>("firstLine", sd, ed);
 
-	auto tr1 = make_shared<Train>("id1", l1, sd, 10);
-	auto tr2 = make_shared<Train>("id2", l1, sd, 10);
+		auto tr1 = make_shared<Train>("id1", l1, sd, 10);
+		auto tr2 = make_shared<Train>("id2", l1, sd, 10);
 
-	tr1->addToDepot();
-	tr2->addToDepot();
-	l1->addStation(st1);
-	l1->addStation(st2);
+		tr1->addToDepot();
+		tr2->addToDepot();
+		l1->addStation(st1);
+		l1->addStation(st2);
 
-	metro.addLine(l1);
-	metro.simulate(time, step);
+		metro.addLine(l1);
+		metro.simulate(time, step);
+	}
+	catch (exception ex)
+	{
+		cerr << ex.what();
+	}
 }
