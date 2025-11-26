@@ -36,6 +36,6 @@ public:
 	void addLine(shared_ptr<Line> line);
 	void simulate(int periodSeconds, int stepSeconds);
 	//void printSummary() const;
-	void loadLines();
+	void loadLines(const string& fileName);
 };
 

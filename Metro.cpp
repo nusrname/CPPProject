@@ -24,58 +24,79 @@ void Metro::addLine(shared_ptr<Line> line)
 	lines.push_back(line);
 }
 
-//void Metro::loadLines()
-//{
-//	ifstream in("Info.txt");
-//	if (!in.is_open())
-//		throw runtime_error("Не удалось открыть файл расписания");
-//
-//	string line, sd, ed, currentLineName;
-//
-//	while (getline(in, line))
-//	{
-//		if (line.empty()) continue;
-//
-//		// Строки формата:
-//	  // LINE LINE_NAME START_DEPOT END_DEPOT
-//		if (line.rfind("LINE", 0) == 0)
-//		{
-//			istringstream ss(line);
-//			string word;
-//			ss >> word >> currentLineName;
-//			data[currentLineName];
-//			continue;
-//			// Строки формата:
-//		   // STATION NAME POSITION
-//
-//
-//		   // Строки формата:
-//		   // TRAIN NAME MAX_SPEED
-//			if (line.rfind("TRAIN", 0) == 0)
-//			{
-//				istringstream ss(line);
-//				string word, trainID, timeStr, station;
-//				ss >> word >> trainID >> timeStr >> station;
-//
-//				int t = parseTime(timeStr);
-//
-//				auto& vec = data[currentLineName];
-//
-//				auto it = find_if(vec.begin(), vec.end(),
-//					[&](auto& e) { return e.trainID == trainID; });
-//
-//				if (it == vec.end())
-//				{
-//					Entry e;
-//					e.trainID = trainID;
-//					e.timetable.push_back({ t, station });
-//					vec.push_back(e);
-//				}
-//				else
-//					it->timetable.push_back({ t, station });
-//			}
-//		}
-//
-//		cout << "Расписание успешно загружено" << endl;
-//	}
-//}
+void Metro::loadLines(const string& fileName)
+{
+    ifstream in(fileName);
+    if (!in.is_open())
+        throw runtime_error("Не удалось открыть файл MetroData");
+
+    string line;
+
+    shared_ptr<Line> currentLine = nullptr;
+
+    while (getline(in, line))
+    {
+        if (line.empty()) continue;
+
+        istringstream ss(line);
+        string cmd;
+        ss >> cmd;
+
+        if (cmd == "LINE")
+        {
+            string name;
+            ss >> name;
+            currentLine = make_shared<Line>(name);
+            continue;
+        }
+
+        if (cmd == "STATION")
+        {
+            string name;
+            int pos;
+            ss >> name >> pos;
+            currentLine->addStation(make_shared<Station>(name, pos));
+            continue;
+        }
+
+        if (cmd == "DEPOT")
+        {
+            string name;
+            int pos;
+            ss >> name >> pos;
+
+            auto depot = make_shared<Depot>(name, pos);
+
+            if (!currentLine->getStartDepot())
+                currentLine->setStartDepot(depot);
+            else
+                currentLine->setEndDepot(depot);
+
+            continue;
+        }
+
+        if (cmd == "TRAIN")
+        {
+            string id, depotName;
+            double maxSpeed;
+            ss >> id >> maxSpeed >> depotName;
+
+            shared_ptr<Depot> dep =
+                (currentLine->getStartDepot()->getName() == depotName)
+                ? currentLine->getStartDepot()
+                : currentLine->getEndDepot();
+
+            auto t = make_shared<Train>(id, currentLine, dep, maxSpeed);
+            t->addToDepot(dep);
+            dep->store(t);
+            continue;
+        }
+
+        if (cmd == "ENDLINE")
+        {
+            addLine(currentLine);
+            currentLine = nullptr;
+            continue;
+        }
+    }
+}

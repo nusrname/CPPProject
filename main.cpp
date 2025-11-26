@@ -15,7 +15,7 @@ int main()
 		Schedule schedule;
 		auto lineSchedule = schedule.get();
 		Metro metro(tc);
-		auto sd = make_shared<Depot>("sd", 0);
+		/*auto sd = make_shared<Depot>("sd", 0);
 		auto ed = make_shared<Depot>("ed", 60);
 		for (auto line : lineSchedule)
 			metro.addLine(make_shared<Line>(line.first, make_shared<Depot>("sd1", 0), make_shared<Depot>("ed2", 60)));
@@ -32,7 +32,8 @@ int main()
 		l1->addStation(st1);
 		l1->addStation(st2);
 
-		metro.addLine(l1);
+		metro.addLine(l1);*/
+		metro.loadLines("MetroData.txt");
 		metro.simulate(time, step);
 	}
 	catch (exception ex)

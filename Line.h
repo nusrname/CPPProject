@@ -1,9 +1,8 @@
 #pragma once
-#include <iostream>
 #include <vector>
 #include <memory>
 #include <string>
-#include <algorithm>
+#include <utility>
 using namespace std;
 
 
@@ -18,7 +17,8 @@ protected:
 
 public:
 	Waypoint(string name, int position)
-		: name(move(name)), position(position) {}
+		: name(move(name)), position(position) {
+	}
 
 	virtual ~Waypoint() = default;
 
@@ -40,28 +40,30 @@ private:
 	bool hasDelay = false;
 
 public:
-	Station(string name, int position, int stopTimeStandard = 120, int stopTimeMin = 30) 
-		: Waypoint(name, position), stopTimeStandard(stopTimeStandard), stopTimeMin(stopTimeMin) {}
-	
+	Station(string name, int position, int stopTimeStandard = 120, int stopTimeMin = 30)
+		: Waypoint(name, position), stopTimeStandard(stopTimeStandard), stopTimeMin(stopTimeMin) {
+	}
+
 	//void applyDelay(int seconds);
 
 	void printStatus() const;
 };
 
 
-class Depot : public Waypoint, enable_shared_from_this<Depot> 
+class Depot : public Waypoint, enable_shared_from_this<Depot>
 {
 private:
 	vector<shared_ptr<Train>> stored;
 
 public:
-	Depot(string name = "depot", int position = 120) 
-		: Waypoint(name, position) {}
+	Depot(string name = "depot", int position = 120)
+		: Waypoint(name, position) {
+	}
 
 	void store(shared_ptr<Train> train);
 	bool remove(shared_ptr<Train> train);
 	shared_ptr<Train> release();
-	
+
 	vector<shared_ptr<Train>> getStored() const { return stored; }
 };
 
@@ -78,10 +80,11 @@ private:
 	//	int standardSegmentTime;
 
 public:
-	Line(string name = "line", 
-		shared_ptr<Depot> startDepot = nullptr, 
-		shared_ptr<Depot> endDepot = nullptr) 
-		: name(move(name)), depotStart(startDepot), depotEnd(endDepot) {}
+	Line(string name = "line",
+		shared_ptr<Depot> startDepot = nullptr,
+		shared_ptr<Depot> endDepot = nullptr)
+		: name(move(name)), depotStart(startDepot), depotEnd(endDepot) {
+	}
 
 	void addStation(shared_ptr<Station> station);
 	void update(int currentTime);
@@ -95,6 +98,8 @@ public:
 	shared_ptr<Depot> getStartDepot() const;
 	shared_ptr<Depot> getEndDepot() const;
 	vector<shared_ptr<Station>> getStations() const;
+	void setStartDepot(shared_ptr<Depot> d) { depotStart = d; }
+	void setEndDepot(shared_ptr<Depot> d) { depotEnd = d; }
 };
 
 
@@ -119,9 +124,10 @@ private:
 	int totalDelay = 0;
 public:
 	Train(string id, shared_ptr<Line> line, shared_ptr<Depot> depot, double maxSpeed) :
-		id(move(id)), line(line), initialDepot(depot), speed(maxSpeed), maxSpeed(maxSpeed) {}
+		id(move(id)), line(line), initialDepot(depot), speed(maxSpeed), maxSpeed(maxSpeed) {
+	}
 
-	void addToDepot(shared_ptr<Depot> depot = nullptr);
+	void addToDepot(shared_ptr<Depot> depot);
 	void moveStep(int stepSeconds);
 
 	//void accelerateIfDelayed();

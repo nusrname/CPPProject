@@ -1,4 +1,10 @@
 #include "Line.h"
+#include <algorithm>
+#include <iostream>
+#include <memory>
+#include <ostream>
+#include <string>
+#include <vector>
 
 
 void Waypoint::arrive(shared_ptr<Train> train)
@@ -117,9 +123,10 @@ void Station::printStatus() const
 
 void Depot::store(shared_ptr<Train> train)
 {
+	if (!train) return;
+
 	if (std::find(stored.begin(), stored.end(), train) == stored.end())
 		stored.push_back(train);
-	train->addToDepot(shared_from_this());
 }
 
 bool Depot::remove(shared_ptr<Train> train)
@@ -143,15 +150,15 @@ shared_ptr<Train> Depot::release()
 
 #pragma region TrainRegion
 
-void Train::addToDepot(shared_ptr<Depot> depot = nullptr)
+void Train::addToDepot(shared_ptr<Depot> depot)
 {
-	if (depot)
-		depot->store(shared_from_this());
-	else
-		initialDepot->store(shared_from_this());
+	if (!depot) return;
+
+	initialDepot = depot;   // запоминаем, где поезд стоит
 	depoted = true;
 	readyToLeaveDepot = false;
 	currentStationIndex = -1;
+	position = depot->getPosition();
 }
 
 void Train::moveStep(int stepSeconds)
@@ -219,6 +226,7 @@ void Train::moveStep(int stepSeconds)
 				stations[currentStationIndex]->depart(shared_from_this());
 
 			targetDepot->store(shared_from_this());
+			addToDepot(targetDepot);
 			initialDepot = targetDepot;
 
 			// снимаем с линии
