@@ -38,6 +38,9 @@ void Line::printStatus() const
 			cout << train->getID() << " (в депо start)  ";
 	for (const auto& train : active)
 		cout << train->getID() << " (в движ.)  ";
+	if (depotEnd)
+		for (const auto& train : depotEnd->getStored())
+			cout << train->getID() << " (в депо end)  ";
 	cout << endl;
 }
 

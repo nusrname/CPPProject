@@ -31,13 +31,13 @@ void Schedule::loadSchedule(const string& file)
     ifstream in(file);
 
     if (!in.is_open())
-        throw runtime_error("Не удалось открыть файл расписания");
+        throw runtime_error("Не удалось открыть файл Schedule.txt");
 
     string line, currentLineName;
 
     while (getline(in, line))
     {
-        if (line.empty()) continue;
+        if (line.empty() || line.find_first_of('#') == 0) continue;
 
         if (line.rfind("LINE") == 0)
         {
@@ -45,23 +45,25 @@ void Schedule::loadSchedule(const string& file)
             string word;
             ss >> word >> currentLineName;
             data[currentLineName];
-            continue;
         }
 
         // Строки формата:
         // TRAIN NAME HH:MM:SS DAY STATION
-        if (line.rfind("TRAIN") == 0)
+        else if (line.rfind("TRAIN") == 0)
         {
             istringstream ss(line);
-            string word, trainID, timeStr, station;
-            ss >> word >> trainID >> timeStr >> station;
+            string word, trainID, timeStr, station, days;
+            ss >> word >> trainID >> timeStr >> days >> station;
 
-            int t = parseTime(timeStr);
+            int t = parseTime(timeStr) + stoi(days) * 3600 * 24;
 
             auto& vec = data[currentLineName];
 
             auto it = find_if(vec.begin(), vec.end(),
-                [&](auto& e) { return e.trainID == trainID; });
+                [&](auto& e) 
+                { 
+                    return e.trainID == trainID; 
+                });
 
             if (it == vec.end())
             {
@@ -84,6 +86,5 @@ int Schedule::parseTime(const string& txt) const
     int h = stoi(txt.substr(0, 2));
     int m = stoi(txt.substr(3, 2));
     int s = stoi(txt.substr(6, 2));
-    int d = stoi(txt.substr(9, 1));
-    return h * 3600 + m * 60 + s + d * 3600 * 24;
+    return h * 3600 + m * 60 + s;
 }

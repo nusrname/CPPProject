@@ -13,16 +13,16 @@ class Line;
 class Train;
 class TimeController;
 
-/*static*/ class TrainManager
+static class TrainManager
 {
 private:
-	//vector<shared_ptr<Train>> allTrains;
+	static vector<shared_ptr<Train>> allTrains;
 	//shared_ptr<RandomEventGenerator> randomizer;
 public:
 	//void registerTrain(shared_ptr<Train> train);
 	//void updateAllTrains(int currentTime);
 	//void handleDelayEvent(shared_ptr<Train> train);
-	//void enforceSafetuIntervals(Line& line);
+	//void enforceSafetyIntervals(Line& line);
 };
 
 class Metro
@@ -32,7 +32,7 @@ private:
 	shared_ptr<TimeController> timeController;
 	shared_ptr<TrainManager> manager;
 public:
-	Metro(shared_ptr<TimeController> tc) : timeController(tc) {}
+	Metro(shared_ptr<TimeController> tc, shared_ptr<TrainManager> trainManager) : timeController(tc), manager(trainManager) {}
 	void addLine(shared_ptr<Line> line);
 	void simulate(int periodSeconds, int stepSeconds);
 	//void printSummary() const;

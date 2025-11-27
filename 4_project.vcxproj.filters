@@ -63,4 +63,8 @@
       <Filter>Файлы заголовков\source\core</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="MetroData.txt" />
+    <Text Include="Schedule.txt" />
+  </ItemGroup>
 </Project>

@@ -1,2 +1,2 @@
 LINE firstLine
-TRAIN 
+TRAIN id1 00:01:20 0 st1

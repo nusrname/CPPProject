@@ -22,7 +22,7 @@ public:
 	int getCurrent() const;
 };
 
-/*static*/ class Schedule
+static class Schedule
 {
 private:
 	struct Entry 

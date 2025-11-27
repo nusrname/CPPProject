@@ -2,6 +2,12 @@
 #include "Line.h"
 #include "TimeController.h"
 
+//void TrainManager::registerTrain(shared_ptr<Train> train)
+//{
+//	if (train)
+//		allTrains.push_back(train);
+//}
+
 void Metro::simulate(int periodSeconds, int stepSeconds)
 {
 	for (int t = 0; t < periodSeconds; t += stepSeconds)
@@ -26,77 +32,72 @@ void Metro::addLine(shared_ptr<Line> line)
 
 void Metro::loadLines(const string& fileName)
 {
-    ifstream in(fileName);
-    if (!in.is_open())
-        throw runtime_error("Не удалось открыть файл MetroData");
+	ifstream in(fileName);
+	if (!in.is_open())
+		throw runtime_error("Не удалось открыть файл MetroData.txt");
 
-    string line;
+	string line;
 
-    shared_ptr<Line> currentLine = nullptr;
+	shared_ptr<Line> currentLine = nullptr;
 
-    while (getline(in, line))
-    {
-        if (line.empty()) continue;
+	while (getline(in, line))
+	{
+		if (line.empty() || line.find_first_of('#') == 0) continue;
 
-        istringstream ss(line);
-        string cmd;
-        ss >> cmd;
+		istringstream ss(line);
+		string cmd;
+		ss >> cmd;
 
-        if (cmd == "LINE")
-        {
-            string name;
-            ss >> name;
-            currentLine = make_shared<Line>(name);
-            continue;
-        }
+		if (cmd == "LINE")
+		{
+			string name;
+			ss >> name;
+			currentLine = make_shared<Line>(name);
+		}
 
-        if (cmd == "STATION")
-        {
-            string name;
-            int pos;
-            ss >> name >> pos;
-            currentLine->addStation(make_shared<Station>(name, pos));
-            continue;
-        }
+		else if (cmd == "STATION")
+		{
+			string name;
+			int pos;
+			ss >> name >> pos;
+			currentLine->addStation(make_shared<Station>(name, pos));
+		}
 
-        if (cmd == "DEPOT")
-        {
-            string name;
-            int pos;
-            ss >> name >> pos;
+		else if (cmd == "DEPOT")
+		{
+			string name;
+			int pos;
+			ss >> name >> pos;
 
-            auto depot = make_shared<Depot>(name, pos);
+			auto depot = make_shared<Depot>(name, pos);
 
-            if (!currentLine->getStartDepot())
-                currentLine->setStartDepot(depot);
-            else
-                currentLine->setEndDepot(depot);
+			if (!currentLine->getStartDepot())
+				currentLine->setStartDepot(depot);
+			else
+				currentLine->setEndDepot(depot);
+		}
 
-            continue;
-        }
+		else if (cmd == "TRAIN")
+		{
+			string id, depotName;
+			double maxSpeed;
+			ss >> id >> maxSpeed >> depotName;
 
-        if (cmd == "TRAIN")
-        {
-            string id, depotName;
-            double maxSpeed;
-            ss >> id >> maxSpeed >> depotName;
+			shared_ptr<Depot> dep =
+				(currentLine->getStartDepot()->getName() == depotName)
+				? currentLine->getStartDepot()
+				: currentLine->getEndDepot();
 
-            shared_ptr<Depot> dep =
-                (currentLine->getStartDepot()->getName() == depotName)
-                ? currentLine->getStartDepot()
-                : currentLine->getEndDepot();
+			auto t = make_shared<Train>(id, currentLine, dep, maxSpeed);
+			t->addToDepot(dep);
+			dep->store(t);
+			//manager->registerTrain(t);
+		}
 
-            auto t = make_shared<Train>(id, currentLine, dep, maxSpeed);
-            t->addToDepot(dep);
-            dep->store(t);
-            continue;
-        }
-
-        if (cmd == "ENDLINE")
-        {
-            addLine(currentLine);
-            currentLine = nullptr;
-            continue;
-        }
-    }
+		else if (cmd == "ENDLINE")
+		{
+			addLine(currentLine);
+			currentLine = nullptr;
+		}
+	}
 }

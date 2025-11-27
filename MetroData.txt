@@ -3,15 +3,16 @@ STATION st1 20
 STATION st2 40
 DEPOT startDepot 0
 DEPOT endDepot 60
-TRAIN id1 10 startDepot
+#TRAIN id1 10 startDepot
 TRAIN id2 10 startDepot
 ENDLINE
 
-LINE secondLine
-STATION st3 20
-STATION st4 40
-DEPOT startDepot1 0
-DEPOT endDepot1 60
-TRAIN id3 10 startDepot1
-TRAIN id4 10 startDepot1
-ENDLINE
+#LINE secondLine
+#STATION st3 20
+#STATION st4 40
+#STATION st5 60
+#DEPOT startDepot1 0
+#DEPOT endDepot1 80
+#TRAIN id3 10 startDepot1
+#TRAIN id4 10 startDepot1
+#ENDLINE
