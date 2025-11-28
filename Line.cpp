@@ -278,4 +278,27 @@ string Train::getID() const
 	return id;
 }
 
+void Train::commandDepart(const string& station)
+{
+	// если поезд в депо Ч выпустить
+	if (depoted)
+		readyToLeaveDepot = true;
+
+	//targetStation = station;
+	//mode = MOVING;
+}
+
+void Train::commandStop(const string& station)
+{
+	//targetStation = station;
+	//mode = STOP_AT;
+}
+
+void Train::commandArrive(const string& station)
+{
+	//targetStation = station;
+	//mode = FINAL_ARRIVAL;
+}
+
+
 #pragma endregion

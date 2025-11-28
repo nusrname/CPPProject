@@ -2,11 +2,72 @@
 #include "Line.h"
 #include "TimeController.h"
 
-//void TrainManager::registerTrain(shared_ptr<Train> train)
-//{
-//	if (train)
-//		allTrains.push_back(train);
-//}
+void TrainManager::attachTrain(shared_ptr<Train> train) 
+{
+	TrainState state;
+	state.train = train;
+	state.nextEventIndex = 0;
+	managed[train->getID()] = state;
+}
+
+void TrainManager::update()
+{
+	int now = time->getCurrent();
+
+	// вычисляем текущий день расписания
+	int dayIndex = (now / 86400) % 7;
+	static vector<string> days = {
+		"MONDAY","TUESDAY","WEDNESDAY",
+		"THURSDAY","FRIDAY","SATURDAY","SUNDAY"
+	};
+	string today = days[dayIndex];
+	int secondsToday = now % 86400;
+
+	const auto& dayData = schedule->get().at(today);
+
+	for (pair<string, TrainState> data : managed)
+	{
+		string id = data.first;
+		TrainState trainState = data.second;
+
+		shared_ptr<Entry> entry = nullptr;
+		for (auto& e : dayData)
+			if (e.trainID == id)
+			{
+				entry = make_shared<Entry>(e);
+				break;
+			}
+		if (!entry) continue;
+
+		// если события кончились
+		if (trainState.nextEventIndex >= entry->timetable.size())
+			continue;
+
+		const auto& node = entry->timetable[trainState.nextEventIndex];
+
+		// пришло время выполнить событие
+		if (node.time <= secondsToday)
+		{
+			switch (node.type)
+			{
+			case Entry::Node::DEPART:
+				trainState.train->commandDepart(node.station);
+				break;
+
+			case Entry::Node::STOP:
+				trainState.train->commandStop(node.station);
+				break;
+
+			case Entry::Node::ARRIVE:
+				trainState.train->commandArrive(node.station);
+				break;
+			}
+
+			trainState.nextEventIndex++;
+		}
+	}
+}
+
 
 void Metro::simulate(int periodSeconds, int stepSeconds)
 {
@@ -42,6 +103,9 @@ void Metro::loadLines(const string& fileName)
 
 	while (getline(in, line))
 	{
+		size_t start = line.find_first_not_of(" \t\r\n");
+		line = (start == string::npos) ? "" : line.substr(start);
+
 		if (line.empty() || line.find_first_of('#') == 0) continue;
 
 		istringstream ss(line);

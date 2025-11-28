@@ -7,6 +7,7 @@
 #include <fstream>
 #include <sstream>
 #include "ConsoleUI.h"
+#include "TimeController.h"
 using namespace std;
 
 class Line;
@@ -16,13 +17,24 @@ class TimeController;
 static class TrainManager
 {
 private:
-	static vector<shared_ptr<Train>> allTrains;
-	//shared_ptr<RandomEventGenerator> randomizer;
+	shared_ptr<Schedule> schedule;
+	shared_ptr<TimeController> time;
+
+	struct TrainState
+	{
+		shared_ptr<Train> train;
+		size_t nextEventIndex = 0;
+		string currentDay;
+	};
+
+	map<string, TrainState> managed;
 public:
-	//void registerTrain(shared_ptr<Train> train);
-	//void updateAllTrains(int currentTime);
-	//void handleDelayEvent(shared_ptr<Train> train);
-	//void enforceSafetyIntervals(Line& line);
+	TrainManager(shared_ptr<Schedule> sch, shared_ptr<TimeController> tc)
+		: schedule(sch), time(tc) {
+	}
+
+	void attachTrain(shared_ptr<Train> train);
+	void update();
 };
 
 class Metro

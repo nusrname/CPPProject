@@ -1,2 +1,17 @@
-LINE firstLine
-TRAIN id1 00:01:20 0 st1
+MONDAY
+	TRAIN id1
+	  DEPART startDepot 06:00:00
+	  STOP st2 06:05:00
+	  STOP st3 06:09:30
+	  ARRIVE endDepot 06:15:00
+	ENDTRAIN
+ENDDAY
+
+TUESDAY
+	TRAIN id1
+	  DEPART startDepot 06:00:00
+	  STOP st2 06:05:00
+	  STOP st3 06:09:30
+	  ARRIVE endDepot 06:15:00
+	ENDTRAIN
+ENDDAY

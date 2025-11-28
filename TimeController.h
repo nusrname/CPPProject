@@ -10,6 +10,20 @@ using namespace std;
 class Line;
 class Train;
 
+struct Entry
+{
+	string trainID;
+
+	struct Node
+	{
+		enum Type { DEPART, STOP, ARRIVE } type;
+		string station;
+		int time;
+	};
+
+	vector<Node> timetable;
+};
+
 class TimeController 
 {
 private:
@@ -25,12 +39,6 @@ public:
 static class Schedule
 {
 private:
-	struct Entry 
-	{
-		string trainID;
-		vector<pair<int, string>> timetable;
-	};
-
 	map<string, vector<Entry>> data;
 
 	void loadSchedule(const string& file);

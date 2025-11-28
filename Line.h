@@ -138,4 +138,8 @@ public:
 	int getCurrentStationIndex() const { return currentStationIndex; }
 	bool isForward() const { return directionForward; }
 	void reverse() { directionForward = !directionForward; }
+
+	void commandDepart(const string& station);
+	void commandStop(const string& station);
+	void commandArrive(const string& station);
 };

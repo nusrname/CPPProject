@@ -1,10 +1,10 @@
 LINE firstLine
-STATION st1 20
-STATION st2 40
-DEPOT startDepot 0
-DEPOT endDepot 60
-#TRAIN id1 10 startDepot
-TRAIN id2 10 startDepot
+	STATION st1 20
+	STATION st2 40
+	DEPOT startDepot 0
+	DEPOT endDepot 60
+	#TRAIN id1 10 startDepot
+	TRAIN id2 10 startDepot
 ENDLINE
 
 #LINE secondLine

@@ -29,56 +29,84 @@ string TimeController::getFormattedTime() const
 void Schedule::loadSchedule(const string& file)
 {
     ifstream in(file);
-
     if (!in.is_open())
         throw runtime_error("Не удалось открыть файл Schedule.txt");
 
-    string line, currentLineName;
+    string line;
+
+    string currentDay;
+    bool insideTrain = false;
+    Entry currentEntry;
 
     while (getline(in, line))
     {
-        if (line.empty() || line.find_first_of('#') == 0) continue;
+        size_t start = line.find_first_not_of(" \t\r\n");
+        line = (start == string::npos) ? "" : line.substr(start);
 
-        if (line.rfind("LINE") == 0)
+        if (line.empty() || line[0] == '#')
+            continue;
+
+        if (line == "MONDAY" || line == "TUESDAY" ||
+            line == "WEDNESDAY" || line == "THURSDAY" ||
+            line == "FRIDAY" || line == "SATURDAY" ||
+            line == "SUNDAY")
         {
-            istringstream ss(line);
-            string word;
-            ss >> word >> currentLineName;
-            data[currentLineName];
+            currentDay = line;
+            data[currentDay];
         }
 
-        // Строки формата:
-        // TRAIN NAME HH:MM:SS DAY STATION
-        else if (line.rfind("TRAIN") == 0)
+        else if (line == "ENDDAY")
+        {
+            currentDay.clear();
+        }
+
+        else if (line.rfind("TRAIN", 0) == 0)
         {
             istringstream ss(line);
-            string word, trainID, timeStr, station, days;
-            ss >> word >> trainID >> timeStr >> days >> station;
+            string w;
+            ss >> w >> currentEntry.trainID;
 
-            int t = parseTime(timeStr) + stoi(days) * 3600 * 24;
+            currentEntry.timetable.clear();
+            insideTrain = true;
+        }
 
-            auto& vec = data[currentLineName];
+        else if (line == "ENDTRAIN")
+        {
+            if (!currentDay.empty())
+                data[currentDay].push_back(currentEntry);
 
-            auto it = find_if(vec.begin(), vec.end(),
-                [&](auto& e) 
-                { 
-                    return e.trainID == trainID; 
-                });
+            insideTrain = false;
+        }
 
-            if (it == vec.end())
-            {
-                Entry e;
-                e.trainID = trainID;
-                e.timetable.push_back({ t, station });
-                vec.push_back(e);
-            }
+        else if (insideTrain)
+        {
+            // Форматы:
+            // DEPART station HH:MM:SS
+            // STOP station HH:MM:SS
+            // ARRIVE station HH:MM:SS
+            istringstream ss(line);
+
+            string typeStr, station, timeStr;
+            ss >> typeStr >> station >> timeStr;
+
+            Entry::Node node;
+
+            if (typeStr == "DEPART") node.type = Entry::Node::DEPART;
+            else if (typeStr == "STOP") node.type = Entry::Node::STOP;
+            else if (typeStr == "ARRIVE") node.type = Entry::Node::ARRIVE;
             else
-                it->timetable.push_back({ t, station });
+                throw runtime_error("Неизвестная команда в расписании: " + typeStr);
+
+            node.station = station;
+            node.time = parseTime(timeStr);
+
+            currentEntry.timetable.push_back(node);
         }
     }
 
     cout << "Расписание успешно загружено" << endl;
 }
+
 
 int Schedule::parseTime(const string& txt) const
 {
