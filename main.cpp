@@ -12,9 +12,9 @@ int main()
 	{
 		cin >> time >> step;
 		auto timeController = make_shared<TimeController>(0, step);
-		auto trainManager = make_shared<TrainManager>();
-		Schedule schedule;
-		auto lineSchedule = schedule.get();
+		auto schedule = make_shared<Schedule>();
+		auto trainManager = make_shared<TrainManager>(schedule, timeController);
+		auto lineSchedule = schedule->get();
 		Metro metro(timeController, trainManager);
 		metro.loadLines("MetroData.txt");
 		metro.simulate(time, step);

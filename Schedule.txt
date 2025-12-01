@@ -1,9 +1,9 @@
 MONDAY
 	TRAIN id1
-	  DEPART startDepot 06:00:00
-	  STOP st2 06:05:00
-	  STOP st3 06:09:30
-	  ARRIVE endDepot 06:15:00
+	  DEPART startDepot 00:00:20
+	  STOP st2 00:01:00
+	  STOP st3 00:02:00
+	  ARRIVE endDepot 00:02:20
 	ENDTRAIN
 ENDDAY
 
