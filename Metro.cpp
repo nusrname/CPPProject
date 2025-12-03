@@ -2,12 +2,58 @@
 #include "Line.h"
 #include "TimeController.h"
 
-void TrainManager::attachTrain(shared_ptr<Train> train) 
+void TrainManager::attachTrain(shared_ptr<Train> train)
 {
-	TrainState state;
-	state.train = train;
-	state.nextEventIndex = 0;
-	managed[train->getID()] = state;
+	TrainState st;
+	st.train = train;
+
+	// определяем текущий день (0..6)
+	int now = time->getCurrent();
+	int dayIndex = (now / 86400) % 7;
+	static const vector<string> days = {
+		"MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY"
+	};
+	string day = days[dayIndex];
+
+	// найти расписание для дня; если нет — использовать первое попавшееся
+	auto& data = schedule->get();
+	auto it = data.find(day);
+	if (it != data.end() && !it->second.empty())
+	{
+		st.timetable = it->second[0].timetable;
+	}
+	else if (!data.empty())
+	{
+		// fallback — первое расписание
+		st.timetable = data.begin()->second[0].timetable;
+	}
+	else
+	{
+		// нет расписания вообще — оставляем пустым
+		st.timetable.clear();
+	}
+
+	trains[train->getID()] = st;
+}
+
+
+void TrainManager::update()
+{
+	int now = time->getCurrent();
+
+	for (auto& pair : trains)
+	{
+		auto& tr = pair.second.train;
+
+		if (!pair.second.active)
+		{
+			pair.second.active = true;
+			tr->activate(pair.second.timetable);
+			continue;
+		}
+
+		tr->updateFromManager(now);
+	}
 }
 
 void Metro::simulate(int periodSeconds, int stepSeconds)
@@ -22,7 +68,7 @@ void Metro::simulate(int periodSeconds, int stepSeconds)
 			line->update(stepSeconds);
 			ConsoleUI::displayLineStatus(*line);
 		}
-		//manager->update();
+		manager->update();
 		this_thread::sleep_for(chrono::seconds(1));
 	}
 }
@@ -98,7 +144,7 @@ void Metro::loadLines(const string& fileName)
 			auto t = make_shared<Train>(id, currentLine, dep, maxSpeed);
 			t->addToDepot(dep);
 			dep->store(t);
-			//manager->registerTrain(t);
+			manager->attachTrain(t);
 		}
 
 		else if (cmd == "ENDLINE")

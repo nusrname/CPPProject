@@ -14,26 +14,29 @@ class Line;
 class Train;
 class TimeController;
 
-static class TrainManager
+class TrainManager
 {
 private:
-	shared_ptr<Schedule> schedule;
-	shared_ptr<TimeController> time;
+    shared_ptr<Schedule> schedule;
+    shared_ptr<TimeController> time;
 
-	struct TrainState
-	{
-		shared_ptr<Train> train;
-		size_t nextEventIndex = 0;
-		string currentDay;
-	};
+    struct TrainState
+    {
+        shared_ptr<Train> train;
+        vector<Entry::Node> timetable;
+        int nextIndex = 0;
+        bool active = false;
+    };
 
-	map<string, TrainState> managed;
+    map<string, TrainState> trains;
+
 public:
-	TrainManager(shared_ptr<Schedule> sch, shared_ptr<TimeController> tc)
-		: schedule(sch), time(tc) {
-	}
+    TrainManager(shared_ptr<Schedule> sch, shared_ptr<TimeController> tc)
+        : schedule(sch), time(tc) {
+    }
 
-	void attachTrain(shared_ptr<Train> train);
+    void attachTrain(shared_ptr<Train> train);
+    void update();
 };
 
 class Metro

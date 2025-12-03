@@ -1,12 +1,19 @@
+SUNDAY
+	#startDepot 30 60
+	st2 60 30
+	st3 20 60
+	endDepot 40 20
+ENDDAY
+
 MONDAY
-	startDepot 30 60
+	#startDepot 30 60
 	st2 60 30
 	st3 20 60
 	endDepot 40 20
 ENDDAY
 
 TUESDAY
-	startDepot 30 60
+	#startDepot 30 60
 	st2 60 30
 	st3 20 60
 	endDepot 40 20

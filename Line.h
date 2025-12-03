@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include "TimeController.h"
 using namespace std;
 
 
@@ -127,6 +128,7 @@ private:
 	int scheduleIndex = 0;
 	int timeLeft = 0;
 	bool isStopped = true;
+	shared_ptr<vector<Entry::Node>> timetable;
 public:
 	Train(string id, shared_ptr<Line> line, shared_ptr<Depot> depot, double maxSpeed) :
 		id(move(id)), line(line), initialDepot(depot), speed(maxSpeed), maxSpeed(maxSpeed) {
@@ -143,4 +145,6 @@ public:
 	int getCurrentStationIndex() const { return currentStationIndex; }
 	bool isForward() const { return directionForward; }
 	void reverse() { directionForward = !directionForward; }
+	void activate(const vector<Entry::Node>& table);
+	void updateFromManager(int timeNow);
 };
