@@ -33,10 +33,9 @@ void Schedule::loadSchedule(const string& file)
         throw runtime_error("Не удалось открыть файл Schedule.txt");
 
     string line;
-
     string currentDay;
-    bool insideTrain = false;
     Entry currentEntry;
+    bool insideDay = false;
 
     while (getline(in, line))
     {
@@ -52,60 +51,40 @@ void Schedule::loadSchedule(const string& file)
             line == "SUNDAY")
         {
             currentDay = line;
-            data[currentDay];
-        }
-
-        else if (line == "ENDDAY")
-        {
-            currentDay.clear();
-        }
-
-        else if (line.rfind("TRAIN", 0) == 0)
-        {
-            istringstream ss(line);
-            string w;
-            ss >> w >> currentEntry.trainID;
-
             currentEntry.timetable.clear();
-            insideTrain = true;
+            insideDay = true;
+            continue;
         }
 
-        else if (line == "ENDTRAIN")
+        if (line == "ENDDAY")
         {
-            if (!currentDay.empty())
+            if (insideDay && !currentDay.empty())
                 data[currentDay].push_back(currentEntry);
 
-            insideTrain = false;
+            insideDay = false;
+            currentDay.clear();
+            continue;
         }
 
-        else if (insideTrain)
+        if (insideDay)
         {
-            // Форматы:
-            // DEPART station HH:MM:SS
-            // STOP station HH:MM:SS
-            // ARRIVE station HH:MM:SS
             istringstream ss(line);
+            string station;
+            int travel, stop;
 
-            string typeStr, station, timeStr;
-            ss >> typeStr >> station >> timeStr;
+            ss >> station >> travel >> stop;
 
             Entry::Node node;
-
-            if (typeStr == "DEPART") node.type = Entry::Node::DEPART;
-            else if (typeStr == "STOP") node.type = Entry::Node::STOP;
-            else if (typeStr == "ARRIVE") node.type = Entry::Node::ARRIVE;
-            else
-                throw runtime_error("Неизвестная команда в расписании: " + typeStr);
-
             node.station = station;
-            node.time = parseTime(timeStr);
-
+            node.travelTime = travel;
+            node.stopTime = stop;
             currentEntry.timetable.push_back(node);
         }
     }
 
-    cout << "Расписание успешно загружено" << endl;
+    cout << "Упрощённое расписание успешно загружено" << endl;
 }
+
 
 
 int Schedule::parseTime(const string& txt) const

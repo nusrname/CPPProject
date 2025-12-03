@@ -34,14 +34,15 @@ class Station : public Waypoint
 {
 private:
 	int stopTimeStandard;
-	int stopTimeMin;
+	int stopTimeMin = 60;
 	int lastArrivalTime = 0;
 	int delayTime = 0;
 	bool hasDelay = false;
+	int travelTime;
 
 public:
-	Station(string name, int position, int stopTimeStandard = 120, int stopTimeMin = 30)
-		: Waypoint(name, position), stopTimeStandard(stopTimeStandard), stopTimeMin(stopTimeMin) {
+	Station(string name, int position, int stopTimeStandard = 120, int travelTime = 30)
+		: Waypoint(name, position), stopTimeStandard(stopTimeStandard), travelTime(travelTime) {
 	}
 
 	//void applyDelay(int seconds);
@@ -61,7 +62,7 @@ public:
 	}
 
 	void store(shared_ptr<Train> train);
-	bool remove(shared_ptr<Train> train);
+	void remove(shared_ptr<Train> train);
 	shared_ptr<Train> release();
 
 	vector<shared_ptr<Train>> getStored() const { return stored; }
@@ -76,7 +77,7 @@ private:
 	shared_ptr<Depot> depotStart, depotEnd;
 	vector<shared_ptr<Train>> active;
 
-	//	shared_ptr<Schedule> schedule;
+	//shared_ptr<Schedule> schedule;
 	//	int standardSegmentTime;
 
 public:
@@ -122,6 +123,10 @@ private:
 	int timeToNextEvent = 0;
 	bool isDelayed = false;
 	int totalDelay = 0;
+
+	int scheduleIndex = 0;
+	int timeLeft = 0;
+	bool isStopped = true;
 public:
 	Train(string id, shared_ptr<Line> line, shared_ptr<Depot> depot, double maxSpeed) :
 		id(move(id)), line(line), initialDepot(depot), speed(maxSpeed), maxSpeed(maxSpeed) {
@@ -138,8 +143,4 @@ public:
 	int getCurrentStationIndex() const { return currentStationIndex; }
 	bool isForward() const { return directionForward; }
 	void reverse() { directionForward = !directionForward; }
-
-	void commandDepart(const string& station);
-	void commandStop(const string& station);
-	void commandArrive(const string& station);
 };

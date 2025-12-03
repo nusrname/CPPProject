@@ -12,19 +12,18 @@ class Train;
 
 struct Entry
 {
-	string trainID;
-
 	struct Node
 	{
-		enum Type { DEPART, STOP, ARRIVE } type;
 		string station;
-		int time;
+		int travelTime = 0;   // время движения до следующей станции
+		int stopTime = 60;     // время стоянки на текущей станции
 	};
 
 	vector<Node> timetable;
 };
 
-class TimeController 
+
+static class TimeController 
 {
 private:
 	int currentTime;
@@ -47,6 +46,7 @@ public:
 	Schedule(const string& file = "Schedule.txt") { loadSchedule(file); }
 
 	const map<string, vector<Entry>>& get() const { return data; }
+	//const map<string, vector<Entry>>& getDaySchedule() const { return data[(TimeController::getCurrent() / 86400) % 7]; }
 };
 
 class RandomEventGenerator

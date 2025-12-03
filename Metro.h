@@ -34,7 +34,6 @@ public:
 	}
 
 	void attachTrain(shared_ptr<Train> train);
-	void update();
 };
 
 class Metro
@@ -50,4 +49,3 @@ public:
 	//void printSummary() const;
 	void loadLines(const string& fileName);
 };
-
