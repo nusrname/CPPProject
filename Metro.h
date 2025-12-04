@@ -25,7 +25,8 @@ private:
         shared_ptr<Train> train;
         vector<Entry::Node> timetable;
         int nextIndex = 0;
-        bool active = false;
+        bool active = false; 
+        int startTime = 0;
     };
 
     map<string, TrainState> trains;

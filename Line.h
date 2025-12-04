@@ -121,7 +121,9 @@ private:
 	int scheduleIndex = 0;
 	int timeLeft = 0;
 	bool isStopped = true;
-	shared_ptr<vector<Entry::Node>> timetable;
+	vector<Entry::Node> timetable; 
+	shared_ptr<Station> currentStation;
+	shared_ptr<Station> nextStation;
 public:
 	Train(string id, shared_ptr<Line> line, shared_ptr<Depot> depot, double maxSpeed) :
 		id(move(id)), line(line), initialDepot(depot) {
@@ -135,8 +137,11 @@ public:
 
 	string getID() const;
 	int getCurrentStationIndex() const { return currentStationIndex; }
+	shared_ptr<Line> getLine() const { return line; }
 	bool isForward() const { return directionForward; }
 	void reverse() { directionForward = !directionForward; }
 	void activate(const vector<Entry::Node>& table);
 	void updateFromManager(int timeNow);
+	void beginSchedule();
+	void setTimetable(vector<Entry::Node> table) { timetable = table; }
 };

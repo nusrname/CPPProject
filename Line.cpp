@@ -169,17 +169,17 @@ void Train::addToDepot(shared_ptr<Depot> depot)
 
 void Train::activate(const vector<Entry::Node>& table)
 {
-	timetable = make_shared<vector<Entry::Node>>(table);
+	timetable = vector<Entry::Node>(table);
 	scheduleIndex = 0;
 
 	isStopped = true;
 	timeLeft = 0;
 
-	if (!timetable || timetable->empty())
+	if (timetable.empty())
 		return;
 
 	// имя первой записи в расписании
-	const string& firstName = timetable->at(scheduleIndex).station;
+	const string& firstName = timetable.at(scheduleIndex).station;
 
 	// ищем соответствующую станцию в ветке
 	auto stations = line->getStations();
@@ -212,7 +212,7 @@ void Train::activate(const vector<Entry::Node>& table)
 		depoted = false;
 		currentStationIndex = foundIndex;
 		isStopped = true;
-		timeLeft = timetable->at(0).stopTime;
+		timeLeft = timetable.at(0).stopTime;
 		line->startTrain(shared_from_this(), foundIndex);
 		return;
 	}
@@ -230,14 +230,14 @@ void Train::updateFromManager(int deltaSeconds)
 		if (timeLeft > 0) return;
 
 		isStopped = false;
-		if (scheduleIndex < (int)timetable->size())
-			timeLeft = timetable->at(scheduleIndex).travelTime;
+		if (scheduleIndex < (int)timetable.size())
+			timeLeft = timetable.at(scheduleIndex).travelTime;
 		else
 			timeLeft = 0;
 		return;
 	}
 
-	double travelTotal = (scheduleIndex < (int)timetable->size()) ? timetable->at(scheduleIndex).travelTime : 1;
+	double travelTotal = (scheduleIndex < (int)timetable.size()) ? timetable.at(scheduleIndex).travelTime : 1;
 	if (travelTotal <= 0) travelTotal = 1;
 
 	timeLeft -= deltaSeconds;
@@ -262,10 +262,42 @@ void Train::updateFromManager(int deltaSeconds)
 	line->getStations()[currentStationIndex]->arrive(shared_from_this());
 	scheduleIndex++;
 	isStopped = true;
-	if (scheduleIndex < (int)timetable->size())
-		timeLeft = timetable->at(scheduleIndex).stopTime;
+	if (scheduleIndex < (int)timetable.size())
+		timeLeft = timetable.at(scheduleIndex).stopTime;
 	else
 		timeLeft = 0;
+}
+
+void Train::beginSchedule()
+{
+	// поезд должен начать с первой записи расписания
+	if (timetable.empty()) 
+	{
+		isStopped = false;
+		scheduleIndex = -1;
+		timeLeft = 0;
+		return;
+	}
+
+	scheduleIndex = 0;
+
+	// текущее состояние в расписании
+	auto& e = timetable.at(scheduleIndex);
+
+	//// текущая станция — первая строка расписания
+	//currentStation = line->findStationByName(e.station);
+
+	// по умолчанию считаем, что поезд ПОКА стоит
+	isStopped = true;
+
+	// время стоянки (например, startDepot 30 60 ? first=30 = стоянка)
+	timeLeft = e.stopTime;
+
+	//// следующая станция
+	//if (timetable->size() > 1)
+	//	nextStation = line->findStationByName(timetable->at(1).station);
+	//else
+	//	nextStation = nullptr;
 }
 
 
