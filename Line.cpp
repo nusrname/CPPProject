@@ -79,6 +79,11 @@ void Line::startTrain(shared_ptr<Train> train, int stationIndex)
 	if (stationIndex < 0 || stationIndex >= stations.size())
 		return;
 
+	if (depotStart)
+		depotStart->remove(train);
+	if (depotEnd)
+		depotEnd->remove(train);
+
 	if (find(active.begin(), active.end(), train) == active.end())
 		active.push_back(train);
 
@@ -160,51 +165,41 @@ void Train::addToDepot(shared_ptr<Depot> depot)
 	initialDepot = depot;
 	depoted = true;
 	currentStationIndex = -1;
-	position = depot->getPosition();
 }
-
 
 void Train::activate(const vector<Entry::Node>& table)
 {
-	// копируем таблицу
 	timetable = make_shared<vector<Entry::Node>>(table);
 	scheduleIndex = 0;
 
-	// безопасные значения по умолчанию
 	isStopped = true;
 	timeLeft = 0;
 
-	// если расписание пустое — ничего не делаем
 	if (!timetable || timetable->empty())
 		return;
 
 	// имя первой записи в расписании
-	const string& firstName = timetable->at(0).station;
+	const string& firstName = timetable->at(scheduleIndex).station;
 
 	// ищем соответствующую станцию в ветке
 	auto stations = line->getStations();
 	int foundIndex = -1;
-	for (size_t i = 0; i < stations.size(); ++i)
+	for (int i = 0; i < stations.size(); ++i)
 	{
 		if (stations[i]->getName() == firstName)
 		{
-			foundIndex = int(i);
+			foundIndex = i;
 			break;
 		}
 	}
 
-	// если первая запись — depotStart
 	if (line->getStartDepot() && line->getStartDepot()->getName() == firstName)
 	{
-		// оставляем поезд в депо — он уже в depoted==true после addToDepot
 		depoted = true;
 		initialDepot = line->getStartDepot();
-		// когда менеджер решит выпускать — вызовет moveStep/логика
-		// для упрощения — не вынимаем поезд сейчас
 		return;
 	}
 
-	// если первая запись — depotEnd
 	if (line->getEndDepot() && line->getEndDepot()->getName() == firstName)
 	{
 		depoted = true;
@@ -212,35 +207,29 @@ void Train::activate(const vector<Entry::Node>& table)
 		return;
 	}
 
-	// Если найдена станция — ставим поезд на неё (активируем сразу)
 	if (foundIndex >= 0)
 	{
 		depoted = false;
 		currentStationIndex = foundIndex;
-		position = stations[foundIndex]->getPosition();
 		isStopped = true;
 		timeLeft = timetable->at(0).stopTime;
-		// зарегистрировать поезд на линии (если ещё не добавлен)
-		line->startTrain(shared_from_this(), currentStationIndex);
+		line->startTrain(shared_from_this(), foundIndex);
 		return;
 	}
 
-	// Ничего не найдено — оставляем поезд в депо, чтобы не ломать логику
 	depoted = true;
 }
 
 void Train::updateFromManager(int deltaSeconds)
 {
-	if (deltaSeconds <= 0) deltaSeconds = 1; // fallback
+	if (deltaSeconds <= 0) deltaSeconds = 1;
 
 	if (isStopped)
 	{
 		timeLeft -= deltaSeconds;
 		if (timeLeft > 0) return;
 
-		// готов выезжать
 		isStopped = false;
-		// безопасно берем travelTime текущего пункта (если есть)
 		if (scheduleIndex < (int)timetable->size())
 			timeLeft = timetable->at(scheduleIndex).travelTime;
 		else
@@ -248,30 +237,8 @@ void Train::updateFromManager(int deltaSeconds)
 		return;
 	}
 
-	// движение: используем timeLeft (в секундах) для контроля прибытия
-	// вычисляем прогресс как долю за deltaSeconds по отношению к travelTime
 	double travelTotal = (scheduleIndex < (int)timetable->size()) ? timetable->at(scheduleIndex).travelTime : 1;
 	if (travelTotal <= 0) travelTotal = 1;
-
-	// движение на позиции: нам нужна скорость в "position units per second".
-	// Для простоты: считаем, что расстояние = abs(targetPos - position),
-	// и двигаемся прямо пропорционально доле deltaSeconds / travelTotal.
-	int nextIndex = directionForward ? currentStationIndex + 1 : currentStationIndex - 1;
-	if (nextIndex < 0 || nextIndex >= (int)line->getStations().size())
-	{
-		// движение в депо (как раньше) — упрощённо перемещаем позицию на maxSpeed*deltaSeconds
-		double depotPos = (directionForward ? line->getEndDepot()->getPosition() : line->getStartDepot()->getPosition());
-		double dist = depotPos - position;
-		double fraction = double(deltaSeconds) / travelTotal;
-		position += dist * fraction;
-	}
-	else
-	{
-		double targetPos = line->getStations()[nextIndex]->getPosition();
-		double dist = targetPos - position;
-		double fraction = double(deltaSeconds) / travelTotal;
-		position += dist * fraction;
-	}
 
 	timeLeft -= deltaSeconds;
 	if (timeLeft > 0) return;
@@ -280,9 +247,9 @@ void Train::updateFromManager(int deltaSeconds)
 	if (currentStationIndex >= 0 && currentStationIndex < (int)line->getStations().size())
 		line->getStations()[currentStationIndex]->depart(shared_from_this());
 
-	currentStationIndex = directionForward ? currentStationIndex + 1 : currentStationIndex - 1;
+	currentStationIndex += directionForward ? 1 : -1;
 
-	// если пришли в депо (index вне диапазона)
+	// если пришли в депо
 	if (currentStationIndex < 0 || currentStationIndex >= (int)line->getStations().size())
 	{
 		auto depot = directionForward ? line->getEndDepot() : line->getStartDepot();

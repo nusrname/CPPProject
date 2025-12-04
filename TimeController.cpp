@@ -85,8 +85,6 @@ void Schedule::loadSchedule(const string& file)
     cout << "Упрощённое расписание успешно загружено" << endl;
 }
 
-
-
 int Schedule::parseTime(const string& txt) const
 {
     if (txt.empty()) return 0;

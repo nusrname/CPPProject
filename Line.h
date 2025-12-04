@@ -78,9 +78,6 @@ private:
 	shared_ptr<Depot> depotStart, depotEnd;
 	vector<shared_ptr<Train>> active;
 
-	//shared_ptr<Schedule> schedule;
-	//	int standardSegmentTime;
-
 public:
 	Line(string name = "line",
 		shared_ptr<Depot> startDepot = nullptr,
@@ -113,13 +110,9 @@ private:
 	shared_ptr<Depot> initialDepot;
 
 	int currentStationIndex = -1;
-	bool directionForward = false;
+	bool directionForward = true;
 	bool depoted = true;
 	bool readyToLeaveDepot = false;
-
-	double position = 0.0;
-	double speed = 0.0;
-	double maxSpeed = 0.0;
 
 	int timeToNextEvent = 0;
 	bool isDelayed = false;
@@ -131,11 +124,10 @@ private:
 	shared_ptr<vector<Entry::Node>> timetable;
 public:
 	Train(string id, shared_ptr<Line> line, shared_ptr<Depot> depot, double maxSpeed) :
-		id(move(id)), line(line), initialDepot(depot), speed(maxSpeed), maxSpeed(maxSpeed) {
+		id(move(id)), line(line), initialDepot(depot) {
 	}
 
 	void addToDepot(shared_ptr<Depot> depot);
-	void moveStep(int stepSeconds);
 
 	//void accelerateIfDelayed();
 	//void adjustStopTime();

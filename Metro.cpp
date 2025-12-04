@@ -7,15 +7,11 @@ void TrainManager::attachTrain(shared_ptr<Train> train)
 	TrainState st;
 	st.train = train;
 
-	// определяем текущий день (0..6)
 	int now = time->getCurrent();
 	int dayIndex = (now / 86400) % 7;
-	static const vector<string> days = {
-		"MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY"
-	};
+	static const vector<string> days = { "MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY"	};
 	string day = days[dayIndex];
 
-	// найти расписание для дня; если нет — использовать первое попавшееся
 	auto& data = schedule->get();
 	auto it = data.find(day);
 	if (it != data.end() && !it->second.empty())
@@ -24,12 +20,10 @@ void TrainManager::attachTrain(shared_ptr<Train> train)
 	}
 	else if (!data.empty())
 	{
-		// fallback — первое расписание
 		st.timetable = data.begin()->second[0].timetable;
 	}
 	else
 	{
-		// нет расписания вообще — оставляем пустым
 		st.timetable.clear();
 	}
 
@@ -43,16 +37,14 @@ void TrainManager::update()
 
 	for (auto& pair : trains)
 	{
-		auto& tr = pair.second.train;
-
 		if (!pair.second.active)
 		{
 			pair.second.active = true;
-			tr->activate(pair.second.timetable);
+			pair.second.train->activate(pair.second.timetable);
 			continue;
 		}
 
-		tr->updateFromManager(now);
+		pair.second.train->updateFromManager(now);
 	}
 }
 
