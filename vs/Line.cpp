@@ -39,7 +39,7 @@ void Station::printStatus() const
 
 	cout << "\t\tСтанция " + name + ": " << endl;
 	cout << "\t\tПоездов на станции: " << trains.size() << "\n\t\tА именно:" << endl;
-	for (auto train : trains)
+	for (auto& train : trains)
 		cout << "\t\t\t" << train->getID() << (train->isForward() ? down : up) << endl;
 	cout << endl;
 }

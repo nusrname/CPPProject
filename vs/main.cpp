@@ -1,23 +1,31 @@
-#include "Line.h"
 #include "Metro.h"
 #include "TimeController.h"
+#include <clocale>
+#include <exception>
 #include <iostream>
+#include <memory>
 using namespace std;
 
 int main()
 {
 	setlocale(LC_ALL, "rus");
-	int time, step;
+	int time = 0, step, period;
 	try
 	{
-		cin >> time >> step;
-		auto timeController = make_shared<TimeController>(0, step);
+		//cout << "“екущее врем€: ";
+		//cin >> time;
+		cout << "Ўаг симул€ции: ";
+		cin >> step;
+		cout << "¬рем€ симул€ции: ";
+		cin >> period;
+
+		auto timeController = make_shared<TimeController>(time, step);
 		auto schedule = make_shared<Schedule>();
 		auto trainManager = make_shared<TrainManager>(schedule, timeController);
-		auto lineSchedule = schedule->get();
+		auto& lineSchedule = schedule->get();
 		Metro metro(timeController, trainManager);
 		metro.loadLines("MetroData.txt");
-		metro.simulate(time, step);
+		metro.simulate(period, step);
 	}
 	catch (exception ex)
 	{

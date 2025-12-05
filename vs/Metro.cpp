@@ -1,14 +1,19 @@
-#include "Metro.h"
-#include "Line.h"
-#include "TimeController.h"
-#include <iostream>
-#include <thread>
-#include <fstream>
-#include <sstream>
 #include "ConsoleUI.h"
+#include "Line.h"
+#include "Metro.h"
+#include "TimeController.h"
+#include <algorithm>
+#include <chrono>
+#include <fstream>
+#include <iostream>
+#include <memory>
+#include <sstream>
+#include <string>
+#include <thread>
+#include <vector>
 
 
-void TrainManager::attachTrain(std::shared_ptr<Train> t)
+void TrainManager::attachTrain(shared_ptr<Train> t)
 {
 	State st;
 	st.train = t;
@@ -16,7 +21,7 @@ void TrainManager::attachTrain(std::shared_ptr<Train> t)
 	// выбрать расписание
 	int now = time->getCurrent();
 	int day = (now / 86400) % 7;
-	static const std::vector<std::string> days =
+	static const vector<string> days =
 	{ "MONDAY","TUESDAY","WEDNESDAY","THURSDAY",
 	 "FRIDAY","SATURDAY","SUNDAY" };
 
@@ -38,7 +43,7 @@ void TrainManager::update(int step)
 	for (auto& kv : trains)
 	{
 		auto& st = kv.second;
-		auto t = st.train;
+		auto& t = st.train;
 
 		if (!st.active)
 		{
@@ -76,8 +81,8 @@ void TrainManager::update(int step)
 		if (t->timeLeft <= 0)
 		{
 			// вычисляем следующий индекс
-			int N = t->line->getStations().size();
-			int nextIndex = t->forward ? t->index + 1 : t->index - 1;
+			size_t N = t->line->getStations().size();
+			size_t nextIndex = t->forward ? static_cast<size_t>(t->index + 1) : static_cast<size_t>(t->index - 1);
 
 			// проверка конца линии и разворот
 			if (nextIndex < 0)
@@ -117,7 +122,7 @@ void TrainManager::update(int step)
 
 void Metro::simulate(int periodSeconds, int stepSeconds)
 {
-	for (int t = 0; t < periodSeconds; t += stepSeconds)
+	for (int t = timeController->getCurrent(); t < periodSeconds + timeController->getCurrent(); t += stepSeconds)
 	{
 		ConsoleUI::ClearConsole();
 		timeController->advance();
@@ -142,7 +147,7 @@ void Metro::loadLines(const string& fileName)
 {
 	ifstream in(fileName);
 	if (!in.is_open())
-		throw runtime_error("Не удалось открыть файл MetroData.txt");
+		throw "Не удалось открыть файл MetroData.txt";
 
 	string line;
 

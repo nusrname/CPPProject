@@ -1,13 +1,9 @@
 #pragma once
-#include <iostream>
-#include <vector>
-#include <string>
-#include <time.h>
-#include <thread>
-#include <fstream>
-#include <sstream>
-#include "ConsoleUI.h"
 #include "TimeController.h"
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
 using namespace std;
 
 class Line;
@@ -25,7 +21,7 @@ private:
         shared_ptr<Train> train;
         vector<Entry::Node> timetable;
         bool active = false;
-        int startTime = 0;
+        size_t startTime = 0;
         int index = 0;
     };
 

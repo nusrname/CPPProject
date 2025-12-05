@@ -1,7 +1,9 @@
 #include "TimeController.h"
 #include <fstream>
-#include <sstream>
 #include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
 
 void TimeController::advance()
 {
@@ -33,7 +35,7 @@ void Schedule::loadSchedule(const string& file)
 {
     ifstream in(file);
     if (!in.is_open())
-        throw runtime_error("Не удалось открыть файл Schedule.txt");
+        throw "Не удалось открыть файл Schedule.txt";
 
     string line;
     string currentDay;
