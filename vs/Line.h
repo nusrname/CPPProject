@@ -22,6 +22,7 @@ public:
 	void printStatus() const;
 
 	void arrive(shared_ptr<Train> train);
+	bool canArrive(shared_ptr<Train> train);
 	void depart(shared_ptr<Train> train);
 
 	const string& getName() const { return name; }

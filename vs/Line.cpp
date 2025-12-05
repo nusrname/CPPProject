@@ -44,7 +44,15 @@ void Station::printStatus() const
 	cout << endl;
 }
 
-void Station::arrive(shared_ptr<Train> train)
+bool Station::canArrive(shared_ptr<Train> train)
+{
+	for (auto& tr : trains)
+		if (tr == train || tr->isForward() == train->isForward())
+			return false;
+	return true;
+}
+
+void Station::arrive(shared_ptr<Train> train) 
 {
 	trains.push_back(train);
 }

@@ -73,14 +73,13 @@ void Schedule::loadSchedule(const string& file)
         {
             istringstream ss(line);
             string station;
-            int travel, stop;
+            int travel;
 
-            ss >> station >> travel >> stop;
+            ss >> station >> travel;
 
             Entry::Node node;
             node.station = station;
             node.travelTime = travel;
-            node.stopTime = stop;
             currentEntry.timetable.push_back(node);
         }
     }

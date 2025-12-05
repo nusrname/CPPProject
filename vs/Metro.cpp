@@ -27,7 +27,8 @@ void TrainManager::attachTrain(std::shared_ptr<Train> t)
 	t->setTimetable(st.timetable);
 
 	// запуск поездов с интервалом
-	st.startTime = now + trains.size() * 30;
+	int interval = st.timetable[0].stopTime + st.timetable[0].travelTime;
+	st.startTime = now + trains.size() * interval;
 	trains[t->getID()] = st;
 }
 
@@ -64,45 +65,52 @@ void TrainManager::update(int step)
 
 			t->stopped = false;
 			t->timeLeft = st.timetable[t->schedulePos].travelTime;
+			// покидаем текущую станцию
+			if (t->index >= 0 && t->index < t->line->getStations().size())
+				t->line->getStations()[t->index]->depart(t);
 			continue;
 		}
 
 		// движение
 		t->timeLeft -= step;
-		if (t->timeLeft > 0) continue;
-
-		// покидаем текущую станцию
-		t->line->getStations()[t->index]->depart(t);
-
-		// вычисляем следующий индекс
-		int N = t->line->getStations().size();
-		if (t->forward)
-			t->index++;
-		else
-			t->index--;
-
-		// проверка конца линии
-		if (t->index < 0)
+		if (t->timeLeft <= 0)
 		{
-			t->index = 0;
-			t->forward = true;
+			// вычисляем следующий индекс
+			int N = t->line->getStations().size();
+			int nextIndex = t->forward ? t->index + 1 : t->index - 1;
+
+			// проверка конца линии и разворот
+			if (nextIndex < 0)
+			{
+				t->forward = true;
+				nextIndex = 0;
+			}
+			else if (nextIndex >= N)
+			{
+				t->forward = false;
+				nextIndex = N - 1;
+			}
+
+			// если на станции уже стоит поезд в том же направлении — задержка
+			if (!t->line->getStations()[nextIndex]->canArrive(t))
+			{
+				t->stopped = true;
+				t->timeLeft = 5; // например, 5 секунд ожидания
+				t->index = t->forward ? t->index : t->index; // остаёмся на текущей станции
+				continue;
+			}
+
+			t->index = nextIndex;
+			t->line->getStations()[t->index]->arrive(t);
+
+			// остановка на станции
+			st.index++;
+			if (st.index >= st.timetable.size())
+				st.index = (int)st.timetable.size() - 1;
+
+			t->stopped = true;
+			t->timeLeft = st.timetable[st.index].stopTime;
 		}
-		else if (t->index >= N)
-		{
-			t->index = N - 1;
-			t->forward = false;
-		}
-
-		// прибытие на новую станцию
-		t->line->getStations()[t->index]->arrive(t);
-
-		// остановка
-		st.index++;
-		if (st.index >= st.timetable.size())
-			st.index = (int)st.timetable.size() - 1;
-
-		t->stopped = true;
-		t->timeLeft = st.timetable[st.index].stopTime;
 	}
 }
 
