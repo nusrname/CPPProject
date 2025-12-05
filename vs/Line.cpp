@@ -18,7 +18,8 @@ void Waypoint::arrive(shared_ptr<Train> train)
 void Waypoint::depart(shared_ptr<Train> train)
 {
 	if (!train) return;
-	trains.erase(remove(trains.begin(), trains.end(), train), trains.end());
+	if (find(trains.begin(), trains.end(), train) != trains.end())
+		trains.erase(remove(trains.begin(), trains.end(), train), trains.end());
 }
 
 #pragma region LineRegion
@@ -88,28 +89,56 @@ void Line::startTrain(shared_ptr<Train> train, int stationIndex)
 		active.push_back(train);
 
 	stations.at(stationIndex)->arrive(train);
+	cout << "Поехали из депо " << train->getID() << endl;
 }
 
-int Line::moveTrain(shared_ptr<Train> train, int index, bool& direction)
+int Line::moveTrain(std::shared_ptr<Train> tr, int from, bool& forward)
 {
-	stations[index]->depart(train);
+	int next = forward ? from + 1 : from - 1;
 
-	int next = direction ? index + 1 : index - 1;
-	stations[next]->arrive(train);
+	// выход с линии в депо
+	if (next < 0)
+	{
+		depotStart->store(tr);
+		removeActiveTrain(tr);
+		return -1; // специальный код для депо
+	}
+	if (next >= stations.size())
+	{
+		depotEnd->store(tr);
+		removeActiveTrain(tr);
+		return stations.size(); // специальный код для депо
+	}
+
+	if (from >= 0 && from < stations.size())
+		stations[from]->depart(tr);
+	else if (from == -1)
+		depotStart->depart(tr);
+	else if (from == stations.size())
+		depotEnd->depart(tr);
+
+	if (next >= 0 && next < stations.size())
+		stations[next]->arrive(tr);
+	else if (next == -1)
+		depotStart->arrive(tr);
+	else if (next == stations.size())
+		depotEnd->arrive (tr);
 
 	return next;
 }
-
-shared_ptr<Depot> Line::getStartDepot() const { return depotStart; }
-
-shared_ptr<Depot> Line::getEndDepot() const { return depotEnd; }
-
-vector<shared_ptr<Station>> Line::getStations() const { return stations; }
 
 void Line::removeActiveTrain(const shared_ptr<Train>& train)
 {
 	if (!train) return;
 	active.erase(remove(active.begin(), active.end(), train), active.end());
+}
+
+int Line::getStationIndex(const std::string& name) const
+{
+	for (int i = 0; i < stations.size(); ++i)
+		if (stations[i]->getName() == name)
+			return i;
+	return -1;
 }
 
 #pragma endregion
@@ -182,15 +211,15 @@ void Train::activate(const vector<Entry::Node>& table)
 	const string& firstName = timetable.at(scheduleIndex).station;
 
 	// ищем соответствующую станцию в ветке
-	auto stations = line->getStations();
-	int foundIndex = -1;
-	for (int i = 0; i < stations.size(); ++i)
+	int s = line->getStationIndex(timetable[0].station);
+	if (s < 0)
 	{
-		if (stations[i]->getName() == firstName)
-		{
-			foundIndex = i;
-			break;
-		}
+		// жёсткая синхронизация
+		currentStationIndex = 0;
+	}
+	else
+	{
+		currentStationIndex = s;
 	}
 
 	if (line->getStartDepot() && line->getStartDepot()->getName() == firstName)
@@ -207,71 +236,77 @@ void Train::activate(const vector<Entry::Node>& table)
 		return;
 	}
 
-	if (foundIndex >= 0)
+	if (s >= 0)
 	{
 		depoted = false;
-		currentStationIndex = foundIndex;
 		isStopped = true;
 		timeLeft = timetable.at(0).stopTime;
-		line->startTrain(shared_from_this(), foundIndex);
+		line->startTrain(shared_from_this(), s);
 		return;
 	}
 
 	depoted = true;
 }
 
-void Train::updateFromManager(int deltaSeconds)
+void Train::updateFromManager(int delta)
 {
-	if (deltaSeconds <= 0) deltaSeconds = 1;
+	if (delta <= 0) delta = 1;
 
+	// стоянка
 	if (isStopped)
 	{
-		timeLeft -= deltaSeconds;
+		timeLeft -= delta;
 		if (timeLeft > 0) return;
 
+		cout << "Стоим" << endl;
 		isStopped = false;
-		if (scheduleIndex < (int)timetable.size())
-			timeLeft = timetable.at(scheduleIndex).travelTime;
-		else
-			timeLeft = 0;
+		timeLeft = timetable[scheduleIndex].travelTime;
 		return;
 	}
 
-	double travelTotal = (scheduleIndex < (int)timetable.size()) ? timetable.at(scheduleIndex).travelTime : 1;
-	if (travelTotal <= 0) travelTotal = 1;
-
-	timeLeft -= deltaSeconds;
+	// движение
+	timeLeft -= delta;
 	if (timeLeft > 0) return;
 
-	// прибытие
-	if (currentStationIndex >= 0 && currentStationIndex < (int)line->getStations().size())
-		line->getStations()[currentStationIndex]->depart(shared_from_this());
+	// приехали к следующей станции — переместить поезд
+	bool dir = directionForward;
+	int newIndex = line->moveTrain(shared_from_this(), currentStationIndex, dir);
+	directionForward = dir;
+	currentStationIndex = newIndex;
 
-	currentStationIndex += directionForward ? 1 : -1;
-
-	// если пришли в депо
-	if (currentStationIndex < 0 || currentStationIndex >= (int)line->getStations().size())
+	// достигли депо
+	if (newIndex < 0) 
 	{
-		auto depot = directionForward ? line->getEndDepot() : line->getStartDepot();
-		depot->store(shared_from_this());
+		auto d = line->getStartDepot();
+		d->store(shared_from_this());
+		line->removeActiveTrain(shared_from_this());
+		depoted = true;
+		return;
+	}
+	if (newIndex >= line->getStations().size()) 
+	{
+		auto d = line->getEndDepot();
+		d->store(shared_from_this());
 		line->removeActiveTrain(shared_from_this());
 		depoted = true;
 		return;
 	}
 
-	line->getStations()[currentStationIndex]->arrive(shared_from_this());
+	// следующая запись расписания
 	scheduleIndex++;
+	if (scheduleIndex >= timetable.size())
+		scheduleIndex = (int)timetable.size() - 1;
+
 	isStopped = true;
-	if (scheduleIndex < (int)timetable.size())
-		timeLeft = timetable.at(scheduleIndex).stopTime;
-	else
-		timeLeft = 0;
+	timeLeft = timetable[scheduleIndex].stopTime;
+	cout << "Поехали" << endl;
 }
+
 
 void Train::beginSchedule()
 {
 	// поезд должен начать с первой записи расписания
-	if (timetable.empty()) 
+	if (timetable.empty())
 	{
 		isStopped = false;
 		scheduleIndex = -1;

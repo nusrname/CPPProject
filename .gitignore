@@ -30,6 +30,8 @@ build/
 # Qt
 *.pro.user
 *.qmake.stash
+qt/build*/
+qt/*.user
 
 # OS files
 Thumbs.db

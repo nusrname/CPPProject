@@ -29,12 +29,26 @@ void TrainManager::attachTrain(shared_ptr<Train> train)
 }
 
 
-void TrainManager::update()
+void TrainManager::update(int stepSeconds)
 {
 	int now = time->getCurrent();
 
 	for (auto& kv : trains)
 	{
+		/*Вывод расписания и состояния*/
+
+		/*cout << kv.first << endl;
+		cout << "Active: " << kv.second.active << '\n'
+			<< "nextIndex: " << kv.second.nextIndex << '\n'
+			<< "startTime: " << kv.second.startTime << '\n'
+			<< "getID: " << kv.second.train->getID() << '\n';
+		for (auto el : kv.second.timetable)
+		{
+			cout << el.station << "\t" << el.stopTime << "\t" << el.travelTime << endl;
+		}
+
+		cout << "\n\n\n";*/
+
 		auto& st = kv.second;
 		if (!st.active)
 		{
@@ -67,14 +81,15 @@ void TrainManager::update()
 
 			// инициализируем внутреннее состояние поезда
 			tr->beginSchedule(); // добавить метод beginSchedule(), который установит timeLeft = stopTime of index 0 и т.д.
-
+			kv.second.nextIndex++;
+			kv.second.startTime += kv.second.timetable[found].stopTime;
 
 			continue;
 		}
 
 		// если уже активен — передаём шаг
 		if (st.active)
-			st.train->updateFromManager(/*delta=*/ time->getCurrent() - /*prev?*/ now); // лучше прокинуть step
+			st.train->updateFromManager(stepSeconds); // лучше прокинуть step
 	}
 }
 
@@ -85,14 +100,14 @@ void Metro::simulate(int periodSeconds, int stepSeconds)
 	{
 		//ConsoleUI::ClearConsole();
 		timeController->advance();
-		cout << endl << timeController->getFormattedTime();
+		cout << endl << timeController->getFormattedTime() << endl;
 		for (auto& line : lines)
 		{
 			//line->update(stepSeconds);
 			ConsoleUI::displayLineStatus(*line);
 		}
-		manager->update();
-		this_thread::sleep_for(chrono::seconds(1));
+		manager->update(stepSeconds);
+		//this_thread::sleep_for(chrono::seconds(1));
 	}
 }
 

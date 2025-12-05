@@ -94,10 +94,11 @@ public:
 	void removeActiveTrain(const shared_ptr<Train>& train);
 
 	void printStatus() const;
-	shared_ptr<Depot> getStartDepot() const;
-	shared_ptr<Depot> getEndDepot() const;
-	vector<shared_ptr<Station>> getStations() const;
+	shared_ptr<Depot> getStartDepot() const { return depotStart; }
+	shared_ptr<Depot> getEndDepot() const { return depotEnd; }
+	vector<shared_ptr<Station>> getStations() const { return stations; }
 	void setStartDepot(shared_ptr<Depot> d) { depotStart = d; }
+	int getStationIndex(const std::string& name) const;
 	void setEndDepot(shared_ptr<Depot> d) { depotEnd = d; }
 };
 
@@ -120,7 +121,7 @@ private:
 
 	int scheduleIndex = 0;
 	int timeLeft = 0;
-	bool isStopped = true;
+	bool isStopped = false;
 	vector<Entry::Node> timetable; 
 	shared_ptr<Station> currentStation;
 	shared_ptr<Station> nextStation;
