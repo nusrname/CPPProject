@@ -17,27 +17,27 @@ class TimeController;
 class TrainManager
 {
 private:
-    shared_ptr<Schedule> schedule;
     shared_ptr<TimeController> time;
+    shared_ptr<Schedule> schedule;
 
-    struct TrainState
+    struct State
     {
         shared_ptr<Train> train;
         vector<Entry::Node> timetable;
-        int nextIndex = 0;
-        bool active = false; 
+        bool active = false;
         int startTime = 0;
+        int index = 0;
     };
 
-    map<string, TrainState> trains;
+    map<string, State> trains;
 
 public:
-    TrainManager(shared_ptr<Schedule> sch, shared_ptr<TimeController> tc)
-        : schedule(sch), time(tc) {
+    TrainManager(shared_ptr<Schedule> schdule, shared_ptr<TimeController> timeController)
+        : schedule(schdule), time(timeController) {
     }
 
     void attachTrain(shared_ptr<Train> train);
-    void update(int stepSeconds);
+    void update(int step);
 };
 
 class Metro

@@ -22,8 +22,7 @@ struct Entry
 	vector<Node> timetable;
 };
 
-
-static class TimeController 
+class TimeController 
 {
 private:
 	int currentTime;
@@ -35,7 +34,7 @@ public:
 	int getCurrent() const;
 };
 
-static class Schedule
+class Schedule
 {
 private:
 	map<string, vector<Entry>> data;

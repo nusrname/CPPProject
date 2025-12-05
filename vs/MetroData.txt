@@ -5,8 +5,6 @@ LINE firstLine
 	STATION st4 40
 	STATION st5 40
 	STATION st6 40
-	DEPOT startDepot 0
-	DEPOT endDepot 60
-	TRAIN id1 10 startDepot
-	TRAIN id2 10 startDepot
+	TRAIN id1
+	TRAIN id2
 ENDLINE

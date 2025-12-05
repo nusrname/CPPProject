@@ -2,94 +2,100 @@
 #include "Line.h"
 #include "TimeController.h"
 
-void TrainManager::attachTrain(shared_ptr<Train> train)
+
+void TrainManager::attachTrain(std::shared_ptr<Train> t)
 {
-	TrainState st;
-	st.train = train;
+	State st;
+	st.train = t;
 
+	// выбрать расписание
 	int now = time->getCurrent();
-	int dayIndex = (now / 86400) % 7;
-	static const vector<string> days = { "MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY" };
-	string day = days[dayIndex];
+	int day = (now / 86400) % 7;
+	static const std::vector<std::string> days =
+	{ "MONDAY","TUESDAY","WEDNESDAY","THURSDAY",
+	 "FRIDAY","SATURDAY","SUNDAY" };
 
-	auto& data = schedule->get();
-	auto it = data.find(day);
-	if (it != data.end() && !it->second.empty())
-		st.timetable = it->second[0].timetable;
-	else if (!data.empty())
-		st.timetable = data.begin()->second[0].timetable;
-	else
-		st.timetable.clear();
+	auto& d = schedule->get();
+	if (d.count(days[day]))
+		st.timetable = d.at(days[day])[0].timetable;
 
-	int index = (int)trains.size();
-	const int STAGGER = 30; // секундах; можно сделать параметром
-	st.startTime = now + index * STAGGER;
+	t->setTimetable(st.timetable);
 
-	trains[train->getID()] = st;
+	// запуск поездов с интервалом
+	st.startTime = now + trains.size() * 30;
+	trains[t->getID()] = st;
 }
 
-
-void TrainManager::update(int stepSeconds)
+void TrainManager::update(int step)
 {
 	int now = time->getCurrent();
 
 	for (auto& kv : trains)
 	{
-		/*Вывод расписания и состояния*/
-
-		/*cout << kv.first << endl;
-		cout << "Active: " << kv.second.active << '\n'
-			<< "nextIndex: " << kv.second.nextIndex << '\n'
-			<< "startTime: " << kv.second.startTime << '\n'
-			<< "getID: " << kv.second.train->getID() << '\n';
-		for (auto el : kv.second.timetable)
-		{
-			cout << el.station << "\t" << el.stopTime << "\t" << el.travelTime << endl;
-		}
-
-		cout << "\n\n\n";*/
-
 		auto& st = kv.second;
+		auto t = st.train;
+
 		if (!st.active)
 		{
-			if (now < st.startTime)
-				continue; // ещё не время
+			if (now < st.startTime) continue;
 
-			// время пришло — извлекаем поезд из депо и ставим на линию
 			st.active = true;
-
-			// определяем станцию старта из timetable (найди индекс станции в линии)
-			// Для простоты — ставим на первую станцию расписания, если она есть
-			st.train->setTimetable(st.timetable);
-
-			string firstName = st.timetable[0].station;
-			// найди линию: у поезда есть ссылка на line
-			auto tr = st.train;
-			auto line = tr->getLine(); // добавь геттер getLine() в Train, если нет
-			// найти индекс станции в line
-			int found = -1;
-			auto stations = line->getStations();
-			for (int i = 0; i < (int)stations.size(); ++i)
-				if (stations[i]->getName() == firstName) { found = i; break; }
-
-			// если первая строка — имя депо, то стартовать со станции 0 (после удаления из депо)
-			if (found < 0) found = 0;
-
-			// атомарно перемещаем поезд из депо в линию
-			// Line::startTrain теперь сам убирает из депо
-			line->startTrain(tr, found);
-
-			// инициализируем внутреннее состояние поезда
-			tr->beginSchedule(); // добавить метод beginSchedule(), который установит timeLeft = stopTime of index 0 и т.д.
-			kv.second.nextIndex++;
-			kv.second.startTime += kv.second.timetable[found].stopTime;
-
+			t->offLine = false;
+			t->index = -1;
+			t->schedulePos = 0;
+			t->stopped = true;
+			t->timeLeft = st.timetable[0].stopTime;
 			continue;
 		}
 
-		// если уже активен — передаём шаг
-		if (st.active)
-			st.train->updateFromManager(stepSeconds); // лучше прокинуть step
+		// стоянка
+		if (t->stopped)
+		{
+			t->timeLeft -= step;
+			if (t->timeLeft > 0) continue;
+
+			t->stopped = false;
+			t->timeLeft = st.timetable[t->schedulePos].travelTime;
+			continue;
+		}
+
+		int oldIndex = t->index;
+
+		// движение
+		t->timeLeft -= step;
+		if (t->timeLeft <= 0)
+		{
+			// поезд уезжает со станции
+			if (!t->offLine && oldIndex >= 0)
+				t->line->getStations()[oldIndex]->depart(t);
+
+			// меняем индекс
+			t->index += (t->forward ? 1 : -1);
+		}
+
+		// прибываем
+		t->index += (t->forward ? 1 : -1);
+
+		int N = t->line->getStations().size();
+
+		if (t->index < 0 || t->index >= N)
+		{
+			t->offLine = true;
+		}
+		else
+		{
+			t->offLine = false;
+			t->line->getStations()[t->index]->arrive(t);
+		}
+
+		// остановка
+		st.index++;
+		if (st.index >= (int)st.timetable.size())
+			st.index = (int)st.timetable.size() - 1;
+
+		t->schedulePos = st.index;
+		t->stopped = true;
+		t->timeLeft = st.timetable[t->schedulePos].stopTime;
 	}
 }
 
@@ -98,16 +104,15 @@ void Metro::simulate(int periodSeconds, int stepSeconds)
 {
 	for (int t = 0; t < periodSeconds; t += stepSeconds)
 	{
-		//ConsoleUI::ClearConsole();
+		ConsoleUI::ClearConsole();
 		timeController->advance();
 		cout << endl << timeController->getFormattedTime() << endl;
 		for (auto& line : lines)
 		{
-			//line->update(stepSeconds);
 			ConsoleUI::displayLineStatus(*line);
 		}
 		manager->update(stepSeconds);
-		//this_thread::sleep_for(chrono::seconds(1));
+		this_thread::sleep_for(chrono::seconds(1));
 	}
 }
 
@@ -149,39 +154,16 @@ void Metro::loadLines(const string& fileName)
 		else if (cmd == "STATION")
 		{
 			string name;
-			int pos;
-			ss >> name >> pos;
-			currentLine->addStation(make_shared<Station>(name, pos));
-		}
-
-		else if (cmd == "DEPOT")
-		{
-			string name;
-			int pos;
-			ss >> name >> pos;
-
-			auto depot = make_shared<Depot>(name, pos);
-
-			if (!currentLine->getStartDepot())
-				currentLine->setStartDepot(depot);
-			else
-				currentLine->setEndDepot(depot);
+			ss >> name;
+			currentLine->addStation(make_shared<Station>(name));
 		}
 
 		else if (cmd == "TRAIN")
 		{
-			string id, depotName;
-			double maxSpeed;
-			ss >> id >> maxSpeed >> depotName;
+			string id;
+			ss >> id;
 
-			shared_ptr<Depot> dep =
-				(currentLine->getStartDepot()->getName() == depotName)
-				? currentLine->getStartDepot()
-				: currentLine->getEndDepot();
-
-			auto t = make_shared<Train>(id, currentLine, dep, maxSpeed);
-			t->addToDepot(dep);
-			dep->store(t);
+			auto t = make_shared<Train>(id, currentLine);
 			manager->attachTrain(t);
 		}
 
