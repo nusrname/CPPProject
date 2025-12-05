@@ -1,6 +1,11 @@
 #include "Metro.h"
 #include "Line.h"
 #include "TimeController.h"
+#include <iostream>
+#include <thread>
+#include <fstream>
+#include <sstream>
+#include "ConsoleUI.h"
 
 
 void TrainManager::attachTrain(std::shared_ptr<Train> t)
@@ -29,7 +34,6 @@ void TrainManager::attachTrain(std::shared_ptr<Train> t)
 void TrainManager::update(int step)
 {
 	int now = time->getCurrent();
-
 	for (auto& kv : trains)
 	{
 		auto& st = kv.second;
@@ -41,12 +45,16 @@ void TrainManager::update(int step)
 
 			st.active = true;
 			t->offLine = false;
-			t->index = -1;
+			t->index = 0;
 			t->schedulePos = 0;
 			t->stopped = true;
 			t->timeLeft = st.timetable[0].stopTime;
+			t->line->getStations()[t->index]->arrive(t);
+
 			continue;
 		}
+
+		if (t->offLine) continue;
 
 		// стоянка
 		if (t->stopped)
@@ -59,43 +67,42 @@ void TrainManager::update(int step)
 			continue;
 		}
 
-		int oldIndex = t->index;
-
 		// движение
 		t->timeLeft -= step;
-		if (t->timeLeft <= 0)
-		{
-			// поезд уезжает со станции
-			if (!t->offLine && oldIndex >= 0)
-				t->line->getStations()[oldIndex]->depart(t);
+		if (t->timeLeft > 0) continue;
 
-			// меняем индекс
-			t->index += (t->forward ? 1 : -1);
-		}
+		// покидаем текущую станцию
+		t->line->getStations()[t->index]->depart(t);
 
-		// прибываем
-		t->index += (t->forward ? 1 : -1);
-
+		// вычисляем следующий индекс
 		int N = t->line->getStations().size();
-
-		if (t->index < 0 || t->index >= N)
-		{
-			t->offLine = true;
-		}
+		if (t->forward)
+			t->index++;
 		else
+			t->index--;
+
+		// проверка конца линии
+		if (t->index < 0)
 		{
-			t->offLine = false;
-			t->line->getStations()[t->index]->arrive(t);
+			t->index = 0;
+			t->forward = true;
 		}
+		else if (t->index >= N)
+		{
+			t->index = N - 1;
+			t->forward = false;
+		}
+
+		// прибытие на новую станцию
+		t->line->getStations()[t->index]->arrive(t);
 
 		// остановка
 		st.index++;
-		if (st.index >= (int)st.timetable.size())
+		if (st.index >= st.timetable.size())
 			st.index = (int)st.timetable.size() - 1;
 
-		t->schedulePos = st.index;
 		t->stopped = true;
-		t->timeLeft = st.timetable[t->schedulePos].stopTime;
+		t->timeLeft = st.timetable[st.index].stopTime;
 	}
 }
 

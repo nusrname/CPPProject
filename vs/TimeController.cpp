@@ -1,4 +1,7 @@
 #include "TimeController.h"
+#include <fstream>
+#include <sstream>
+#include <iostream>
 
 void TimeController::advance()
 {
