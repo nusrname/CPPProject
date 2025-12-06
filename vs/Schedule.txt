@@ -7,3 +7,12 @@ MONDAY
 	st5 20 20
 	st6 40 20
 ENDDAY
+
+TUESDAY
+	st1 20 20
+	st2 20 20
+	st3 20 0
+	st4 20 20
+	st5 20 20
+	st6 20 20
+ENDDAY

@@ -56,7 +56,7 @@ private:
 	bool forward = true;
 
 	vector<Entry::Node> timetable;
-	int schedulePos = 0;
+	//int schedulePos = 0;
 	int timeLeft = 0;
 	bool stopped = true;
 	bool offLine = true;

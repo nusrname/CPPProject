@@ -12,8 +12,8 @@ int main()
 	int time = 0, step, period;
 	try
 	{
-		//cout << "Текущее время: ";
-		//cin >> time;
+		cout << "Текущее время: ";
+		cin >> time;
 		cout << "Шаг симуляции: ";
 		cin >> step;
 		cout << "Время симуляции: ";

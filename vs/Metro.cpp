@@ -18,7 +18,6 @@ void TrainManager::attachTrain(shared_ptr<Train> t)
 	State st;
 	st.train = t;
 
-	// выбрать расписание
 	int now = time->getCurrent();
 	int day = (now / 86400) % 7;
 	static const vector<string> days =
@@ -40,10 +39,49 @@ void TrainManager::attachTrain(shared_ptr<Train> t)
 void TrainManager::update(int step)
 {
 	int now = time->getCurrent();
+	//if ((now % 86400) < 21600)
+	//	return;
+
+	int day = (now / 86400) % 7;
+
+	static const vector<string> days =
+	{
+		"MONDAY","TUESDAY","WEDNESDAY","THURSDAY",
+		"FRIDAY","SATURDAY","SUNDAY"
+	};
+
+	auto& all = schedule->get();
+
 	for (auto& kv : trains)
 	{
 		auto& st = kv.second;
 		auto& t = st.train;
+
+		if (all.count(days[day]))
+		{
+			auto& timetable = all.at(days[day])[0].timetable;
+
+			// если расписание сменилось (например, настал вторник)
+			if (st.timetable != timetable)
+			{
+				if (t->index >= 0 && t->index < t->line->getStations().size())
+					t->line->getStations()[t->index]->depart(t);
+				st.active = false;
+				t->offLine = true;
+				t->index = 0;
+				t->forward = true;
+				t->stopped = true;
+
+				st.timetable = timetable;
+				t->setTimetable(st.timetable);
+
+				st.index = 0;
+				t->timeLeft = st.timetable[0].stopTime;
+
+				int interval = st.timetable[0].stopTime + st.timetable[0].travelTime;
+				st.startTime = now + interval;
+			}
+		}
 
 		if (!st.active)
 		{
@@ -52,7 +90,6 @@ void TrainManager::update(int step)
 			st.active = true;
 			t->offLine = false;
 			t->index = 0;
-			t->schedulePos = 0;
 			t->stopped = true;
 			t->timeLeft = st.timetable[0].stopTime;
 			t->line->getStations()[t->index]->arrive(t);
@@ -69,7 +106,7 @@ void TrainManager::update(int step)
 			if (t->timeLeft > 0) continue;
 
 			t->stopped = false;
-			t->timeLeft = st.timetable[t->schedulePos].travelTime;
+			t->timeLeft = st.timetable[st.index].travelTime;
 			// покидаем текущую станцию
 			if (t->index >= 0 && t->index < t->line->getStations().size())
 				t->line->getStations()[t->index]->depart(t);
@@ -81,8 +118,8 @@ void TrainManager::update(int step)
 		if (t->timeLeft <= 0)
 		{
 			// вычисляем следующий индекс
-			size_t N = t->line->getStations().size();
-			size_t nextIndex = t->forward ? static_cast<size_t>(t->index + 1) : static_cast<size_t>(t->index - 1);
+			int N = t->line->getStations().size();
+			int nextIndex = t->forward ? t->index + 1 : t->index - 1;
 
 			// проверка конца линии и разворот
 			if (nextIndex < 0)

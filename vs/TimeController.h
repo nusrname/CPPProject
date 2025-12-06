@@ -14,6 +14,12 @@ struct Entry
 		string station;
 		int travelTime = 0;   // время движения до следующей станции
 		int stopTime = 60;     // время стоянки на текущей станции
+		bool operator==(const Node& other) const 
+		{
+			return station == other.station &&
+				travelTime == other.travelTime &&
+				stopTime == other.stopTime;
+		}
 	};
 
 	vector<Node> timetable;

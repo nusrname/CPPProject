@@ -33,67 +33,68 @@ string TimeController::getFormattedTime() const
 
 void Schedule::loadSchedule(const string& file)
 {
-    ifstream in(file);
-    if (!in.is_open())
-        throw "Не удалось открыть файл Schedule.txt";
+	ifstream in(file);
+	if (!in.is_open())
+		throw "Не удалось открыть файл Schedule.txt";
 
-    string line;
-    string currentDay;
-    Entry currentEntry;
-    bool insideDay = false;
+	string line;
+	string currentDay;
+	Entry currentEntry;
+	bool insideDay = false;
 
-    while (getline(in, line))
-    {
-        size_t start = line.find_first_not_of(" \t\r\n");
-        line = (start == string::npos) ? "" : line.substr(start);
+	while (getline(in, line))
+	{
+		size_t start = line.find_first_not_of(" \t\r\n");
+		line = (start == string::npos) ? "" : line.substr(start);
 
-        if (line.empty() || line[0] == '#')
-            continue;
+		if (line.empty() || line[0] == '#')
+			continue;
 
-        if (line == "MONDAY" || line == "TUESDAY" ||
-            line == "WEDNESDAY" || line == "THURSDAY" ||
-            line == "FRIDAY" || line == "SATURDAY" ||
-            line == "SUNDAY")
-        {
-            currentDay = line;
-            currentEntry.timetable.clear();
-            insideDay = true;
-            continue;
-        }
+		if (line == "MONDAY" || line == "TUESDAY" ||
+			line == "WEDNESDAY" || line == "THURSDAY" ||
+			line == "FRIDAY" || line == "SATURDAY" ||
+			line == "SUNDAY")
+		{
+			currentDay = line;
+			currentEntry.timetable.clear();
+			insideDay = true;
+			continue;
+		}
 
-        if (line == "ENDDAY")
-        {
-            if (insideDay && !currentDay.empty())
-                data[currentDay].push_back(currentEntry);
+		if (line == "ENDDAY")
+		{
+			if (insideDay && !currentDay.empty())
+				data[currentDay].push_back(currentEntry);
 
-            insideDay = false;
-            currentDay.clear();
-            continue;
-        }
+			insideDay = false;
+			currentDay.clear();
+			continue;
+		}
 
-        if (insideDay)
-        {
-            istringstream ss(line);
-            string station;
-            int travel;
+		if (insideDay)
+		{
+			istringstream ss(line);
+			string station;
+			int travel, stop;
 
-            ss >> station >> travel;
+			ss >> station >> travel >> stop;
 
-            Entry::Node node;
-            node.station = station;
-            node.travelTime = travel;
-            currentEntry.timetable.push_back(node);
-        }
-    }
+			Entry::Node node;
+			node.station = station;
+			node.travelTime = travel;
+			node.stopTime = stop;
+			currentEntry.timetable.push_back(node);
+		}
+	}
 
-    cout << "Упрощённое расписание успешно загружено" << endl;
+	cout << "Упрощённое расписание успешно загружено" << endl;
 }
 
 int Schedule::parseTime(const string& txt) const
 {
-    if (txt.empty()) return 0;
-    int h = stoi(txt.substr(0, 2));
-    int m = stoi(txt.substr(3, 2));
-    int s = stoi(txt.substr(6, 2));
-    return h * 3600 + m * 60 + s;
+	if (txt.empty()) return 0;
+	int h = stoi(txt.substr(0, 2));
+	int m = stoi(txt.substr(3, 2));
+	int s = stoi(txt.substr(6, 2));
+	return h * 3600 + m * 60 + s;
 }
