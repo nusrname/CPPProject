@@ -12,7 +12,6 @@
 #include <thread>
 #include <vector>
 
-
 void TrainManager::attachTrain(shared_ptr<Train> t)
 {
 	State st;
@@ -66,20 +65,22 @@ void TrainManager::update(int step)
 			{
 				if (t->index >= 0 && t->index < t->line->getStations().size())
 					t->line->getStations()[t->index]->depart(t);
-				st.active = false;
-				t->offLine = true;
-				t->index = 0;
-				t->forward = true;
-				t->stopped = true;
 
 				st.timetable = timetable;
 				t->setTimetable(st.timetable);
 
+				t->index = 0;
 				st.index = 0;
+				t->offLine = true;
+				t->forward = true;
+				t->stopped = true;
+
 				t->timeLeft = st.timetable[0].stopTime;
 
 				int interval = st.timetable[0].stopTime + st.timetable[0].travelTime;
 				st.startTime = now + interval;
+
+				st.active = false;
 			}
 		}
 
@@ -90,10 +91,11 @@ void TrainManager::update(int step)
 			st.active = true;
 			t->offLine = false;
 			t->index = 0;
+			st.index = 0;
 			t->stopped = true;
 			t->timeLeft = st.timetable[0].stopTime;
-			t->line->getStations()[t->index]->arrive(t);
 
+			t->line->getStations()[t->index]->arrive(t);
 			continue;
 		}
 
@@ -102,56 +104,109 @@ void TrainManager::update(int step)
 		// стоянка
 		if (t->stopped)
 		{
-			t->timeLeft -= step;
-			if (t->timeLeft > 0) continue;
+			// задержки применяются только если есть достаточно времени
+			if (t->timeLeft > 5)
+			{
+				if (randomEvents.isDelayEvent(now))
+				{
+					int d = randomEvents.getRandomDelay();
+					t->addDelay(d);
+					t->timeLeft += d;
 
+					cout << "Задержка поезда " << t->id
+						<< " на станции " << st.timetable[st.index].station
+						<< " на " << d << " сек\n";
+				}
+			}
+
+			t->timeLeft -= step;
+
+			if (t->timeLeft > 0)
+				continue;
+
+			// готов к отправлению
 			t->stopped = false;
+
+			// время перегона пока не уменьшаем — обработаем после
 			t->timeLeft = st.timetable[st.index].travelTime;
-			// покидаем текущую станцию
-			if (t->index >= 0 && t->index < t->line->getStations().size())
+
+			// корректный depart
+			if (t->index >= 0 && t->index < (int)t->line->getStations().size())
 				t->line->getStations()[t->index]->depart(t);
+
 			continue;
+		}
+
+		int baseTravel = st.timetable[st.index].travelTime;
+		if (t->isDelayed())
+		{
+			t->setSpeedMultiplier(1.5);
+
+			int minTravel = baseTravel / 2;
+			int newTravel = max(minTravel, (int)(baseTravel / t->getSpeedMultiplier()));
+
+			// корректная установка оставшегося времени без скачков
+			t->timeLeft = min(t->timeLeft, newTravel);
+		}
+		else
+		{
+			t->setSpeedMultiplier(1.0);
 		}
 
 		// движение
 		t->timeLeft -= step;
-		if (t->timeLeft <= 0)
+		if (t->timeLeft > 0)
+			continue;
+
+		// вычисляем следующий индекс
+		int N = t->line->getStations().size();
+		int nextIndex = t->forward ? t->index + 1 : t->index - 1;
+
+		// проверка конца линии и разворот
+		if (nextIndex < 0)
 		{
-			// вычисляем следующий индекс
-			int N = t->line->getStations().size();
-			int nextIndex = t->forward ? t->index + 1 : t->index - 1;
+			t->forward = true;
+			nextIndex = 0;
+		}
+		else if (nextIndex >= N)
+		{
+			t->forward = false;
+			nextIndex = N - 1;
+		}
 
-			// проверка конца линии и разворот
-			if (nextIndex < 0)
-			{
-				t->forward = true;
-				nextIndex = 0;
-			}
-			else if (nextIndex >= N)
-			{
-				t->forward = false;
-				nextIndex = N - 1;
-			}
-
-			// если на станции уже стоит поезд в том же направлении — задержка
-			if (!t->line->getStations()[nextIndex]->canArrive(t))
-			{
-				t->stopped = true;
-				t->timeLeft = 5; // например, 5 секунд ожидания
-				t->index = t->forward ? t->index : t->index; // остаёмся на текущей станции
-				continue;
-			}
-
-			t->index = nextIndex;
-			t->line->getStations()[t->index]->arrive(t);
-
-			// остановка на станции
-			st.index++;
-			if (st.index >= st.timetable.size())
-				st.index = (int)st.timetable.size() - 1;
-
+		// если на станции уже стоит поезд в том же направлении — задержка
+		if (!t->line->getStations()[nextIndex]->canArrive(t))
+		{
 			t->stopped = true;
-			t->timeLeft = st.timetable[st.index].stopTime;
+			t->timeLeft = max(60, static_cast<int>(60 + (t->line->getStations()[nextIndex]->getTrains().size() * 30)));
+			t->index = t->forward ? t->index : t->index; // остаёмся на текущей станции
+			continue;
+		}
+
+		t->index = nextIndex;
+		t->line->getStations()[t->index]->arrive(t);
+
+		// остановка на станции
+		st.index++;
+		if (st.index >= st.timetable.size())
+			st.index = (int)st.timetable.size() - 1;
+
+		t->stopped = true;
+		int baseStop = st.timetable[st.index].stopTime;
+
+		if (t->isDelayed())
+		{
+			// сокращение стоянки, но не менее stopTimeMin
+			int newStop = max(t->getStopMin(), baseStop - t->getDelay() / 2);
+			t->timeLeft = newStop;
+			t->resetDelay();
+
+			cout << "Поезд " << t->id << " сокращает стоянку до "
+				<< newStop << " сек\n";
+		}
+		else
+		{
+			t->timeLeft = baseStop;
 		}
 	}
 }

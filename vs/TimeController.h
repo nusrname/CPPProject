@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <random>
 #include <string>
 #include <vector>
 using namespace std;
@@ -48,16 +49,25 @@ public:
 	Schedule(const string& file = "Schedule.txt") { loadSchedule(file); }
 
 	const map<string, vector<Entry>>& get() const { return data; }
-	//const map<string, vector<Entry>>& getDaySchedule() const { return data[(TimeController::getCurrent() / 86400) % 7]; }
 };
 
 class RandomEventGenerator
 {
-	//private:
-	//	double rushHourProbability;
-	//	double normalProbability;
-	//	//mt19937 rng;
-	//public:
-	//	bool isDelayEvent(int currentTime);
-	//	int getRandomDelay();
+private:
+	mt19937 rng{ random_device{}() };
+	normal_distribution<double> norm{ 90, 30 }; // средн€€ задержка 90 сек
+	uniform_real_distribution<double> chance{ 0.0, 1.0 };
+
+public:
+
+	bool isDelayEvent(int currentTime)
+	{
+		return chance(rng) < 0.03; // 3% шанс задержки на станции
+	}
+
+	int getRandomDelay()
+	{
+		int d = (int)norm(rng);
+		return max(30, d);
+	}
 };

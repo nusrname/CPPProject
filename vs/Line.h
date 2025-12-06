@@ -61,6 +61,10 @@ private:
 	bool stopped = true;
 	bool offLine = true;
 
+	int delay = 0;                 
+	double speedMultiplier = 1.0;
+	int stopTimeMin = 60;
+
 public:
 	Train(string id, shared_ptr<Line> line) :
 		id(move(id)), line(line) {
@@ -71,9 +75,21 @@ public:
 	const string& getID() const { return id; }
 	shared_ptr<Line> getLine() const { return line; }
 
-	bool isOffline() const { return offLine; }
-	int getIndex() const { return index; }
+	//bool isOffline() const { return offLine; }
+	//int getIndex() const { return index; }
 	bool isForward() const { return forward; }
+
+	void addDelay(int sec) { delay += sec; }
+	void resetDelay() { delay = 0; }
+	int getDelay() const { return delay; }
+
+	void setSpeedMultiplier(double s) { speedMultiplier = s; }
+	double getSpeedMultiplier() const { return speedMultiplier; }
+
+	void setStopMin(int st) { stopTimeMin = st; }
+	int getStopMin() const { return stopTimeMin; }
+
+	bool isDelayed() const { return delay > 0; }
 
 	friend class TrainManager;
 };

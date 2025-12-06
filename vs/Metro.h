@@ -15,6 +15,7 @@ class TrainManager
 private:
     shared_ptr<TimeController> time;
     shared_ptr<Schedule> schedule;
+    RandomEventGenerator randomEvents;
 
     struct State
     {
