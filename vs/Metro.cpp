@@ -233,12 +233,13 @@ void Metro::simulate(int periodSeconds, int stepSeconds)
 {
 	for (int t = timeController->getCurrent(); t < periodSeconds + timeController->getCurrent(); t += stepSeconds)
 	{
-		ConsoleUI::ClearConsole();
+		//ConsoleUI::ClearConsole();
 		timeController->advance();
 		cout << endl << timeController->getFormattedTime() << endl;
 		for (auto& line : lines)
 		{
-			ConsoleUI::displayLineStatus(*line);
+			//ConsoleUI::displayLineStatus(*line);
+			line->printStatus();
 		}
 		manager->update(stepSeconds);
 		this_thread::sleep_for(chrono::seconds(1));

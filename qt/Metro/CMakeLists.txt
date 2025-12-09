@@ -16,9 +16,9 @@ set(TS_FILES Metro_ru_RU.ts)
 
 set(PROJECT_SOURCES
         main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
+        QtUI.cpp
+        QtUI.h
+        QtUI.ui
         ${TS_FILES}
 )
 
@@ -26,8 +26,10 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(Metro
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        ../../vs/Source/ConsoleUI.cpp ../../vs/Source/Line.cpp ../../vs/Source/Metro.cpp ../../vs/Source/TimeController.cpp
-        ../../vs/Headers/ConsoleUI.h ../../vs/Headers/Line.h ../../vs/Headers/Metro.h ../../vs/Headers/TimeController.h
+        ../../vs/Line.h ../../vs/Metro.h ../../vs/TimeController.h
+        ../../vs/Line.cpp ../../vs/Metro.cpp ../../vs/MetroData.txt ../../vs/Schedule.txt ../../vs/TimeController.cpp
+        DisplayTypes.h
+
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET Metro APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -45,10 +47,6 @@ else()
     else()
         add_executable(Metro
             ${PROJECT_SOURCES}
-            ../vs/Source/Line.cpp
-            ../vs/Source/Metro.cpp
-            ../vs/Source/TimeController.cpp
-            main.cpp
         )
     endif()
 
@@ -56,6 +54,7 @@ else()
 endif()
 
 target_link_libraries(Metro PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an

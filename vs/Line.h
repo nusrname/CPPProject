@@ -42,7 +42,8 @@ public:
 
 	void addStation(shared_ptr<Station> station);
 	void printStatus() const;
-	vector<shared_ptr<Station>> getStations() const { return stations; }
+	const vector<shared_ptr<Station>>& getStations() const { return stations; }
+	const string& getName() const { return name; }
 	int getStationIndex(const string& name) const;
 };
 

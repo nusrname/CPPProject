@@ -130,7 +130,7 @@
   <ItemGroup>
     <ClCompile Include="ConsoleUI.cpp" />
     <ClCompile Include="Line.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main\main.cpp" />
     <ClCompile Include="Metro.cpp" />
     <ClCompile Include="TimeController.cpp" />
   </ItemGroup>
