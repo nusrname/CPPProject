@@ -35,6 +35,7 @@ public:
 
     void attachTrain(shared_ptr<Train> train);
     void update(int step);
+    void processMovementWithOvershoot(State& st, shared_ptr<Train>& t, int step);
 };
 
 class Metro
