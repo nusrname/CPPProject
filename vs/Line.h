@@ -63,7 +63,9 @@ private:
 
 	int delay = 0;                 
 	double speedMultiplier = 1.0;
+	double accelMultiplier = 1.5;
 	int stopTimeMin = 60;
+	double stopMultiplier = 1.0;
 
 public:
 	Train(string id, shared_ptr<Line> line) :

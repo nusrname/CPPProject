@@ -144,7 +144,7 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 			// стоянка закончилась — готовимся к отправлению
 			t->stopped = false;
 			// устанавливаем базовое время перегона до следующей станции
-			t->timeLeft = st.timetable[st.index].travelTime;
+			t->timeLeft = int(st.timetable[st.index].travelTime / (t->isDelayed() ? t->accelMultiplier : t->speedMultiplier));
 
 			// перед фактическим движением убеждаемся, что поезд удалён со станции
 			// (защита от артефактов: если он всё ещё в списке станции, то удалим)
@@ -205,7 +205,7 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 			st.index = min(st.index + 1, (int)st.timetable.size() - 1);
 
 			// устанавливаем время стоянки на новой станции
-			int baseStop = st.timetable[st.index].stopTime;
+			int baseStop = st.timetable[st.index].stopTime * t->stopMultiplier;
 
 			if (t->isDelayed())
 			{

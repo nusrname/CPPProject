@@ -9,7 +9,7 @@ using namespace std;
 int main()
 {
 	setlocale(LC_ALL, "rus");
-	int time = 0, step, period;
+	int time, step, period;
 	try
 	{
 		cout << "Текущее время: ";
@@ -22,7 +22,7 @@ int main()
 		auto timeController = make_shared<TimeController>(time, step);
 		auto schedule = make_shared<Schedule>();
 		auto trainManager = make_shared<TrainManager>(schedule, timeController);
-		auto& lineSchedule = schedule->get();
+
 		Metro metro(timeController, trainManager);
 		metro.loadLines("MetroData.txt");
 		metro.simulate(period, step);

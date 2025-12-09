@@ -50,4 +50,5 @@ public:
 	void simulate(int periodSeconds = 0, int stepSeconds = 0);
 	//void printSummary() const;
 	void loadLines(const string& fileName);
+    void run(int currentTime, int step, int period);
 };
