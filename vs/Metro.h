@@ -24,6 +24,7 @@ private:
         bool active = false;
         size_t startTime = 0;
         int index = 0;
+        int segmentTimePassed = 0;
     };
 
     map<string, State> trains;
@@ -36,6 +37,7 @@ public:
     void attachTrain(shared_ptr<Train> train);
     void update(int step);
     void processMovementWithOvershoot(State& st, shared_ptr<Train>& t, int step);
+    map<string, State> getTrains() { return trains; }
 };
 
 class Metro

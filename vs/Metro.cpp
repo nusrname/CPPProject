@@ -126,6 +126,7 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 	// время ожидания в туннеле при занятости станции
 	constexpr int WAIT_WHEN_OCCUPIED = 5;
 
+    bool wasStopped = t->stopped;
 	while (remaining > 0)
 	{
 		// если поезд стоит (на станции) — сначала обрабатываем стоянку
@@ -142,7 +143,9 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 			}
 
 			// стоянка закончилась — готовимся к отправлению
-			t->stopped = false;
+            t->stopped = false;
+            if (!wasStopped && t->timeLeft == st.timetable[st.index].travelTime)
+                st.segmentTimePassed = 0;  // начало нового перегона
 			// устанавливаем базовое время перегона до следующей станции
 			t->timeLeft = int(st.timetable[st.index].travelTime / (t->isDelayed() ? t->accelMultiplier : t->speedMultiplier));
 
@@ -157,7 +160,9 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 		else
 		{
 			// поезд в движении (в туннеле)
-			int consume = min(remaining, t->timeLeft);
+            int consume = min(remaining, t->timeLeft);
+            if (!t->stopped)
+                st.segmentTimePassed += consume;
 			t->timeLeft -= consume;
 			remaining -= consume;
 

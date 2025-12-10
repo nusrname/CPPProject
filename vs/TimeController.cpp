@@ -14,7 +14,7 @@ int TimeController::getCurrent() const { return currentTime; }
 
 string TimeController::getFormattedTime() const
 {
-	vector<string> days = { "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье", };
+    vector<string> days = { "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье", };
 	string temp = "";
 	int tempCurrentTime = currentTime, seconds, minutes, hours, dayNumber;
 	seconds = tempCurrentTime % 60;

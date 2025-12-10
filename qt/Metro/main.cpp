@@ -7,6 +7,7 @@
 
 int main(int argc, char *argv[])
 {
+    setlocale(LC_ALL, "rus");
     QApplication a(argc, argv);
 
     auto timeController = make_shared<TimeController>(0, 1);
@@ -17,7 +18,7 @@ int main(int argc, char *argv[])
     metro->loadLines("../../vs/MetroData.txt");
 
     Widget w;
-    w.setMetro(metro, schedule);
+    w.setMetro(metro, schedule, trainManager, timeController);
     w.show();
 
     return a.exec();

@@ -36,6 +36,7 @@ public:
 	void advance();
 	string getFormattedTime() const;
 	int getCurrent() const;
+    void setTime(int time) {currentTime = time;}
 };
 
 class Schedule
