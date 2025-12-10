@@ -7,6 +7,9 @@
 #include <QPainter>
 #include <QPen>
 #include <QBrush>
+#include <QMouseEvent>
+#include <QMessageBox>
+using namespace std;
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
@@ -20,11 +23,13 @@ Widget::~Widget()
     delete ui;
 }
 
-void Widget::setMetro(std::shared_ptr<Metro> m)
+void Widget::setMetro(shared_ptr<Metro> m,
+                      shared_ptr<Schedule> sch)
 {
     metro = m;
+    schedule = sch;
     rebuildScene();
-    update();   // перерисовать
+    update();
 }
 
 void Widget::rebuildScene()
@@ -35,34 +40,56 @@ void Widget::rebuildScene()
 
     if (!metro) return;
 
-    auto &lines = metro->getLines();
+    const auto &lines = metro->getLines();
 
-    // Простая раскладка: каждая линия — горизонтальная на разной высоте
-    int y = 100;
+    int y = 120;
+
     for (const auto &line : lines)
     {
         DrawLine dl;
+        const auto &stations = line->getStations();
+        if (stations.empty()) continue;
 
-        int x = 100;
-        for (const auto &st : line->getStations())
+        // ищем travelTime для линии из расписания
+        vector<int> travelTimes;
+
+        if (schedule)
+        {
+            for (auto &pair : schedule->get())
+            {
+                const auto &entries = pair.second;
+                if (!entries.empty())
+                {
+                    for (auto &nd : entries[0].timetable)
+                        travelTimes.push_back(nd.travelTime);
+                    break;
+                }
+            }
+        }
+
+        double x = 100;
+
+        for (size_t i = 0; i < stations.size(); ++i)
         {
             DrawStation ds;
-            ds.name = QString::fromStdString(st->getName());
+            ds.name = QString::fromStdString(stations[i]->getName());
             ds.pos = QPointF(x, y);
+            ds.station = stations[i];
 
             drawStations.push_back(ds);
             dl.points.push_back(ds.pos);
 
-            x += 150; // расстояние между станциями
+            if (i < travelTimes.size())
+                x += travelTimes[i] * PIXELS_PER_SECOND;
+            else
+                x += 150;
         }
 
         drawLines.push_back(dl);
-        y += 200;   // следующая линия ниже
+        y += 200;
     }
-
-    // Поезда пока не отображаются (нет координат)
-    // Позже добавим интерполяцию позиций
 }
+
 
 void Widget::paintEvent(QPaintEvent *event)
 {
@@ -82,18 +109,42 @@ void Widget::paintEvent(QPaintEvent *event)
     p.setPen(QPen(Qt::blue, 2));
     for (const auto &st : drawStations)
     {
-        p.drawEllipse(st.pos, 12, 12);
-        p.drawText(st.pos + QPointF(15, 5), st.name);
+        p.drawEllipse(st.pos, 10, 10);
+        p.drawText(st.pos + QPointF(-15, 25), st.name);
     }
 
-    // Поезда — треугольники (пока нет позиций, появится позже)
+    // Поезда — треугольники
     p.setBrush(Qt::red);
     for (const auto &t : drawTrains)
     {
         QPointF a = t.pos;
-        QPointF b = t.pos + QPointF(-10, 20);
-        QPointF c = t.pos + QPointF(10, 20);
+        QPointF b = t.pos + QPointF(-10, 18);
+        QPointF c = t.pos + QPointF(10, 18);
 
         p.drawPolygon(QPolygonF() << a << b << c);
+    }
+}
+
+void Widget::mousePressEvent(QMouseEvent *event)
+{
+    QPointF click = event->pos();
+
+    for (const auto &st : drawStations)
+    {
+        double dx = click.x() - st.pos.x();
+        double dy = click.y() - st.pos.y();
+        if (sqrt(dx*dx + dy*dy) <= 15)
+        {
+            auto trains = st.station->getTrains();
+
+            QString info;
+            info += "Станция: " + st.name + "\n";
+                                             info += "Поездов: " + QString::number(trains.size()) + "\n";
+
+                   for (auto &t : trains)
+                   info += " - " + QString::fromStdString(t->getID()) + "\n";
+
+            QMessageBox::information(this, "Информация", info);
+        }
     }
 }

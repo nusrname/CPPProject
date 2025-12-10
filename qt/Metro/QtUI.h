@@ -4,8 +4,10 @@
 #include <QWidget>
 #include <vector>
 #include <memory>
+using namespace std;
 
 class Metro;
+class Schedule;
 
 #include "DisplayTypes.h"
 
@@ -21,22 +23,24 @@ public:
     explicit Widget(QWidget *parent = nullptr);
     ~Widget();
 
-    void setMetro(std::shared_ptr<Metro> m);   // <<---- НОВОЕ
+    void setMetro(shared_ptr<Metro> m, shared_ptr<Schedule> sch);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
 
 private:
     Ui::Widget *ui;
 
-    std::shared_ptr<Metro> metro;
+    shared_ptr<Metro> metro;
+    shared_ptr<Schedule> schedule;
 
-    // Данные для отрисовки
-    std::vector<DrawLine> drawLines;
-    std::vector<DrawStation> drawStations;
-    std::vector<DrawTrain> drawTrains;
+    vector<DrawLine> drawLines;
+    vector<DrawStation> drawStations;
+    vector<DrawTrain> drawTrains;
 
-    void rebuildScene();    // <<---- НОВОЕ
+    void rebuildScene();
+    static constexpr double PIXELS_PER_SECOND = 2.0;
 };
 
 #endif // WIDGET_H

@@ -1,30 +1,23 @@
 #include "QtUI.h"
 
 #include <QApplication>
-#include <QTranslator>
 
 #include "../../vs/Metro.h"
 #include "../../vs/TimeController.h"
-#include "../../vs/Line.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    // === создаём Metro ===
-    auto tc = make_shared<TimeController>(0, 0);
-    auto metro = make_shared<Metro>(tc);
+    auto timeController = make_shared<TimeController>(0, 1);
+    auto schedule       = make_shared<Schedule>("../../vs/Schedule.txt");
+    auto trainManager   = make_shared<TrainManager>(schedule, timeController);
 
-    // создаём тестовые данные
-    auto line = make_shared<Line>("Test Line");
-    line->addStation(make_shared<Station>("A"));
-    line->addStation(make_shared<Station>("B"));
-    line->addStation(make_shared<Station>("C"));
-    metro->addLine(line);
+    auto metro = make_shared<Metro>(timeController, trainManager);
+    metro->loadLines("../../vs/MetroData.txt");
 
-    // === создаём окно ===
     Widget w;
-    w.setMetro(metro);   // <<--- подключаем
+    w.setMetro(metro, schedule);
     w.show();
 
     return a.exec();

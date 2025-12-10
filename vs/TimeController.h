@@ -48,7 +48,14 @@ private:
 public:
 	Schedule(const string& file = "Schedule.txt") { loadSchedule(file); }
 
-	const map<string, vector<Entry>>& get() const { return data; }
+    const map<string, vector<Entry>>& get() const { return data; }
+    const vector<Entry>* getTrainSchedule(const string& trainID) const
+    {
+        auto it = data.find(trainID);
+        if (it == data.end())
+            return nullptr;
+        return &it->second;
+    }
 };
 
 class RandomEventGenerator

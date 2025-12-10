@@ -44,6 +44,7 @@ private:
 	vector<shared_ptr<Line>> lines;
 	shared_ptr<TimeController> timeController;
 	shared_ptr<TrainManager> manager;
+    shared_ptr<Schedule> schedule;
 public:
 	Metro(shared_ptr<TimeController> tc = nullptr,
         shared_ptr<TrainManager> trainManager = nullptr) 
@@ -55,4 +56,6 @@ public:
 	void simulate(int periodSeconds = 0, int stepSeconds = 0);
 	//void printSummary() const;
 	void loadLines(const string& fileName);
+    void setSchedule(shared_ptr<Schedule> s) { schedule = s; }
+    shared_ptr<Schedule> getSchedule() const { return schedule; }
 };
