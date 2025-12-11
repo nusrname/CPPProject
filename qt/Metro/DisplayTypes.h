@@ -15,7 +15,9 @@ struct DrawTrain
 {
     QString id;
     QPointF pos;
+    QPointF nextPos;
     bool forward;
+    bool aboveLine;
 };
 
 struct DrawLine

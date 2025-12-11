@@ -10,16 +10,30 @@ int main(int argc, char *argv[])
     setlocale(LC_ALL, "rus");
     QApplication a(argc, argv);
 
-    auto timeController = make_shared<TimeController>(0, 1);
+    Widget w;
+    w.show();
+
+    StartDialog dlg(&w);
+    if (dlg.exec() != QDialog::Accepted)
+        return 0;
+
+
+    auto timeController = make_shared<TimeController>(dlg.editStart->text().toInt(), dlg.editStep->text().toInt());
     auto schedule       = make_shared<Schedule>("../../vs/Schedule.txt");
     auto trainManager   = make_shared<TrainManager>(schedule, timeController);
 
     auto metro = make_shared<Metro>(timeController, trainManager);
     metro->loadLines("../../vs/MetroData.txt");
 
-    Widget w;
     w.setMetro(metro, schedule, trainManager, timeController);
-    w.show();
+
+    w.applySimParams(
+        dlg.editStart->text().toInt(),
+        dlg.editStep->text().toInt(),
+        dlg.editDuration->text().toInt()
+        );
+
+    w.startSimulation();
 
     return a.exec();
 }

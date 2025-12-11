@@ -4,6 +4,7 @@
 #include "../../vs/Metro.h"
 #include "../../vs/Line.h"
 
+#include <QFormLayout>
 #include <QPainter>
 #include <QBrush>
 #include <QPen>
@@ -15,38 +16,15 @@ using namespace std;
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
 {
-    setMinimumSize(1200, 800);
+    setMinimumSize(800, 600);
 
     // --- UI: поля ввода ---
-    QLabel *lbl1 = new QLabel("Начальное время (сек):", this);
-    lbl1->move(20, 20);
-
-    editStartTime = new QLineEdit(this);
-    editStartTime->setPlaceholderText("0");
-    editStartTime->setGeometry(200, 15, 80, 25);
-
-    QLabel *lbl2 = new QLabel("Шаг (сек):", this);
-    lbl2->move(20, 55);
-
-    editStep = new QLineEdit(this);
-    editStep->setPlaceholderText("1");
-    editStep->setGeometry(200, 50, 80, 25);
-
-    QLabel *lbl3 = new QLabel("Длительность (сек):", this);
-    lbl3->move(20, 90);
-
-    editDuration = new QLineEdit(this);
-    editDuration->setPlaceholderText("3600");
-    editDuration->setGeometry(200, 85, 80, 25);
-
-    // --- Старт ---
-    btnStart = new QPushButton("Старт", this);
-    btnStart->setGeometry(20, 130, 100, 32);
-    connect(btnStart, &QPushButton::clicked, this, &Widget::onStartClicked);
+    labelParams = new QLabel("Параметры симуляции не заданы", this);
+    labelParams->setGeometry(20, 20, 400, 25);
 
     // --- Время ---
     labelTime = new QLabel("00:00:00", this);
-    labelTime->setGeometry(20, 180, 200, 30);
+    labelTime->setGeometry(this->size().width() / 2 - labelTime->size().width() / 2, 50, 200, 30);
 
     // таймер симуляции
     connect(&timer, &QTimer::timeout, this, &Widget::tick);
@@ -161,10 +139,32 @@ void Widget::paintEvent(QPaintEvent *event)
     p.setBrush(Qt::red);
     for (auto &t : drawTrains)
     {
-        QPointF a = t.pos;
-        QPointF b = t.pos + QPointF(-10, 18);
-        QPointF c = t.pos + QPointF(10, 18);
-        p.drawPolygon(QPolygonF() << a << b << c);
+        // смещение над/под линией
+        double offset = t.aboveLine ? -10 : 10;
+        QPointF base = t.pos + QPointF(0, offset);
+
+        // направление
+        double angle = 0;
+        if (t.forward)
+            angle = atan2( t.nextPos.y() - t.pos.y(),
+                          t.nextPos.x() - t.pos.x() );
+        else
+            angle = atan2( t.pos.y() - t.nextPos.y(),
+                          t.pos.x() - t.nextPos.x() );
+
+        p.save();
+        p.translate(base);
+        p.rotate(angle * 180.0 / M_PI);
+
+        // рисуем треугольник «носом» вперёд
+        QPolygonF poly;
+        poly << QPointF(0, -12)
+             << QPointF(-8, 8)
+             << QPointF(8, 8);
+
+        p.setBrush(Qt::red);
+        p.drawPolygon(poly);
+        p.restore();
     }
 }
 
@@ -194,100 +194,77 @@ void Widget::mousePressEvent(QMouseEvent *event)
 void Widget::updateTrainsOnScene()
 {
     drawTrains.clear();
-
     if (!manager) return;
 
-    for (auto &p : manager->getTrains())
+    for (auto &kv : manager->getTrains())
     {
-        auto &state = p.second;
-        if (!state.active) continue;
+        const auto &st = kv.second;
+        auto t = st.train;
+        if (!st.active || t->isOffLine()) continue;
 
-        auto &train = state.train;
-
-        int idx = state.index;
-        auto &tt = state.timetable;
-
-        if (idx < 0 || idx >= tt.size()) continue;
-
-        string stName = tt[idx].station;
-        string next;
-
-        if (train->isForward())
-        {
-            if (idx + 1 < tt.size()) next = tt[idx + 1].station;
-            else next = tt[idx].station;     // конечная
-        }
-        else
-        {
-            if (idx - 1 >= 0) next = tt[idx - 1].station;
-            else next = tt[idx].station;     // конечная
-        }
+        int idx = t->getIndex();
+        if (idx < 0) continue;
 
         QPointF A, B;
-        bool foundA = false, foundB = false;
 
+        // точка A = текущая станция
         for (auto &ds : drawStations)
+            if (ds.name.toStdString() == st.timetable[idx].station)
+                A = ds.pos;
+
+        B = A;
+
+        // если поезд движется
+        if (!t->isStopped())
         {
-            if (ds.name.toStdString() == stName)
+            int next = t->isForward() ? idx + 1 : idx - 1;
+
+            if (next >= 0 && next < st.timetable.size())
             {
-                   A = ds.pos;
-                   foundA = true;
+                for (auto &ds : drawStations)
+                    if (ds.name.toStdString() == st.timetable[next].station)
+                        B = ds.pos;
+
+                double travel = st.timetable[idx].travelTime;
+                double passed = st.segmentTimePassed;
+
+                // точная доля пройденного участка
+                double k = travel > 0 ? std::clamp(passed / travel, 0.0, 1.0) : 0.0;
+
+                A = A + (B - A) * k; // новая позиция
             }
-            if (ds.name.toStdString() == next)
-            {
-                   B = ds.pos;
-                   foundB = true;
-            }
-        }
-
-        if (!foundA) continue;
-        if (!foundB) B = A;
-
-        // определяем прогресс
-        double total = tt[idx].travelTime * 1.0;
-        double gone = total - state.startTime;
-
-        double k = 0.0;
-
-        if (!state.train->isStopped())
-        {
-            int travel = tt[train->isForward() ? idx : idx - 1].travelTime;
-            if (travel > 0)
-                   k = clamp(state.segmentTimePassed / double(travel), 0.0, 1.0);
         }
 
         DrawTrain dt;
-        dt.id = QString::fromStdString(train->getID());
-        dt.pos = A + (B - A) * k;
-        dt.forward = train->isForward();
+        bool flip = !t->isForward();
+        dt.aboveLine = flip;
+        dt.id = QString::fromStdString(t->getID());
+        dt.pos = A;       // итоговое положение
+        dt.nextPos = B;
+        dt.forward = t->isForward();
 
         drawTrains.push_back(dt);
     }
 }
 
+
 void Widget::onStartClicked()
 {
-    if (!timeController || !manager)
-    {
-        QMessageBox::warning(this, "Ошибка", "Симуляция не инициализирована.");
+    StartDialog dlg(this);
+    if (dlg.exec() != QDialog::Accepted)
         return;
-    }
 
-    if (editStartTime->text().isEmpty() ||
-        editStep->text().isEmpty() ||
-        editDuration->text().isEmpty())
-    {
-        QMessageBox::warning(this, "Ошибка", "Все поля должны быть заполнены.");
-        return;
-    }
+    int start = dlg.editStart->text().toInt();
+    int step = dlg.editStep->text().toInt();
+    int dur = dlg.editDuration->text().toInt();
 
-    timeController->setTime(editStartTime->text().toInt());
-    simStep = editStep->text().toInt();
-    simDuration = editDuration->text().toInt();
+    timeController->setTime(start);
+    simStep = step;
+    simDuration = dur;
 
-    simEndTime = timeController->getCurrent() + simDuration;
+    simEndTime = timeController->getCurrent() + dur;
 
-    timer.start(60);
+    tick();   // запускаем одиночный цикл
 }
 
 void Widget::tick()
@@ -308,4 +285,46 @@ void Widget::tick()
     );
 
     update();
+
+    QTimer::singleShot(1000, this, [&]{tick();});
+}
+
+void Widget::applySimParams(int start, int step, int duration)
+{
+    simStep = step;
+    simDuration = duration;
+
+    timeController->setTime(start);
+    simEndTime = start + duration;
+
+    labelParams->setText(
+        QString("Старт: %1  |  Шаг: %2  |  Длительность: %3")
+            .arg(start).arg(step).arg(duration)
+        );
+}
+
+void Widget::startSimulation()
+{
+    tick();   // запуск одношагового режима как в консоли
+}
+
+StartDialog::StartDialog(QWidget *parent) : QDialog(parent)
+{
+    setWindowTitle("Параметры симуляции");
+    setModal(true);
+
+    auto *layout = new QFormLayout(this);
+
+    editStart = new QLineEdit("0");
+    editStep = new QLineEdit("1");
+    editDuration = new QLineEdit("3600");
+
+    layout->addRow("Начальное время (сек):", editStart);
+    layout->addRow("Шаг (сек):", editStep);
+    layout->addRow("Длительность (сек):", editDuration);
+
+    auto *btn = new QPushButton("Старт");
+    layout->addRow(btn);
+
+    connect(btn, &QPushButton::clicked, this, &QDialog::accept);
 }

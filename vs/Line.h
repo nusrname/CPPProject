@@ -93,7 +93,10 @@ public:
 	int getStopMin() const { return stopTimeMin; }
 
 	bool isDelayed() const { return delay > 0; }
-    bool isStopped() const {return stopped; }
+    bool isStopped() const { return stopped; }
 
 	friend class TrainManager;
+
+    bool isOffLine() const { return offLine; }
+    int getIndex() const { return index; }
 };

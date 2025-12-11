@@ -2,6 +2,7 @@
 #define WIDGET_H
 
 #include <QWidget>
+#include <QDialog>
 #include <QTimer>
 #include <QLineEdit>
 #include <QLabel>
@@ -34,6 +35,8 @@ public:
                   shared_ptr<TrainManager> manager,
                   shared_ptr<TimeController> time);
 
+    void applySimParams(int start, int step, int duration);
+    void startSimulation();
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event);
@@ -43,10 +46,7 @@ private slots:
     void tick();
 
 private:
-    QLineEdit *editStartTime;
-    QLineEdit *editStep;
-    QLineEdit *editDuration;
-    QPushButton *btnStart;
+    QLabel *labelParams;
     QLabel *labelTime;
 
     // simulation
@@ -67,8 +67,15 @@ private:
 
     void rebuildScene();
     void updateTrainsOnScene();
-
     static constexpr double PIXELS_PER_SECOND = 2.0;
+};
+
+class StartDialog : public QDialog
+{
+    Q_OBJECT
+public:
+    QLineEdit *editStart, *editStep, *editDuration;
+    StartDialog(QWidget *parent = nullptr);
 };
 
 #endif // WIDGET_H
