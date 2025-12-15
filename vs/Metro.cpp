@@ -1,4 +1,4 @@
-#include "ConsoleUI.h"
+п»ї#include "ConsoleUI.h"
 #include "Line.h"
 #include "Metro.h"
 #include "TimeController.h"
@@ -11,6 +11,7 @@
 #include <string>
 #include <thread>
 #include <vector>
+using namespace std;
 
 void TrainManager::attachTrain(shared_ptr<Train> t)
 {
@@ -29,7 +30,7 @@ void TrainManager::attachTrain(shared_ptr<Train> t)
 
 	t->setTimetable(st.timetable);
 
-	// запуск поездов с интервалом
+	// Р·Р°РїСѓСЃРє РїРѕРµР·РґРѕРІ СЃ РёРЅС‚РµСЂРІР°Р»РѕРј
 	int interval = st.timetable[0].stopTime + st.timetable[0].travelTime;
 	st.startTime = now + trains.size() * interval;
 	trains[t->getID()] = st;
@@ -38,7 +39,7 @@ void TrainManager::attachTrain(shared_ptr<Train> t)
 void TrainManager::update(int step)
 {
 	int now = time->getCurrent();
-	// при желании можно снова включить ограничение по времени работы метро
+	// РїСЂРё Р¶РµР»Р°РЅРёРё РјРѕР¶РЅРѕ СЃРЅРѕРІР° РІРєР»СЋС‡РёС‚СЊ РѕРіСЂР°РЅРёС‡РµРЅРёРµ РїРѕ РІСЂРµРјРµРЅРё СЂР°Р±РѕС‚С‹ РјРµС‚СЂРѕ
 	// if ((now % 86400) < 21600) return;
 
 	int day = (now / 86400) % 7;
@@ -53,20 +54,20 @@ void TrainManager::update(int step)
 		auto& st = kv.second;
 		auto& t = st.train;
 
-		// --- смена расписания (телепортация/перезапуск поезда) ---
+		// --- СЃРјРµРЅР° СЂР°СЃРїРёСЃР°РЅРёСЏ (С‚РµР»РµРїРѕСЂС‚Р°С†РёСЏ/РїРµСЂРµР·Р°РїСѓСЃРє РїРѕРµР·РґР°) ---
 		if (all.count(days[day]))
 		{
 			auto& timetable = all.at(days[day])[0].timetable;
 			if (st.timetable != timetable)
 			{
-				// если поезд всё ещё отображается на станции — удаляем его
+				// РµСЃР»Рё РїРѕРµР·Рґ РІСЃС‘ РµС‰С‘ РѕС‚РѕР±СЂР°Р¶Р°РµС‚СЃСЏ РЅР° СЃС‚Р°РЅС†РёРё вЂ” СѓРґР°Р»СЏРµРј РµРіРѕ
 				if (t->index >= 0 && t->index < (int)t->line->getStations().size())
 					t->line->getStations()[t->index]->depart(t);
 
 				st.timetable = timetable;
 				t->setTimetable(st.timetable);
 
-				// переводим поезд обратно в "фейковое депо" (offline)
+				// РїРµСЂРµРІРѕРґРёРј РїРѕРµР·Рґ РѕР±СЂР°С‚РЅРѕ РІ "С„РµР№РєРѕРІРѕРµ РґРµРїРѕ" (offline)
 				t->index = 0;
 				st.index = 0;
 				t->offLine = true;
@@ -80,7 +81,7 @@ void TrainManager::update(int step)
 			}
 		}
 
-		// --- запускаем поезд в соответствии с startTime ---
+		// --- Р·Р°РїСѓСЃРєР°РµРј РїРѕРµР·Рґ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ startTime ---
 		if (!st.active)
 		{
 			if (now < st.startTime) continue;
@@ -92,14 +93,14 @@ void TrainManager::update(int step)
 			t->stopped = true;
 			t->timeLeft = st.timetable[0].stopTime;
 
-			// прибываем на начальную (фиктивную) станцию
-			t->line->getStations()[t->index]->arrive(t);
+			// РїСЂРёР±С‹РІР°РµРј РЅР° РЅР°С‡Р°Р»СЊРЅСѓСЋ (С„РёРєС‚РёРІРЅСѓСЋ) СЃС‚Р°РЅС†РёСЋ
+			t->line->getStations()[t->index]->arrive(t, time->getCurrent());
 			continue;
 		}
 
 		if (t->offLine) continue;
 
-		// --- моделирование случайных задержек во время стоянки ---
+		// --- РјРѕРґРµР»РёСЂРѕРІР°РЅРёРµ СЃР»СѓС‡Р°Р№РЅС‹С… Р·Р°РґРµСЂР¶РµРє РІРѕ РІСЂРµРјСЏ СЃС‚РѕСЏРЅРєРё ---
 		if (t->stopped && t->timeLeft > 5)
 		{
 			if (randomEvents.isDelayEvent(now))
@@ -107,6 +108,7 @@ void TrainManager::update(int step)
 				int d = randomEvents.getRandomDelay();
 				t->addDelay(d);
 				t->timeLeft += d;
+				stats.registerDelay(d);
 
 				cout << "Delay: Train " << t->getID()
 					<< " at station " << st.timetable[st.index].station
@@ -114,22 +116,22 @@ void TrainManager::update(int step)
 			}
 		}
 
-		// --- обработка движения (включая проскоки) ---
+		// --- РѕР±СЂР°Р±РѕС‚РєР° РґРІРёР¶РµРЅРёСЏ (РІРєР»СЋС‡Р°СЏ РїСЂРѕСЃРєРѕРєРё) ---
 		processMovementWithOvershoot(st, t, step);
 	}
 }
 
 void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t, int step)
 {
-	// оставшееся время для обработки в этом тике
+	// РѕСЃС‚Р°РІС€РµРµСЃСЏ РІСЂРµРјСЏ РґР»СЏ РѕР±СЂР°Р±РѕС‚РєРё РІ СЌС‚РѕРј С‚РёРєРµ
 	int remaining = step;
-	// время ожидания в туннеле при занятости станции
-	constexpr int WAIT_WHEN_OCCUPIED = 5;
+	// РІСЂРµРјСЏ РѕР¶РёРґР°РЅРёСЏ РІ С‚СѓРЅРЅРµР»Рµ РїСЂРё Р·Р°РЅСЏС‚РѕСЃС‚Рё СЃС‚Р°РЅС†РёРё
+	constexpr int WAIT_WHEN_OCCUPIED = 60;
 
     bool wasStopped = t->stopped;
 	while (remaining > 0)
 	{
-		// если поезд стоит (на станции) — сначала обрабатываем стоянку
+		// РµСЃР»Рё РїРѕРµР·Рґ СЃС‚РѕРёС‚ (РЅР° СЃС‚Р°РЅС†РёРё) вЂ” СЃРЅР°С‡Р°Р»Р° РѕР±СЂР°Р±Р°С‚С‹РІР°РµРј СЃС‚РѕСЏРЅРєСѓ
 		if (t->stopped)
 		{
 			int consume = min(remaining, t->timeLeft);
@@ -138,28 +140,28 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 
 			if (t->timeLeft > 0)
 			{
-				// ещё стоим — выходим
+				// РµС‰С‘ СЃС‚РѕРёРј вЂ” РІС‹С…РѕРґРёРј
 				return;
 			}
 
-			// стоянка закончилась — готовимся к отправлению
+			// СЃС‚РѕСЏРЅРєР° Р·Р°РєРѕРЅС‡РёР»Р°СЃСЊ вЂ” РіРѕС‚РѕРІРёРјСЃСЏ Рє РѕС‚РїСЂР°РІР»РµРЅРёСЋ
             t->stopped = false;
             if (!wasStopped && t->timeLeft == st.timetable[st.index].travelTime)
-                st.segmentTimePassed = 0;  // начало нового перегона
-			// устанавливаем базовое время перегона до следующей станции
+                st.segmentTimePassed = 0;  // РЅР°С‡Р°Р»Рѕ РЅРѕРІРѕРіРѕ РїРµСЂРµРіРѕРЅР°
+			// СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј Р±Р°Р·РѕРІРѕРµ РІСЂРµРјСЏ РїРµСЂРµРіРѕРЅР° РґРѕ СЃР»РµРґСѓСЋС‰РµР№ СЃС‚Р°РЅС†РёРё
 			t->timeLeft = int(st.timetable[st.index].travelTime / (t->isDelayed() ? t->accelMultiplier : t->speedMultiplier));
 
-			// перед фактическим движением убеждаемся, что поезд удалён со станции
-			// (защита от артефактов: если он всё ещё в списке станции, то удалим)
+			// РїРµСЂРµРґ С„Р°РєС‚РёС‡РµСЃРєРёРј РґРІРёР¶РµРЅРёРµРј СѓР±РµР¶РґР°РµРјСЃСЏ, С‡С‚Рѕ РїРѕРµР·Рґ СѓРґР°Р»С‘РЅ СЃРѕ СЃС‚Р°РЅС†РёРё
+			// (Р·Р°С‰РёС‚Р° РѕС‚ Р°СЂС‚РµС„Р°РєС‚РѕРІ: РµСЃР»Рё РѕРЅ РІСЃС‘ РµС‰С‘ РІ СЃРїРёСЃРєРµ СЃС‚Р°РЅС†РёРё, С‚Рѕ СѓРґР°Р»РёРј)
 			for (auto& s : t->line->getStations())
 				s->depart(t);
 
-			// если remaining == 0 — выход, следующий тик обработает поезд в движении
+			// РµСЃР»Рё remaining == 0 вЂ” РІС‹С…РѕРґ, СЃР»РµРґСѓСЋС‰РёР№ С‚РёРє РѕР±СЂР°Р±РѕС‚Р°РµС‚ РїРѕРµР·Рґ РІ РґРІРёР¶РµРЅРёРё
 			if (remaining == 0) return;
 		}
 		else
 		{
-			// поезд в движении (в туннеле)
+			// РїРѕРµР·Рґ РІ РґРІРёР¶РµРЅРёРё (РІ С‚СѓРЅРЅРµР»Рµ)
             int consume = min(remaining, t->timeLeft);
             if (!t->stopped)
                 st.segmentTimePassed += consume;
@@ -168,53 +170,65 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 
 			if (t->timeLeft > 0)
 			{
-				// ещё в туннеле до следующей станции
+				// РµС‰С‘ РІ С‚СѓРЅРЅРµР»Рµ РґРѕ СЃР»РµРґСѓСЋС‰РµР№ СЃС‚Р°РЅС†РёРё
 				return;
 			}
 
-			// поезд завершил перегон — нужно принять решение о заезде на следующую станцию
+			// РїРѕРµР·Рґ Р·Р°РІРµСЂС€РёР» РїРµСЂРµРіРѕРЅ вЂ” РЅСѓР¶РЅРѕ РїСЂРёРЅСЏС‚СЊ СЂРµС€РµРЅРёРµ Рѕ Р·Р°РµР·РґРµ РЅР° СЃР»РµРґСѓСЋС‰СѓСЋ СЃС‚Р°РЅС†РёСЋ
 			int N = (int)t->line->getStations().size();
 			int candidate = t->forward ? t->index + 1 : t->index - 1;
 
-			// проверка конца линии и разворот (поезд "заезжает" в крайние фиктивные позиции)
+			// РїСЂРѕРІРµСЂРєР° РєРѕРЅС†Р° Р»РёРЅРёРё Рё СЂР°Р·РІРѕСЂРѕС‚ (РїРѕРµР·Рґ "Р·Р°РµР·Р¶Р°РµС‚" РІ РєСЂР°Р№РЅРёРµ С„РёРєС‚РёРІРЅС‹Рµ РїРѕР·РёС†РёРё)
 			if (candidate < 0)
 			{
 				t->forward = true;
-				candidate = 0;
+				candidate = 0; 
+				for (auto& s : t->line->getStations())
+					s->resetArrivalForDirection(true);
 			}
 			else if (candidate >= N)
 			{
 				t->forward = false;
 				candidate = N - 1;
+				for (auto& s : t->line->getStations())
+					s->resetArrivalForDirection(false);
 			}
 
-			// Перед попыткой arrive: убеждаемся, что мы полностью удалены из любых станций
+			// РџРµСЂРµРґ РїРѕРїС‹С‚РєРѕР№ arrive: СѓР±РµР¶РґР°РµРјСЃСЏ, С‡С‚Рѕ РјС‹ РїРѕР»РЅРѕСЃС‚СЊСЋ СѓРґР°Р»РµРЅС‹ РёР· Р»СЋР±С‹С… СЃС‚Р°РЅС†РёР№
 			for (auto& s : t->line->getStations())
 				s->depart(t);
 
-			// Если нельзя заехать (станция занята поездом в том же направлении) —
-			// остаёмся в туннеле и ждём небольшую паузу
-			if (!t->line->getStations()[candidate]->canArrive(t))
+			// Р•СЃР»Рё РЅРµР»СЊР·СЏ Р·Р°РµС…Р°С‚СЊ (СЃС‚Р°РЅС†РёСЏ Р·Р°РЅСЏС‚Р° РїРѕРµР·РґРѕРј РІ С‚РѕРј Р¶Рµ РЅР°РїСЂР°РІР»РµРЅРёРё) вЂ”
+			// РѕСЃС‚Р°С‘РјСЃСЏ РІ С‚СѓРЅРЅРµР»Рµ Рё Р¶РґС‘Рј РЅРµР±РѕР»СЊС€СѓСЋ РїР°СѓР·Сѓ
+			auto station = t->line->getStations()[candidate];
+			if (!station->canArrive(t) || !station->isIntervalSafe(time->getCurrent()))
 			{
-				t->stopped = true; // ожидаем в туннеле (считать как "стоп" для простоты)
+				t->stopped = true; // РѕР¶РёРґР°РµРј РІ С‚СѓРЅРЅРµР»Рµ (СЃС‡РёС‚Р°С‚СЊ РєР°Рє "СЃС‚РѕРї" РґР»СЏ РїСЂРѕСЃС‚РѕС‚С‹)
 				t->timeLeft = WAIT_WHEN_OCCUPIED;
-				// НЕ изменяем t->index и НЕ увеличиваем st.index — повторная попытка будет в следующем тике
+				t->addDelay(60);
+				st.segmentTimePassed = 0;
+				// РќР• РёР·РјРµРЅСЏРµРј t->index Рё РќР• СѓРІРµР»РёС‡РёРІР°РµРј st.index вЂ” РїРѕРІС‚РѕСЂРЅР°СЏ РїРѕРїС‹С‚РєР° Р±СѓРґРµС‚ РІ СЃР»РµРґСѓСЋС‰РµРј С‚РёРєРµ
 				return;
 			}
 
-			// Успешный заезд на станцию:
+			// РЈСЃРїРµС€РЅС‹Р№ Р·Р°РµР·Рґ РЅР° СЃС‚Р°РЅС†РёСЋ:
 			t->index = candidate;
-			t->line->getStations()[t->index]->arrive(t);
+			t->line->getStations()[t->index]->arrive(t, time->getCurrent());
+			if (st.segmentTimePassed > 0)
+			{
+				stats.registerInterval(station->getLastInterval());
+				st.segmentTimePassed = 0;
+			}
 
-			// обновляем позицию в расписании: переходим к следующей записи (если есть)
+			// РѕР±РЅРѕРІР»СЏРµРј РїРѕР·РёС†РёСЋ РІ СЂР°СЃРїРёСЃР°РЅРёРё: РїРµСЂРµС…РѕРґРёРј Рє СЃР»РµРґСѓСЋС‰РµР№ Р·Р°РїРёСЃРё (РµСЃР»Рё РµСЃС‚СЊ)
 			st.index = min(st.index + 1, (int)st.timetable.size() - 1);
 
-			// устанавливаем время стоянки на новой станции
+			// СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј РІСЂРµРјСЏ СЃС‚РѕСЏРЅРєРё РЅР° РЅРѕРІРѕР№ СЃС‚Р°РЅС†РёРё
 			int baseStop = st.timetable[st.index].stopTime * t->stopMultiplier;
 
 			if (t->isDelayed())
 			{
-				// сокращаем стоянку (но не меньше некоторого минимума)
+				// СЃРѕРєСЂР°С‰Р°РµРј СЃС‚РѕСЏРЅРєСѓ (РЅРѕ РЅРµ РјРµРЅСЊС€Рµ РЅРµРєРѕС‚РѕСЂРѕРіРѕ РјРёРЅРёРјСѓРјР°)
 				int newStop = max(t->getStopMin(), baseStop - t->getDelay() / 2);
 				t->timeLeft = newStop;
 				t->resetDelay();
@@ -228,7 +242,7 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 
 			t->stopped = true;
 
-			// цикл продолжается, если remaining > 0 (возможен проскок через ещё станции)
+			// С†РёРєР» РїСЂРѕРґРѕР»Р¶Р°РµС‚СЃСЏ, РµСЃР»Рё remaining > 0 (РІРѕР·РјРѕР¶РµРЅ РїСЂРѕСЃРєРѕРє С‡РµСЂРµР· РµС‰С‘ СЃС‚Р°РЅС†РёРё)
 		}
 	}
 }
@@ -236,7 +250,8 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 
 void Metro::simulate(int periodSeconds, int stepSeconds)
 {
-	for (int t = timeController->getCurrent(); t < periodSeconds + timeController->getCurrent(); t += stepSeconds)
+	int time = timeController->getCurrent();
+	for (int t = time; t < periodSeconds + time; t += stepSeconds)
 	{
 		//ConsoleUI::ClearConsole();
 		timeController->advance();
@@ -247,8 +262,9 @@ void Metro::simulate(int periodSeconds, int stepSeconds)
 			line->printStatus();
 		}
 		manager->update(stepSeconds);
-		this_thread::sleep_for(chrono::seconds(1));
+		//this_thread::sleep_for(chrono::seconds(1));
 	}
+	manager->printStats();
 }
 
 void Metro::addLine(shared_ptr<Line> line)
@@ -262,7 +278,7 @@ void Metro::loadLines(const string& fileName)
 {
 	ifstream in(fileName);
 	if (!in.is_open())
-		throw "Не удалось открыть файл MetroData.txt";
+		throw "РќРµ СѓРґР°Р»РѕСЃСЊ РѕС‚РєСЂС‹С‚СЊ С„Р°Р№Р» MetroData.txt";
 
 	string line;
 
@@ -312,12 +328,12 @@ void Metro::loadLines(const string& fileName)
 
 void Metro::generateSimpleLine(int stationCount, int trainCount)
 {
-    stationCount = std::clamp(stationCount, 7, 20);
+    stationCount = clamp(stationCount, 7, 20);
     trainCount = max(1, trainCount);
 
     auto line = make_shared<Line>("Line-1");
 
-    // --- станции ---
+    // --- СЃС‚Р°РЅС†РёРё ---
     for (int i = 0; i < stationCount; ++i)
     {
         line->addStation(
@@ -327,7 +343,7 @@ void Metro::generateSimpleLine(int stationCount, int trainCount)
 
     lines.push_back(line);
 
-    // --- поезда ---
+    // --- РїРѕРµР·РґР° ---
     for (int i = 0; i < trainCount; ++i)
     {
         auto train = make_shared<Train>(

@@ -1,5 +1,6 @@
-#pragma once
+﻿#pragma once
 #include "TimeController.h"
+#include <iostream>
 #include <map>
 #include <memory>
 #include <string>
@@ -10,12 +11,48 @@ class Line;
 class Train;
 class TimeController;
 
+struct SimulationStats
+{
+    int delayCount = 0;
+    int totalDelay = 0;
+
+    int maxInterval = 0;
+    int totalIntervals = 0;
+    int intervalCount = 0;
+
+    void registerDelay(int d)
+    {
+        delayCount++;
+        totalDelay += d;
+    }
+
+    void registerInterval(int i)
+    {
+        if (i <= 0) return;
+        intervalCount++;
+        totalIntervals += i;
+        maxInterval = max(maxInterval, i);
+    }
+
+    void print() const
+    {
+        cout << "\n=== Итоги моделирования ===\n";
+        cout << "Задержек: " << delayCount << "\n";
+        cout << "Средняя задержка: "
+            << (delayCount ? totalDelay / delayCount : 0) << " сек\n";
+        cout << "Макс. интервал: " << maxInterval << " сек\n";
+        cout << "Средний интервал: "
+            << (intervalCount ? totalIntervals / intervalCount : 0) << " сек\n";
+    }
+};
+
 class TrainManager
 {
 private:
     shared_ptr<TimeController> time;
     shared_ptr<Schedule> schedule;
     RandomEventGenerator randomEvents;
+    SimulationStats stats;
 
     struct State
     {
@@ -38,6 +75,7 @@ public:
     void update(int step);
     void processMovementWithOvershoot(State& st, shared_ptr<Train>& t, int step);
     map<string, State> getTrains() { return trains; }
+    void printStats() const { stats.print(); }
 };
 
 class Metro

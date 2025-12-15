@@ -1,4 +1,4 @@
-#include "Line.h"
+ï»¿#include "Line.h"
 #include <algorithm>
 #include <iostream>
 #include <memory>
@@ -9,8 +9,8 @@
 
 void Line::printStatus() const
 {
-	cout << "\n\nËèíèÿ " << name << ":\n";
-	cout << "\tÑòàíöèé: " << stations.size() << "\n\tÑïèñîê:\n";
+	cout << "\n\nÐ›Ð¸Ð½Ð¸Ñ " << name << ":\n";
+	cout << "\tÐ¡Ñ‚Ð°Ð½Ñ†Ð¸Ð¹: " << stations.size() << "\n\tÐ¡Ð¿Ð¸ÑÐ¾Ðº:\n";
 
 	for (auto& st : stations)
 		st->printStatus();
@@ -37,8 +37,8 @@ void Station::printStatus() const
 	constexpr char up = 24;
 	constexpr char down = 25;
 
-	cout << "\t\tÑòàíöèÿ " + name + ": " << endl;
-	cout << "\t\tÏîåçäîâ íà ñòàíöèè: " << trains.size() << "\n\t\tÀ èìåííî:" << endl;
+	cout << "\t\tÐ¡Ñ‚Ð°Ð½Ñ†Ð¸Ñ " + name + ": " << endl;
+	cout << "\t\tÐŸÐ¾ÐµÐ·Ð´Ð¾Ð² Ð½Ð° ÑÑ‚Ð°Ð½Ñ†Ð¸Ð¸: " << trains.size() << "\n\t\tÐ Ð¸Ð¼ÐµÐ½Ð½Ð¾:" << endl;
 	for (auto& train : trains)
 		cout << "\t\t\t" << train->getID() << (train->isForward() ? down : up) << endl;
 	cout << endl;
@@ -52,10 +52,23 @@ bool Station::canArrive(shared_ptr<Train> train)
 	return true;
 }
 
-void Station::arrive(shared_ptr<Train> train) 
+void Station::arrive(shared_ptr<Train> train, int currentTime)
 {
+	if (train->isForward())
+	{
+		if (lastArrivalForward >= 0)
+			lastInterval = currentTime - lastArrivalForward;
+		lastArrivalForward = currentTime;
+	}
+	else
+	{
+		if (lastArrivalBackward >= 0)
+			lastInterval = currentTime - lastArrivalBackward;
+		lastArrivalBackward = currentTime;
+	}
 	trains.push_back(train);
 }
+
 
 void Station::depart(shared_ptr<Train> train)
 {
@@ -64,3 +77,16 @@ void Station::depart(shared_ptr<Train> train)
 		trains.end()
 	);
 }
+
+bool Station::isIntervalSafe(int currentTime) const
+{
+	if (lastArrivalTime < 0)
+		return true;
+	return (currentTime - lastArrivalTime) >= 60;
+}
+
+int Station::getLastInterval() const
+{
+	return lastInterval;
+}
+

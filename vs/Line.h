@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "TimeController.h"
 #include <memory>
 #include <string>
@@ -14,6 +14,12 @@ class Station
 private:
 	string name;
 	vector<shared_ptr<Train>> trains;
+	
+	int lastArrivalForward = -1;
+	int lastArrivalBackward = -1;
+	int lastIntervalValue = 0;
+
+	static constexpr int SAFE_INTERVAL = 60;
 public:
 	Station(string name)
 		: name(move(name)) {
@@ -21,9 +27,19 @@ public:
 
 	void printStatus() const;
 
-	void arrive(shared_ptr<Train> train);
+	void arrive(shared_ptr<Train> train, int currentTime);
 	bool canArrive(shared_ptr<Train> train);
 	void depart(shared_ptr<Train> train);
+
+	bool isIntervalSafe(int currentTime) const;
+	int getLastInterval() const;
+	void resetArrivalForDirection(bool forward)
+	{
+		if (forward)
+			lastArrivalForward = -1;
+		else
+			lastArrivalBackward = -1;
+	}
 
 	const string& getName() const { return name; }
 	vector<shared_ptr<Train>> getTrains() const { return trains; }

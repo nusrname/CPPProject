@@ -1,4 +1,4 @@
-#include "../Metro.h"
+ï»¿#include "../Metro.h"
 #include "../TimeController.h"
 #include <clocale>
 #include <exception>
@@ -12,11 +12,11 @@ int main()
 	int time, step, period;
 	try
 	{
-		cout << "Òåêóùåå âðåìÿ: ";
+		cout << "Ð¢ÐµÐºÑƒÑ‰ÐµÐµ Ð²Ñ€ÐµÐ¼Ñ: ";
 		cin >> time;
-		cout << "Øàã ñèìóëÿöèè: ";
+		cout << "Ð¨Ð°Ð³ ÑÐ¸Ð¼ÑƒÐ»ÑÑ†Ð¸Ð¸: ";
 		cin >> step;
-		cout << "Âðåìÿ ñèìóëÿöèè: ";
+		cout << "Ð’Ñ€ÐµÐ¼Ñ ÑÐ¸Ð¼ÑƒÐ»ÑÑ†Ð¸Ð¸: ";
 		cin >> period;
 
 		auto timeController = make_shared<TimeController>(time, step);
