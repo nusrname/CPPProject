@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include <map>
 #include <random>
 #include <string>
@@ -10,11 +10,12 @@ class Train;
 
 struct Entry
 {
+	int interval = 300;
 	struct Node
 	{
 		string station;
-		int travelTime = 0;   // время движения до следующей станции
-		int stopTime = 60;     // время стоянки на текущей станции
+		int travelTime = 0;   // РІСЂРµРјСЏ РґРІРёР¶РµРЅРёСЏ РґРѕ СЃР»РµРґСѓСЋС‰РµР№ СЃС‚Р°РЅС†РёРё
+		int stopTime = 60;     // РІСЂРµРјСЏ СЃС‚РѕСЏРЅРєРё РЅР° С‚РµРєСѓС‰РµР№ СЃС‚Р°РЅС†РёРё
 		bool operator==(const Node& other) const 
 		{
 			return station == other.station &&
@@ -63,14 +64,14 @@ class RandomEventGenerator
 {
 private:
 	mt19937 rng{ random_device{}() };
-	normal_distribution<double> norm{ 90, 30 }; // средняя задержка 90 сек
+	normal_distribution<double> norm{ 90, 30 }; // СЃСЂРµРґРЅСЏСЏ Р·Р°РґРµСЂР¶РєР° 90 СЃРµРє
 	uniform_real_distribution<double> chance{ 0.0, 1.0 };
 
 public:
 
 	bool isDelayEvent(int currentTime)
 	{
-		return chance(rng) < 0.03; // 3% шанс задержки на станции
+		return chance(rng) < 0.03; // 3% С€Р°РЅСЃ Р·Р°РґРµСЂР¶РєРё РЅР° СЃС‚Р°РЅС†РёРё
 	}
 
 	int getRandomDelay()

@@ -100,5 +100,6 @@ public:
     void setSchedule(shared_ptr<Schedule> s) { schedule = s; }
     shared_ptr<Schedule> getSchedule() const { return schedule; }
 
-    void generateSimpleLine(int stationCount, int trainCount);
+    //void generateSimpleLine(int stationCount, int trainCount);
+    void generateLineFromSchedule(const string& day);
 };

@@ -1,4 +1,4 @@
-#include "TimeController.h"
+п»ї#include "TimeController.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -14,7 +14,7 @@ int TimeController::getCurrent() const { return currentTime; }
 
 string TimeController::getFormattedTime() const
 {
-    vector<string> days = { "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье", };
+    vector<string> days = { "РџРѕРЅРµРґРµР»СЊРЅРёРє", "Р’С‚РѕСЂРЅРёРє", "РЎСЂРµРґР°", "Р§РµС‚РІРµСЂРі", "РџСЏС‚РЅРёС†Р°", "РЎСѓР±Р±РѕС‚Р°", "Р’РѕСЃРєСЂРµСЃРµРЅСЊРµ", };
 	string temp = "";
 	int tempCurrentTime = currentTime, seconds, minutes, hours, dayNumber;
 	seconds = tempCurrentTime % 60;
@@ -35,7 +35,7 @@ void Schedule::loadSchedule(const string& file)
 {
 	ifstream in(file);
 	if (!in.is_open())
-		throw "Не удалось открыть файл Schedule.txt";
+		throw "РќРµ СѓРґР°Р»РѕСЃСЊ РѕС‚РєСЂС‹С‚СЊ С„Р°Р№Р» Schedule.txt";
 
 	string line;
 	string currentDay;
@@ -56,7 +56,8 @@ void Schedule::loadSchedule(const string& file)
 			line == "SUNDAY")
 		{
 			currentDay = line;
-			currentEntry.timetable.clear();
+			//currentEntry.timetable.clear();
+			currentEntry = Entry{};
 			insideDay = true;
 			continue;
 		}
@@ -71,8 +72,17 @@ void Schedule::loadSchedule(const string& file)
 			continue;
 		}
 
+
 		if (insideDay)
 		{
+			if (line.starts_with("INTERVAL"))
+			{
+				istringstream ss(line);
+				string space;
+				ss >> space >> currentEntry.interval;
+				continue;
+			}
+
 			istringstream ss(line);
 			string station;
 			int travel, stop;
@@ -87,7 +97,7 @@ void Schedule::loadSchedule(const string& file)
 		}
 	}
 
-	cout << "Упрощённое расписание успешно загружено" << endl;
+	cout << "РЈРїСЂРѕС‰С‘РЅРЅРѕРµ СЂР°СЃРїРёСЃР°РЅРёРµ СѓСЃРїРµС€РЅРѕ Р·Р°РіСЂСѓР¶РµРЅРѕ" << endl;
 }
 
 int Schedule::parseTime(const string& txt) const

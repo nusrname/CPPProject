@@ -250,6 +250,7 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 
 void Metro::simulate(int periodSeconds, int stepSeconds)
 {
+	generateLineFromSchedule("MONDAY");
 	int time = timeController->getCurrent();
 	for (int t = time; t < periodSeconds + time; t += stepSeconds)
 	{
@@ -326,32 +327,41 @@ void Metro::loadLines(const string& fileName)
 	}
 }
 
-void Metro::generateSimpleLine(int stationCount, int trainCount)
+int computeCycleTime(const Entry& e)
 {
-    stationCount = clamp(stationCount, 7, 20);
-    trainCount = max(1, trainCount);
+	int sum = 0;
+	for (const auto& n : e.timetable)
+		sum += n.travelTime + n.stopTime;
 
-    auto line = make_shared<Line>("Line-1");
-
-    // --- станции ---
-    for (int i = 0; i < stationCount; ++i)
-    {
-        line->addStation(
-            make_shared<Station>("S" + to_string(i + 1))
-            );
-    }
-
-    lines.push_back(line);
-
-    // --- поезда ---
-    for (int i = 0; i < trainCount; ++i)
-    {
-        auto train = make_shared<Train>(
-            "T" + to_string(i + 1),
-            line
-            );
-
-        manager->attachTrain(train);
-    }
+	return sum * 2;
 }
 
+void Metro::generateLineFromSchedule(const string& day)
+{
+	const auto& entries = schedule->get().at(day);
+	const Entry& base = entries.front();
+
+	int cycleTime = computeCycleTime(base);
+	int interval = base.interval;
+
+	int trainCount = max(1, cycleTime / interval);
+
+	auto line = make_shared<Line>("Line-1");
+
+	for (size_t i = 0; i < base.timetable.size(); ++i)
+		line->addStation(
+			make_shared<Station>("S" + to_string(i + 1))
+		);
+
+	lines.push_back(line);
+
+	for (int i = 0; i < trainCount; ++i)
+	{
+		auto train = make_shared<Train>(
+			"T" + to_string(i + 1),
+			line
+		);
+
+		manager->attachTrain(train);
+	}
+}
