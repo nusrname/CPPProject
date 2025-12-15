@@ -149,7 +149,7 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
             if (!wasStopped && t->timeLeft == st.timetable[st.index].travelTime)
                 st.segmentTimePassed = 0;  // начало нового перегона
 			// устанавливаем базовое время перегона до следующей станции
-			t->timeLeft = int(st.timetable[st.index].travelTime / (t->isDelayed() ? t->accelMultiplier : t->speedMultiplier));
+			t->timeLeft = int(st.timetable[st.index].travelTime / (t->getDelay() > 0 ? t->accelMultiplier : t->speedMultiplier));
 
 			// перед фактическим движением убеждаемся, что поезд удалён со станции
 			// (защита от артефактов: если он всё ещё в списке станции, то удалим)
@@ -216,7 +216,7 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 			t->line->getStations()[t->index]->arrive(t, time->getCurrent());
 			if (st.segmentTimePassed > 0)
 			{
-				stats.registerInterval(station->getLastInterval());
+				stats.registerInterval(station->lastInterval());
 				st.segmentTimePassed = 0;
 			}
 
@@ -226,10 +226,10 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 			// устанавливаем время стоянки на новой станции
 			int baseStop = st.timetable[st.index].stopTime * t->stopMultiplier;
 
-			if (t->isDelayed())
+			if (t->getDelay() > 0)
 			{
 				// сокращаем стоянку (но не меньше некоторого минимума)
-				int newStop = max(t->getStopMin(), baseStop - t->getDelay() / 2);
+				int newStop = max(t->stopTimeMin, baseStop - t->getDelay() / 2);
 				t->timeLeft = newStop;
 				t->resetDelay();
 

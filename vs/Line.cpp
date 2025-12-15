@@ -1,36 +1,58 @@
 ﻿#include "Line.h"
 #include <algorithm>
 #include <iostream>
-#include <memory>
 #include <ostream>
-#include <string>
-#include <vector>
+using namespace std;
 
 
-void Line::printStatus() const
+Station::Station(string name) : name(move(name)) {}
+
+void Station::arrive(const shared_ptr<Train>& train, int time)
 {
-	cout << "\n\nЛиния " << name << ":\n";
-	cout << "\tСтанций: " << stations.size() << "\n\tСписок:\n";
+	int& lastArrival = train->isForward()
+		? lastArrivalForward
+		: lastArrivalBackward;
 
-	for (auto& st : stations)
-		st->printStatus();
+	if (lastArrival >= 0)
+		lastIntervalValue = time - lastArrival;
 
-	cout << endl;
+	lastArrival = time;
+	trains.push_back(train);
 }
 
-void Line::addStation(shared_ptr<Station> station)
+void Station::depart(const shared_ptr<Train>& train)
 {
-	if (find(stations.begin(), stations.end(), station) == stations.end())
-		stations.push_back(station);
+	trains.erase(
+		remove(trains.begin(), trains.end(), train),
+		trains.end()
+	);
 }
 
-int Line::getStationIndex(const std::string& name) const
+bool Station::canArrive(const shared_ptr<Train>& train) const
 {
-	for (int i = 0; i < stations.size(); ++i)
-		if (stations[i]->getName() == name)
-			return i;
-	return -1;
+	return none_of(
+		trains.begin(), trains.end(),
+		[&](const auto& t)
+		{
+			return t == train || t->isForward() == train->isForward();
+		}
+	);
 }
+
+bool Station::isIntervalSafe(int currentTime) const
+{
+	int last = max(lastArrivalForward, lastArrivalBackward);
+	return last < 0 || (currentTime - last) >= SAFE_INTERVAL;
+}
+
+void Station::resetArrivalForDirection(bool forward)
+{
+	(forward ? lastArrivalForward : lastArrivalBackward) = -1;
+}
+
+int Station::lastInterval() const noexcept { return lastIntervalValue; }
+const string& Station::getName() const noexcept { return name; }
+const vector<shared_ptr<Train>>& Station::getTrains() const noexcept { return trains; }
 
 void Station::printStatus() const
 {
@@ -44,49 +66,49 @@ void Station::printStatus() const
 	cout << endl;
 }
 
-bool Station::canArrive(shared_ptr<Train> train)
+Line::Line(string name) : name(move(name)) {}
+
+void Line::addStation(const shared_ptr<Station>& station)
 {
-	for (auto& tr : trains)
-		if (tr == train || tr->isForward() == train->isForward())
-			return false;
-	return true;
+	if (find(stations.begin(), stations.end(), station) == stations.end())
+		stations.push_back(station);
 }
 
-void Station::arrive(shared_ptr<Train> train, int currentTime)
+int Line::getStationIndex(const std::string& name) const
 {
-	if (train->isForward())
-	{
-		if (lastArrivalForward >= 0)
-			lastInterval = currentTime - lastArrivalForward;
-		lastArrivalForward = currentTime;
-	}
-	else
-	{
-		if (lastArrivalBackward >= 0)
-			lastInterval = currentTime - lastArrivalBackward;
-		lastArrivalBackward = currentTime;
-	}
-	trains.push_back(train);
+	for (int i = 0; i < stations.size(); ++i)
+		if (stations[i]->getName() == name)
+			return i;
+	return -1;
 }
 
+const vector<shared_ptr<Station>>& Line::getStations() const noexcept { return stations; }
+const string& Line::getName() const noexcept { return name; }
 
-void Station::depart(shared_ptr<Train> train)
+void Line::printStatus() const
 {
-	trains.erase(
-		remove(trains.begin(), trains.end(), train),
-		trains.end()
-	);
+	cout << "\n\nЛиния " << name << ":\n";
+	cout << "\tСтанций: " << stations.size() << "\n\tСписок:\n";
+
+	for (auto& st : stations)
+		st->printStatus();
+
+	cout << endl;
 }
 
-bool Station::isIntervalSafe(int currentTime) const
-{
-	if (lastArrivalTime < 0)
-		return true;
-	return (currentTime - lastArrivalTime) >= 60;
-}
+Train::Train(string id, shared_ptr<Line> line) : id(move(id)), line(line) {}
 
-int Station::getLastInterval() const
-{
-	return lastInterval;
-}
+const string& Train::getID() const noexcept { return id; }
+const shared_ptr<Line>& Train::getLine() const noexcept { return line; }
 
+bool Train::isForward() const noexcept { return forward; }
+bool Train::isStopped() const noexcept { return stopped; }
+bool Train::isOffline() const noexcept { return offLine; }
+
+int Train::getIndex() const noexcept { return index; }
+int Train::getDelay() const noexcept { return delay; }
+
+void Train::addDelay(int sec) { delay += sec; }
+void Train::resetDelay() { delay = 0; }
+
+void Train::setTimetable(vector<Entry::Node> table) { timetable = table; }

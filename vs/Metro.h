@@ -29,20 +29,20 @@ struct SimulationStats
     void registerInterval(int i)
     {
         if (i <= 0) return;
-        intervalCount++;
+        ++intervalCount;
         totalIntervals += i;
         maxInterval = max(maxInterval, i);
     }
 
     void print() const
     {
-        cout << "\n=== Итоги моделирования ===\n";
-        cout << "Задержек: " << delayCount << "\n";
-        cout << "Средняя задержка: "
-            << (delayCount ? totalDelay / delayCount : 0) << " сек\n";
-        cout << "Макс. интервал: " << maxInterval << " сек\n";
-        cout << "Средний интервал: "
-            << (intervalCount ? totalIntervals / intervalCount : 0) << " сек\n";
+        cout << "\n=== Итоги моделирования ===\n"
+             << "Задержек: " << delayCount << "\n"
+             << "Средняя задержка: "
+             << (delayCount ? totalDelay / delayCount : 0) << " сек\n"
+             << "Макс. интервал: " << maxInterval << " сек\n"
+             << "Средний интервал: "
+             << (intervalCount ? totalIntervals / intervalCount : 0) << " сек\n";
     }
 };
 

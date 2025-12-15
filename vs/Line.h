@@ -2,9 +2,7 @@
 #include "TimeController.h"
 #include <memory>
 #include <string>
-#include <utility>
 #include <vector>
-using namespace std;
 
 
 class Train;
@@ -21,28 +19,20 @@ private:
 
 	static constexpr int SAFE_INTERVAL = 60;
 public:
-	Station(string name)
-		: name(move(name)) {
-	}
+	explicit Station(string name);
+
+	void arrive(const shared_ptr<Train>& train, int currentTime);
+	void depart(const shared_ptr<Train>& train);
+
+	bool canArrive(const shared_ptr<Train>& train) const;
+	bool isIntervalSafe(int currentTime) const;
+	void resetArrivalForDirection(bool forward);
+
+	int lastInterval() const noexcept;
+	const string& getName() const noexcept;
+	const vector<shared_ptr<Train>>& getTrains() const noexcept;
 
 	void printStatus() const;
-
-	void arrive(shared_ptr<Train> train, int currentTime);
-	bool canArrive(shared_ptr<Train> train);
-	void depart(shared_ptr<Train> train);
-
-	bool isIntervalSafe(int currentTime) const;
-	int getLastInterval() const;
-	void resetArrivalForDirection(bool forward)
-	{
-		if (forward)
-			lastArrivalForward = -1;
-		else
-			lastArrivalBackward = -1;
-	}
-
-	const string& getName() const { return name; }
-	vector<shared_ptr<Train>> getTrains() const { return trains; }
 };
 
 class Line
@@ -52,15 +42,15 @@ private:
 	vector<shared_ptr<Station>> stations;
 
 public:
-	Line(string name = "line")
-		: name(move(name)) {
-	}
+	explicit Line(string name);
 
-	void addStation(shared_ptr<Station> station);
-	void printStatus() const;
-	const vector<shared_ptr<Station>>& getStations() const { return stations; }
-	const string& getName() const { return name; }
+	void addStation(const shared_ptr<Station>& station);
 	int getStationIndex(const string& name) const;
+
+	const vector<shared_ptr<Station>>& getStations() const noexcept;
+	const string& getName() const noexcept;
+
+	void printStatus() const;
 };
 
 class Train : public enable_shared_from_this<Train>
@@ -71,48 +61,36 @@ private:
 
 	int index = -1;
 	bool forward = true;
-
-	vector<Entry::Node> timetable;
-	//int schedulePos = 0;
-	int timeLeft = 0;
 	bool stopped = true;
 	bool offLine = true;
 
-	int delay = 0;                 
+	int delay = 0;
+	int timeLeft = 0;
+         
 	double speedMultiplier = 1.0;
 	double accelMultiplier = 1.5;
 	int stopTimeMin = 60;
 	double stopMultiplier = 1.0;
 
+	vector<Entry::Node> timetable;
+
 public:
-	Train(string id, shared_ptr<Line> line) :
-		id(move(id)), line(line) {
-	}
+	Train(string id, shared_ptr<Line> line);
 
-	void setTimetable(vector<Entry::Node> table) { timetable = table; }
+	const string& getID() const noexcept;
+	const shared_ptr<Line>& getLine() const noexcept;
 
-	const string& getID() const { return id; }
-	shared_ptr<Line> getLine() const { return line; }
+	bool isForward() const noexcept;
+	bool isStopped() const noexcept;
+	bool isOffline() const noexcept;
 
-	//bool isOffline() const { return offLine; }
-	//int getIndex() const { return index; }
-	bool isForward() const { return forward; }
+	int getIndex() const noexcept;
+	int getDelay() const noexcept;
 
-	void addDelay(int sec) { delay += sec; }
-	void resetDelay() { delay = 0; }
-	int getDelay() const { return delay; }
+	void addDelay(int sec);
+	void resetDelay();
 
-	void setSpeedMultiplier(double s) { speedMultiplier = s; }
-	double getSpeedMultiplier() const { return speedMultiplier; }
-
-	void setStopMin(int st) { stopTimeMin = st; }
-	int getStopMin() const { return stopTimeMin; }
-
-	bool isDelayed() const { return delay > 0; }
-    bool isStopped() const { return stopped; }
+	void setTimetable(vector<Entry::Node> table);
 
 	friend class TrainManager;
-
-    bool isOffLine() const { return offLine; }
-    int getIndex() const { return index; }
 };
