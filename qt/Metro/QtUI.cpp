@@ -24,10 +24,17 @@ Widget::Widget(QWidget *parent)
 
     // --- Время ---
     labelTime = new QLabel("00:00:00", this);
-    labelTime->setGeometry(this->size().width() / 2 - labelTime->size().width() / 2, 50, 200, 30);
+    labelTime->setGeometry((this->size().width() - labelTime->size().width()) / 2, 50, 200, 30);
 
     // таймер симуляции
     connect(&timer, &QTimer::timeout, this, &Widget::tick);
+
+    btnPause = new QPushButton("Пауза", this);
+    btnPause->setGeometry((this->size().width() - labelTime->size().width()) / 2, this->size().height() - 50, 120, 32);
+    btnPause->setEnabled(false); // активируется после старта
+
+    connect(btnPause, &QPushButton::clicked, this, &Widget::onPauseClicked);
+
 }
 
 Widget::~Widget()
@@ -180,8 +187,12 @@ void Widget::mousePressEvent(QMouseEvent *event)
         {
             auto trains = st.station->getTrains();
 
-            QString info = "Станция: " + st.name + "\n";
-            info += "Поездов: " + QString::number(trains.size()) + "\n";
+            QString info = "Станция: " + st.name + "\n"
+                           + "Интервал: \n"
+                           + "Время стоянки: \n"
+                           + "Время движения до станции: \n"
+                           + "Поездов: " + QString::number(trains.size())
+                           + "\n";
 
             for (auto &t : trains)
                 info += " - " + QString::fromStdString(t->getID()) + "\n";
@@ -247,7 +258,6 @@ void Widget::updateTrainsOnScene()
     }
 }
 
-
 void Widget::onStartClicked()
 {
     StartDialog dlg(this);
@@ -269,6 +279,7 @@ void Widget::onStartClicked()
 
 void Widget::tick()
 {
+    if (paused) return;
     if (timeController->getCurrent() >= simEndTime)
     {
         timer.stop();
@@ -285,8 +296,7 @@ void Widget::tick()
     );
 
     update();
-
-    QTimer::singleShot(1000, this, [&]{tick();});
+    QTimer::singleShot(1000, this, [&]{ tick(); });
 }
 
 void Widget::applySimParams(int start, int step, int duration)
@@ -305,7 +315,25 @@ void Widget::applySimParams(int start, int step, int duration)
 
 void Widget::startSimulation()
 {
+    paused = false;
+    btnPause->setText("Пауза");
+    btnPause->setEnabled(true);
     tick();   // запуск одношагового режима как в консоли
+}
+
+void Widget::onPauseClicked()
+{
+    paused = !paused;
+
+    if (paused)
+    {
+        btnPause->setText("Продолжить");
+    }
+    else
+    {
+        btnPause->setText("Пауза");
+        tick(); // возобновляем симуляцию
+    }
 }
 
 StartDialog::StartDialog(QWidget *parent) : QDialog(parent)

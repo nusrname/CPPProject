@@ -309,3 +309,33 @@ void Metro::loadLines(const string& fileName)
 		}
 	}
 }
+
+void Metro::generateSimpleLine(int stationCount, int trainCount)
+{
+    stationCount = std::clamp(stationCount, 7, 20);
+    trainCount = max(1, trainCount);
+
+    auto line = make_shared<Line>("Line-1");
+
+    // --- станции ---
+    for (int i = 0; i < stationCount; ++i)
+    {
+        line->addStation(
+            make_shared<Station>("S" + to_string(i + 1))
+            );
+    }
+
+    lines.push_back(line);
+
+    // --- поезда ---
+    for (int i = 0; i < trainCount; ++i)
+    {
+        auto train = make_shared<Train>(
+            "T" + to_string(i + 1),
+            line
+            );
+
+        manager->attachTrain(train);
+    }
+}
+

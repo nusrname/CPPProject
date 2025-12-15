@@ -7,6 +7,7 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QPushButton>
+#include <QSpinBox>
 #include <vector>
 #include <memory>
 using namespace std;
@@ -43,12 +44,16 @@ protected:
 
 private slots:
     void onStartClicked();
+    void onPauseClicked();
     void tick();
 
 private:
     QLabel *labelParams;
     QLabel *labelTime;
+    QPushButton *btnPause;
+    QSpinBox *spinStep;
 
+    bool paused = false;
     // simulation
     QTimer timer;
     int simStep = 1;
