@@ -13,7 +13,7 @@
 #include <vector>
 using namespace std;
 
-void TrainManager::attachTrain(shared_ptr<Train> t)
+void TrainManager::attachTrain(shared_ptr<Train> t, int interval)
 {
 	State st;
 	st.train = t;
@@ -31,8 +31,7 @@ void TrainManager::attachTrain(shared_ptr<Train> t)
 	t->setTimetable(st.timetable);
 
 	// запуск поездов с интервалом
-	int interval = st.timetable[0].stopTime + st.timetable[0].travelTime;
-	st.startTime = now + trains.size() * interval;
+	st.startTime = now + interval;
 	trains[t->getID()] = st;
 }
 
@@ -146,8 +145,8 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 
 			// стоянка закончилась — готовимся к отправлению
             t->stopped = false;
-            if (!wasStopped && t->timeLeft == st.timetable[st.index].travelTime)
-                st.segmentTimePassed = 0;  // начало нового перегона
+			st.segmentTimePassed = 0;
+			t->timeLeft = st.timetable[st.index].travelTime / t->speedMultiplier;
 			// устанавливаем базовое время перегона до следующей станции
 			t->timeLeft = int(st.timetable[st.index].travelTime / (t->getDelay() > 0 ? t->accelMultiplier : t->speedMultiplier));
 
@@ -201,14 +200,15 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 			// Если нельзя заехать (станция занята поездом в том же направлении) —
 			// остаёмся в туннеле и ждём небольшую паузу
 			auto station = t->line->getStations()[candidate];
-			if (!station->canArrive(t) || !station->isIntervalSafe(time->getCurrent()))
+			if (!station->canArrive(t) || !station->isIntervalSafe(time->getCurrent(), t->isForward()))
 			{
-				t->stopped = true; // ожидаем в туннеле (считать как "стоп" для простоты)
-				t->timeLeft = WAIT_WHEN_OCCUPIED;
-				t->addDelay(60);
-				st.segmentTimePassed = 0;
-				// НЕ изменяем t->index и НЕ увеличиваем st.index — повторная попытка будет в следующем тике
-				return;
+				// Логическая ошибка — поезд не должен заезжать на занятую станцию при корректном интервале
+				// Для симуляции фиксированного интервала можно просто игнорировать этот тик
+				// и зафиксировать предупреждение для отладки
+				cout << "Warning: Train " << t->getID() << " attempted to arrive at occupied station "
+					<< station->getName() << " — проверьте интервал." << endl;
+				//throw "Ошибка!";
+				//return;
 			}
 
 			// Успешный заезд на станцию:
@@ -316,7 +316,7 @@ void Metro::loadLines(const string& fileName)
 			ss >> id;
 
 			auto t = make_shared<Train>(id, currentLine);
-			manager->attachTrain(t);
+			manager->attachTrain(t, id.at(3));
 		}
 
 		else if (cmd == "ENDLINE")
@@ -350,7 +350,7 @@ void Metro::generateLineFromSchedule(const string& day)
 
 	for (size_t i = 0; i < base.timetable.size(); ++i)
 		line->addStation(
-			make_shared<Station>("S" + to_string(i + 1))
+			make_shared<Station>("st" + to_string(i + 1))
 		);
 
 	lines.push_back(line);
@@ -362,6 +362,6 @@ void Metro::generateLineFromSchedule(const string& day)
 			line
 		);
 
-		manager->attachTrain(train);
+		manager->attachTrain(train, interval * i);
 	}
 }

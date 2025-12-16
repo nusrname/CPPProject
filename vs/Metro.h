@@ -71,7 +71,7 @@ public:
         : schedule(schdule), time(timeController) {
     }
 
-    void attachTrain(shared_ptr<Train> train);
+    void attachTrain(shared_ptr<Train> train, int interval);
     void update(int step);
     void processMovementWithOvershoot(State& st, shared_ptr<Train>& t, int step);
     map<string, State> getTrains() { return trains; }

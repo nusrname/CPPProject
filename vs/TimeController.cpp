@@ -14,7 +14,7 @@ int TimeController::getCurrent() const { return currentTime; }
 
 string TimeController::getFormattedTime() const
 {
-    vector<string> days = { "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье", };
+	vector<string> days = { "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье", };
 	string temp = "";
 	int tempCurrentTime = currentTime, seconds, minutes, hours, dayNumber;
 	seconds = tempCurrentTime % 60;
@@ -73,31 +73,28 @@ void Schedule::loadSchedule(const string& file)
 		}
 
 
-		if (insideDay)
+		if (insideDay && line.starts_with("INTERVAL"))
 		{
-			if (line.starts_with("INTERVAL"))
-			{
-				istringstream ss(line);
-				string space;
-				ss >> space >> currentEntry.interval;
-				continue;
-			}
-
 			istringstream ss(line);
-			string station;
-			int travel, stop;
-
-			ss >> station >> travel >> stop;
-
-			Entry::Node node;
-			node.station = station;
-			node.travelTime = travel;
-			node.stopTime = stop;
-			currentEntry.timetable.push_back(node);
+			string space;
+			ss >> space >> currentEntry.interval;
+			continue;
 		}
+
+		istringstream ss(line);
+		string station;
+		int travel, stop;
+
+		ss >> station >> travel >> stop;
+
+		Entry::Node node;
+		node.station = station;
+		node.travelTime = travel;
+		node.stopTime = stop;
+		currentEntry.timetable.push_back(node);
 	}
 
-	cout << "Упрощённое расписание успешно загружено" << endl;
+	cout << "Расписание успешно загружено" << endl;
 }
 
 int Schedule::parseTime(const string& txt) const

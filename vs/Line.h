@@ -25,7 +25,7 @@ public:
 	void depart(const shared_ptr<Train>& train);
 
 	bool canArrive(const shared_ptr<Train>& train) const;
-	bool isIntervalSafe(int currentTime) const;
+	bool isIntervalSafe(int currentTime, bool forward) const;
 	void resetArrivalForDirection(bool forward);
 
 	int lastInterval() const noexcept;
@@ -86,6 +86,7 @@ public:
 
 	int getIndex() const noexcept;
 	int getDelay() const noexcept;
+	int getTimeLeft() const noexcept;
 
 	void addDelay(int sec);
 	void resetDelay();

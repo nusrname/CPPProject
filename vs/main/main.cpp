@@ -25,6 +25,7 @@ int main()
 
 		Metro metro(timeController, trainManager);
 		//metro.loadLines("MetroData.txt");
+		metro.setSchedule(schedule);
 		metro.simulate(period, step);
 	}
 	catch (exception ex)

@@ -39,10 +39,10 @@ bool Station::canArrive(const shared_ptr<Train>& train) const
 	);
 }
 
-bool Station::isIntervalSafe(int currentTime) const
+bool Station::isIntervalSafe(int currentTime, bool forward) const
 {
-	int last = max(lastArrivalForward, lastArrivalBackward);
-	return last < 0 || (currentTime - last) >= SAFE_INTERVAL;
+	int lastDeparture = forward ? lastArrivalForward : lastArrivalBackward;
+	return currentTime >= lastDeparture + SAFE_INTERVAL;
 }
 
 void Station::resetArrivalForDirection(bool forward)
