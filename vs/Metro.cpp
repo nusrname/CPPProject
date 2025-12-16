@@ -207,8 +207,10 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 				// и зафиксировать предупреждение для отладки
 				cout << "Warning: Train " << t->getID() << " attempted to arrive at occupied station "
 					<< station->getName() << " — проверьте интервал." << endl;
-				//throw "Ошибка!";
-				//return;
+				t->stopped = true;
+				t->timeLeft = WAIT_WHEN_OCCUPIED;
+				st.segmentTimePassed = 0;
+				return;
 			}
 
 			// Успешный заезд на станцию:
@@ -338,13 +340,16 @@ int computeCycleTime(const Entry& e)
 
 void Metro::generateLineFromSchedule(const string& day)
 {
-	const auto& entries = schedule->get().at(day);
-	const Entry& base = entries.front();
+	auto it = schedule->get().find(day);
+	if (it == schedule->get().end() || it->second.empty()) 
+		throw runtime_error("Нет записей расписания для дня " + day);
+
+	const Entry& base = it->second.front();
 
 	int cycleTime = computeCycleTime(base);
-	int interval = base.interval;
+	int interval = max(1, base.interval);
 
-	int trainCount = max(1, cycleTime / interval);
+	int trainCount = (cycleTime + interval - 1) / interval;
 
 	auto line = make_shared<Line>("Line-1");
 
@@ -357,11 +362,8 @@ void Metro::generateLineFromSchedule(const string& day)
 
 	for (int i = 0; i < trainCount; ++i)
 	{
-		auto train = make_shared<Train>(
-			"T" + to_string(i + 1),
-			line
-		);
+		auto train = make_shared<Train>("T" + to_string(i + 1),	line);
 
-		manager->attachTrain(train, interval * i);
+		manager->attachTrain(train, i * interval);
 	}
 }
