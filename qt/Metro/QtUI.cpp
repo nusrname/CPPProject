@@ -51,8 +51,8 @@ void Widget::setMetro(shared_ptr<Metro> m,
     manager = man;
     timeController = tc;
 
-    rebuildScene();
-    update();
+    //rebuildScene();
+    //update();
 }
 
 void Widget::rebuildScene()
@@ -207,52 +207,72 @@ void Widget::updateTrainsOnScene()
     drawTrains.clear();
     if (!manager) return;
 
+
+    DrawTrain dt;
+    dt.pos = QPointF(200, 200);
+    dt.nextPos = QPointF(300, 200);
+    dt.forward = true;
+    dt.aboveLine = false;
+    drawTrains.push_back(dt);
+
     for (auto &kv : manager->getTrains())
     {
         const auto &st = kv.second;
         auto t = st.train;
-        if (!st.active || t->isOffLine()) continue;
+
+        if (!st.active || t->isOffline())
+            continue;
 
         int idx = t->getIndex();
-        if (idx < 0) continue;
+        if (idx < 0 || idx >= st.timetable.size())
+            continue;
 
-        QPointF A, B;
+        QPointF stationPos;
+        bool found = false;
 
-        // точка A = текущая станция
+        // текущая станция
+        const std::string &currName = st.timetable[idx].station;
         for (auto &ds : drawStations)
-            if (ds.name.toStdString() == st.timetable[idx].station)
-                A = ds.pos;
+        {
+            if (ds.name.toStdString() == currName)
+            {
+                stationPos = ds.pos;
+                found = true;
+                break;
+            }
+        }
 
-        B = A;
+        if (!found)
+            continue; // не нашли станцию — не рисуем
 
-        // если поезд движется
+        QPointF drawPos = stationPos;
+        QPointF nextPos = stationPos;
+
+        // если поезд движется — рисуем в середине перегона
         if (!t->isStopped())
         {
-            int next = t->isForward() ? idx + 1 : idx - 1;
-
-            if (next >= 0 && next < st.timetable.size())
+            int nextIdx = t->isForward() ? idx + 1 : idx - 1;
+            if (nextIdx >= 0 && nextIdx < st.timetable.size())
             {
+                const std::string &nextName = st.timetable[nextIdx].station;
                 for (auto &ds : drawStations)
-                    if (ds.name.toStdString() == st.timetable[next].station)
-                        B = ds.pos;
-
-                double travel = st.timetable[idx].travelTime;
-                double passed = st.segmentTimePassed;
-
-                // точная доля пройденного участка
-                double k = travel > 0 ? std::clamp(passed / travel, 0.0, 1.0) : 0.0;
-
-                A = A + (B - A) * k; // новая позиция
+                {
+                    if (ds.name.toStdString() == nextName)
+                    {
+                        nextPos = ds.pos;
+                        drawPos = (stationPos + nextPos) * 0.5; // середина
+                        break;
+                    }
+                }
             }
         }
 
         DrawTrain dt;
-        bool flip = !t->isForward();
-        dt.aboveLine = flip;
         dt.id = QString::fromStdString(t->getID());
-        dt.pos = A;       // итоговое положение
-        dt.nextPos = B;
+        dt.pos = drawPos;
+        dt.nextPos = nextPos;
         dt.forward = t->isForward();
+        dt.aboveLine = !t->isForward(); // вверх / вниз
 
         drawTrains.push_back(dt);
     }
@@ -271,9 +291,12 @@ void Widget::onStartClicked()
     timeController->setTime(start);
     simStep = step;
     simDuration = dur;
-
     simEndTime = timeController->getCurrent() + dur;
 
+    metro->generateLineFromSchedule("MONDAY");
+    rebuildScene(); // чтобы сразу отобразить станции
+    updateTrainsOnScene();
+    update();
     tick();   // запускаем одиночный цикл
 }
 
@@ -296,7 +319,6 @@ void Widget::tick()
     );
 
     update();
-    QTimer::singleShot(1000, this, [&]{ tick(); });
 }
 
 void Widget::applySimParams(int start, int step, int duration)
@@ -318,7 +340,7 @@ void Widget::startSimulation()
     paused = false;
     btnPause->setText("Пауза");
     btnPause->setEnabled(true);
-    tick();   // запуск одношагового режима как в консоли
+    timer.start(1000);
 }
 
 void Widget::onPauseClicked()

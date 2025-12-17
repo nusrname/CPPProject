@@ -40,7 +40,7 @@ public:
     void startSimulation();
 protected:
     void paintEvent(QPaintEvent *event) override;
-    void mousePressEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event) override;
 
 private slots:
     void onStartClicked();
@@ -72,7 +72,7 @@ private:
 
     void rebuildScene();
     void updateTrainsOnScene();
-    static constexpr double PIXELS_PER_SECOND = 2.0;
+    static constexpr double PIXELS_PER_SECOND = 0.5;
 };
 
 class StartDialog : public QDialog
