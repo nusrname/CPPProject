@@ -16,12 +16,14 @@ private:
 	int lastArrivalForward = -1;
 	int lastArrivalBackward = -1;
 	int lastIntervalValue = 0;
+	int nextAllowedArrivalForward = 0;
+	int nextAllowedArrivalBackward = 0;
 
 	static constexpr int SAFE_INTERVAL = 60;
 public:
 	explicit Station(string name);
 
-	void arrive(const shared_ptr<Train>& train, int currentTime);
+	void arrive(const shared_ptr<Train>& train, int currentTime, int interval);
 	void depart(const shared_ptr<Train>& train);
 
 	bool canArrive(const shared_ptr<Train>& train) const;
@@ -31,6 +33,8 @@ public:
 	int lastInterval() const noexcept;
 	const string& getName() const noexcept;
 	const vector<shared_ptr<Train>>& getTrains() const noexcept;
+
+	int getNextAllowedArrival(bool forward);
 
 	void printStatus() const;
 };
@@ -65,12 +69,14 @@ private:
 	bool offLine = true;
 
 	int delay = 0;
-	int timeLeft = 0;
          
 	double speedMultiplier = 1.0;
 	double accelMultiplier = 1.5;
 	int stopTimeMin = 60;
 	double stopMultiplier = 1.0;
+
+	int remainingStopTime = 0;
+	int remainingTravelTime = 0;
 
 	vector<Entry::Node> timetable;
 
@@ -86,7 +92,6 @@ public:
 
 	int getIndex() const noexcept;
 	int getDelay() const noexcept;
-	int getTimeLeft() const noexcept;
 
 	void addDelay(int sec);
 	void resetDelay();

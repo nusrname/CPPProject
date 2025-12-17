@@ -58,6 +58,7 @@ public:
             return nullptr;
         return &it->second;
     }
+	const Entry& getCurrentEntry(int time) const { return data.at("MONDAY")[0]; }
 };
 
 class RandomEventGenerator

@@ -72,7 +72,7 @@ void TrainManager::update(int step)
 				t->offLine = true;
 				t->forward = true;
 				t->stopped = true;
-				t->timeLeft = st.timetable[0].stopTime;
+				t->remainingStopTime = st.timetable[0].stopTime;
 
 				int interval = st.timetable[0].stopTime + st.timetable[0].travelTime;
 				st.startTime = now + interval;
@@ -90,23 +90,29 @@ void TrainManager::update(int step)
 			t->index = 0;
 			st.index = 0;
 			t->stopped = true;
-			t->timeLeft = st.timetable[0].stopTime;
+
+			int initialStop = 60;
+			if (!st.timetable.empty())
+				initialStop = st.timetable[0].stopTime;
+
+			t->remainingStopTime = initialStop;
 
 			// прибываем на начальную (фиктивную) станцию
-			t->line->getStations()[t->index]->arrive(t, time->getCurrent());
+			const int interval = schedule->getCurrentEntry(now).interval;
+			t->line->getStations()[t->index]->arrive(t, time->getCurrent(), interval);
 			continue;
 		}
 
 		if (t->offLine) continue;
 
 		// --- моделирование случайных задержек во время стоянки ---
-		if (t->stopped && t->timeLeft > 5)
+		if (t->stopped && t->remainingStopTime > 5)
 		{
 			if (randomEvents.isDelayEvent(now))
 			{
 				int d = randomEvents.getRandomDelay();
 				t->addDelay(d);
-				t->timeLeft += d;
+				t->remainingStopTime += d;
 				stats.registerDelay(d);
 
 				cout << "Delay: Train " << t->getID()
@@ -127,51 +133,43 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 	// время ожидания в туннеле при занятости станции
 	constexpr int WAIT_WHEN_OCCUPIED = 60;
 
-    bool wasStopped = t->stopped;
 	while (remaining > 0)
 	{
 		// если поезд стоит (на станции) — сначала обрабатываем стоянку
 		if (t->stopped)
 		{
-			int consume = min(remaining, t->timeLeft);
-			t->timeLeft -= consume;
+			int consume = min(t->remainingStopTime, remaining);
 			remaining -= consume;
+			t->remainingStopTime -= consume;
 
-			if (t->timeLeft > 0)
-			{
-				// ещё стоим — выходим
-				return;
-			}
+			if (t->remainingStopTime > 0) return;
 
 			// стоянка закончилась — готовимся к отправлению
-            t->stopped = false;
-			st.segmentTimePassed = 0;
-			t->timeLeft = st.timetable[st.index].travelTime / t->speedMultiplier;
-			// устанавливаем базовое время перегона до следующей станции
-			t->timeLeft = int(st.timetable[st.index].travelTime / (t->getDelay() > 0 ? t->accelMultiplier : t->speedMultiplier));
+			t->stopped = false;
 
-			// перед фактическим движением убеждаемся, что поезд удалён со станции
-			// (защита от артефактов: если он всё ещё в списке станции, то удалим)
+			int travel = 0;
+			if (st.index >= 0 && st.index < (int)st.timetable.size())
+				travel = st.timetable[st.index].travelTime;
+
+			double mult = (t->getDelay() > 0) ? t->accelMultiplier : t->speedMultiplier;
+			int calc = max(1, (int)ceil(travel / mult));
+			t->remainingTravelTime = calc;
+
+			// удаляем поезда из станций (защита от артефактов)
 			for (auto& s : t->line->getStations())
 				s->depart(t);
 
-			// если remaining == 0 — выход, следующий тик обработает поезд в движении
+			// если ещё нет оставшегося времени в тике — продолжаем цикл (remaining > 0)
 			if (remaining == 0) return;
 		}
 		else
 		{
 			// поезд в движении (в туннеле)
-            int consume = min(remaining, t->timeLeft);
-            if (!t->stopped)
-                st.segmentTimePassed += consume;
-			t->timeLeft -= consume;
+			int consume = min(t->remainingTravelTime, remaining);
 			remaining -= consume;
+			t->remainingTravelTime -= consume;
 
-			if (t->timeLeft > 0)
-			{
-				// ещё в туннеле до следующей станции
-				return;
-			}
+			if (remaining > 0) return;
 
 			// поезд завершил перегон — нужно принять решение о заезде на следующую станцию
 			int N = (int)t->line->getStations().size();
@@ -181,7 +179,7 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 			if (candidate < 0)
 			{
 				t->forward = true;
-				candidate = 0; 
+				candidate = 0;
 				for (auto& s : t->line->getStations())
 					s->resetArrivalForDirection(true);
 			}
@@ -200,26 +198,31 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 			// Если нельзя заехать (станция занята поездом в том же направлении) —
 			// остаёмся в туннеле и ждём небольшую паузу
 			auto station = t->line->getStations()[candidate];
-			if (!station->canArrive(t) || !station->isIntervalSafe(time->getCurrent(), t->isForward()))
+			int now = time->getCurrent();
+			if (!station->canArrive(t) || !station->isIntervalSafe(now, t->isForward()))
 			{
 				// Логическая ошибка — поезд не должен заезжать на занятую станцию при корректном интервале
 				// Для симуляции фиксированного интервала можно просто игнорировать этот тик
 				// и зафиксировать предупреждение для отладки
 				cout << "Warning: Train " << t->getID() << " attempted to arrive at occupied station "
 					<< station->getName() << " — проверьте интервал." << endl;
-				t->stopped = true;
-				t->timeLeft = WAIT_WHEN_OCCUPIED;
-				st.segmentTimePassed = 0;
+				int waitUntil = station->getNextAllowedArrival(t->isForward());
+				int delaySec = max(1, waitUntil - now);
+				// поезд остаётся в туннеле и будет ждать до разрешённого времени
+				t->remainingTravelTime = delaySec;
+				// НЕ переводим в stopped: он всё ещё в туннеле
 				return;
 			}
 
 			// Успешный заезд на станцию:
 			t->index = candidate;
-			t->line->getStations()[t->index]->arrive(t, time->getCurrent());
-			if (st.segmentTimePassed > 0)
+			const int interval = schedule->getCurrentEntry(now).interval;
+			station->arrive(t, now, interval);
+
+			int lastInt = station->lastInterval();
+			if (lastInt > 0)
 			{
-				stats.registerInterval(station->lastInterval());
-				st.segmentTimePassed = 0;
+				stats.registerInterval(lastInt);
 			}
 
 			// обновляем позицию в расписании: переходим к следующей записи (если есть)
@@ -232,19 +235,17 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 			{
 				// сокращаем стоянку (но не меньше некоторого минимума)
 				int newStop = max(t->stopTimeMin, baseStop - t->getDelay() / 2);
-				t->timeLeft = newStop;
+				t->remainingStopTime = newStop;
 				t->resetDelay();
 
 				cout << "Train " << t->getID() << " shortens stop to " << newStop << " sec\n";
 			}
 			else
 			{
-				t->timeLeft = baseStop;
+				t->remainingStopTime = baseStop;
 			}
 
 			t->stopped = true;
-
-			// цикл продолжается, если remaining > 0 (возможен проскок через ещё станции)
 		}
 	}
 }
@@ -341,7 +342,7 @@ int computeCycleTime(const Entry& e)
 void Metro::generateLineFromSchedule(const string& day)
 {
 	auto it = schedule->get().find(day);
-	if (it == schedule->get().end() || it->second.empty()) 
+	if (it == schedule->get().end() || it->second.empty())
 		throw runtime_error("Нет записей расписания для дня " + day);
 
 	const Entry& base = it->second.front();
@@ -362,7 +363,7 @@ void Metro::generateLineFromSchedule(const string& day)
 
 	for (int i = 0; i < trainCount; ++i)
 	{
-		auto train = make_shared<Train>("T" + to_string(i + 1),	line);
+		auto train = make_shared<Train>("T" + to_string(i + 1), line);
 
 		manager->attachTrain(train, i * interval);
 	}

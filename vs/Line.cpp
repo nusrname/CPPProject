@@ -7,14 +7,22 @@ using namespace std;
 
 Station::Station(string name) : name(move(name)) {}
 
-void Station::arrive(const shared_ptr<Train>& train, int time)
+void Station::arrive(const shared_ptr<Train>& train, int time, int interval)
 {
-	int& lastArrival = train->isForward() ? lastArrivalForward : lastArrivalBackward;
+	int& lastArrival = train->isForward()
+		? lastArrivalForward
+		: lastArrivalBackward;
+
+	int& nextAllowed = train->isForward()
+		? nextAllowedArrivalForward
+		: nextAllowedArrivalBackward;
 
 	if (lastArrival >= 0)
 		lastIntervalValue = time - lastArrival;
 
 	lastArrival = time;
+	nextAllowed = time + SAFE_INTERVAL;   // ← КЛЮЧЕВОЕ МЕСТО
+
 	trains.push_back(train);
 }
 
@@ -39,20 +47,11 @@ bool Station::canArrive(const shared_ptr<Train>& train) const
 
 bool Station::isIntervalSafe(int currentTime, bool forward) const
 {
-	int lastArrival = forward ? lastArrivalForward : lastArrivalBackward;
-	if (lastArrival < 0) return true;
+	const int nextAllowed = forward
+		? nextAllowedArrivalForward
+		: nextAllowedArrivalBackward;
 
-	// выяснить, сколько ещё текущие поезда в этом направлении будут стоять
-	int remainingStop = 0;
-	for (const auto& tr : trains) 
-	{
-		if (tr->isForward() == forward) 
-		{
-			remainingStop = max(remainingStop, tr->getTimeLeft());
-		}
-	}
-
-	return currentTime >= lastArrival + remainingStop + SAFE_INTERVAL;
+	return currentTime >= nextAllowed;
 }
 
 void Station::resetArrivalForDirection(bool forward)
@@ -75,6 +74,12 @@ void Station::printStatus() const
 		cout << "\t\t\t" << train->getID() << (train->isForward() ? down : up) << endl;
 	cout << endl;
 }
+
+int Station::getNextAllowedArrival(bool forward)
+{
+	return forward ? nextAllowedArrivalForward : nextAllowedArrivalBackward;
+}
+
 
 Line::Line(string name) : name(move(name)) {}
 
@@ -117,7 +122,6 @@ bool Train::isOffline() const noexcept { return offLine; }
 
 int Train::getIndex() const noexcept { return index; }
 int Train::getDelay() const noexcept { return delay; }
-int Train::getTimeLeft() const noexcept { return timeLeft; }
 
 void Train::addDelay(int sec) { delay += sec; }
 void Train::resetDelay() { delay = 0; }

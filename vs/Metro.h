@@ -61,7 +61,6 @@ private:
         bool active = false;
         size_t startTime = 0;
         int index = 0;
-        int segmentTimePassed = 0;
     };
 
     map<string, State> trains;
