@@ -22,7 +22,8 @@ int main(int argc, char *argv[])
     auto trainManager   = make_shared<TrainManager>(schedule, timeController);
 
     auto metro = make_shared<Metro>(timeController, trainManager);
-    //metro->loadLines("../../vs/MetroData.txt");
+    metro->setSchedule(schedule);
+    metro->generateLineFromSchedule("MONDAY");
     w.setMetro(metro, schedule, trainManager, timeController);
 
     w.applySimParams(
@@ -32,6 +33,5 @@ int main(int argc, char *argv[])
         );
 
     w.startSimulation();
-
     return a.exec();
 }

@@ -16,190 +16,71 @@ using namespace std;
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
 {
-    setMinimumSize(800, 600);
+    setMinimumSize(1000, 400);
 
-    // --- UI: поля ввода ---
-    labelParams = new QLabel("Параметры симуляции не заданы", this);
-    labelParams->setGeometry(20, 20, 400, 25);
-
-    // --- Время ---
-    labelTime = new QLabel("00:00:00", this);
-    labelTime->setGeometry((this->size().width() - labelTime->size().width()) / 2, 50, 200, 30);
-
-    // таймер симуляции
-    connect(&timer, &QTimer::timeout, this, &Widget::tick);
+    labelTime = new QLabel(this);
+    labelTime->setGeometry(10, 10, 300, 20);
 
     btnPause = new QPushButton("Пауза", this);
-    btnPause->setGeometry((this->size().width() - labelTime->size().width()) / 2, this->size().height() - 50, 120, 32);
-    btnPause->setEnabled(false); // активируется после старта
+    btnPause->setGeometry(10, 40, 100, 30);
 
-    connect(btnPause, &QPushButton::clicked, this, &Widget::onPauseClicked);
+    connect(btnPause, &QPushButton::clicked,
+            this, &Widget::onPauseClicked);
 
+    timer.setInterval(1000);
+    connect(&timer, &QTimer::timeout,
+            this, &Widget::tick);
 }
 
-Widget::~Widget()
-{
-}
+Widget::~Widget() {}
 
 void Widget::setMetro(shared_ptr<Metro> m,
                       shared_ptr<Schedule> sch,
-                      shared_ptr<TrainManager> man,
-                      shared_ptr<TimeController> tc)
+                      shared_ptr<TrainManager> mgr,
+                      shared_ptr<TimeController> time)
 {
     metro = m;
     schedule = sch;
-    manager = man;
-    timeController = tc;
+    manager = mgr;
+    timeController = time;
 
-    //rebuildScene();
-    //update();
+    rebuildScene();
 }
 
 void Widget::rebuildScene()
 {
-    drawLines.clear();
     drawStations.clear();
+    drawLines.clear();
 
     if (!metro) return;
 
-    int y = 250;
-    for (auto &line : metro->getLines())
+    const auto& lines = metro->getLines();
+    if (lines.empty()) return;
+
+    cout << lines.size() << endl;
+    auto line = lines.front();
+    const auto& stations = line->getStations();
+
+    const int margin = 100;
+    const int y = height() / 2;
+    const int count = stations.size();
+    const double step = (width() - 2 * margin) / double(count - 1);
+
+    DrawLine dl;
+    for (int i = 0; i < count; ++i)
     {
-        DrawLine dl;
-        double x = 100;
+        QPointF p(margin + i * step, y);
+        dl.points.push_back(p);
 
-        auto &stations = line->getStations();
-        if (stations.empty()) continue;
+        DrawStation ds;
+        ds.name = QString::fromStdString(stations[i]->getName());
+        ds.pos = p;
+        ds.station = stations[i];
 
-        // получаем travelTime + stopTime из расписания
-        vector<Entry::Node> timetable;
-        if (schedule)
-        {
-            for (auto &pair : schedule->get())
-            {
-                if (!pair.second.empty())
-                {
-                    timetable = pair.second[0].timetable;
-                    break;
-                }
-            }
-        }
-
-        for (int i = 0; i < stations.size(); i++)
-        {
-            DrawStation ds;
-            ds.name = QString::fromStdString(stations[i]->getName());
-            ds.pos = QPointF(x, y);
-            ds.station = stations[i];
-
-            drawStations.push_back(ds);
-            dl.points.push_back(ds.pos);
-
-            if (i < timetable.size())
-                x += timetable[i].travelTime * PIXELS_PER_SECOND;
-            else
-                x += 150;
-        }
-
-        drawLines.push_back(dl);
-        y += 200;
-    }
-}
-
-void Widget::paintEvent(QPaintEvent *event)
-{
-    QPainter p(this);
-    p.setRenderHint(QPainter::Antialiasing);
-
-    // линии
-    p.setPen(QPen(Qt::black, 4));
-    for (auto &l : drawLines)
-        for (int i = 0; i < l.points.size() - 1; i++)
-            p.drawLine(l.points[i], l.points[i+1]);
-
-    // станции + время стоянки
-    p.setBrush(Qt::white);
-    p.setPen(QPen(Qt::blue, 2));
-    for (auto &st : drawStations)
-    {
-        p.drawEllipse(st.pos, 10, 10);
-        p.drawText(st.pos + QPointF(-15, 25), st.name);
-
-        // отрисовка stopTime
-        /*if (schedule)
-        {
-            for (auto &pair : schedule->get())
-            {
-                if (!pair.second.empty())
-                    for (auto &node : pair.second[0].timetable)
-                        if (node.station == st.name.toStdString())
-                        {
-                            p.drawText(st.pos + QPointF(-15, 40),
-                                       QString("Стоянка: %1с").arg(node.stopTime));
-                            break;
-                        }
-            }
-        }*/
+        drawStations.push_back(ds);
     }
 
-    // поезда
-    p.setBrush(Qt::red);
-    for (auto &t : drawTrains)
-    {
-        // смещение над/под линией
-        double offset = t.aboveLine ? -10 : 10;
-        QPointF base = t.pos + QPointF(0, offset);
-
-        // направление
-        double angle = 0;
-        if (t.forward)
-            angle = atan2( t.nextPos.y() - t.pos.y(),
-                          t.nextPos.x() - t.pos.x() );
-        else
-            angle = atan2( t.pos.y() - t.nextPos.y(),
-                          t.pos.x() - t.nextPos.x() );
-
-        p.save();
-        p.translate(base);
-        p.rotate(angle * 180.0 / M_PI);
-
-        // рисуем треугольник «носом» вперёд
-        QPolygonF poly;
-        poly << QPointF(0, -12)
-             << QPointF(-8, 8)
-             << QPointF(8, 8);
-
-        p.setBrush(Qt::red);
-        p.drawPolygon(poly);
-        p.restore();
-    }
-}
-
-void Widget::mousePressEvent(QMouseEvent *event)
-{
-    QPointF click = event->pos();
-
-    for (const auto &st : drawStations)
-    {
-        double dx = click.x() - st.pos.x();
-        double dy = click.y() - st.pos.y();
-        if (sqrt(dx*dx + dy*dy) <= 15)
-        {
-            auto trains = st.station->getTrains();
-
-            QString info = "Станция: " + st.name + "\n"
-                           + "Интервал: \n"
-                           + "Время стоянки: \n"
-                           + "Время движения до станции: \n"
-                           + "Поездов: " + QString::number(trains.size())
-                           + "\n";
-
-            for (auto &t : trains)
-                info += " - " + QString::fromStdString(t->getID()) + "\n";
-
-            QMessageBox::information(this, "Информация", info);
-        }
-    }
+    drawLines.push_back(dl);
 }
 
 void Widget::updateTrainsOnScene()
@@ -207,174 +88,157 @@ void Widget::updateTrainsOnScene()
     drawTrains.clear();
     if (!manager) return;
 
+    auto states = manager->getTrains();
 
-    DrawTrain dt;
-    dt.pos = QPointF(200, 200);
-    dt.nextPos = QPointF(300, 200);
-    dt.forward = true;
-    dt.aboveLine = false;
-    drawTrains.push_back(dt);
-
-    for (auto &kv : manager->getTrains())
+    for (auto& [id, st] : states)
     {
-        const auto &st = kv.second;
         auto t = st.train;
+        if (!st.active || t->isOffline()) continue;
 
-        if (!st.active || t->isOffline())
-            continue;
-
+        auto line = t->getLine();
         int idx = t->getIndex();
-        if (idx < 0 || idx >= st.timetable.size())
-            continue;
+        const auto& stations = t->getLine()->getStations();
+        if (idx < 0 || idx >= (int)stations.size()) continue;
 
-        QPointF stationPos;
-        bool found = false;
-
-        // текущая станция
-        const std::string &currName = st.timetable[idx].station;
-        for (auto &ds : drawStations)
+        QPointF base;
+        for (auto& ds : drawStations)
         {
-            if (ds.name.toStdString() == currName)
+            if (ds.station == stations[idx])
             {
-                stationPos = ds.pos;
-                found = true;
+                base = ds.pos;
                 break;
             }
         }
+        QPointF pos = base;
 
-        if (!found)
-            continue; // не нашли станцию — не рисуем
-
-        QPointF drawPos = stationPos;
-        QPointF nextPos = stationPos;
-
-        // если поезд движется — рисуем в середине перегона
-        if (!t->isStopped())
-        {
-            int nextIdx = t->isForward() ? idx + 1 : idx - 1;
-            if (nextIdx >= 0 && nextIdx < st.timetable.size())
-            {
-                const std::string &nextName = st.timetable[nextIdx].station;
-                for (auto &ds : drawStations)
-                {
-                    if (ds.name.toStdString() == nextName)
-                    {
-                        nextPos = ds.pos;
-                        drawPos = (stationPos + nextPos) * 0.5; // середина
-                        break;
-                    }
-                }
-            }
-        }
+        // смещение для направления
+        pos.setY(pos.y() + (t->isForward() ? -20 : +20));
 
         DrawTrain dt;
         dt.id = QString::fromStdString(t->getID());
-        dt.pos = drawPos;
-        dt.nextPos = nextPos;
+        dt.pos = pos;
         dt.forward = t->isForward();
-        dt.aboveLine = !t->isForward(); // вверх / вниз
+        dt.aboveLine = t->isForward();
 
         drawTrains.push_back(dt);
     }
 }
 
-void Widget::onStartClicked()
+void Widget::startSimulation()
 {
-    StartDialog dlg(this);
-    if (dlg.exec() != QDialog::Accepted)
-        return;
-
-    int start = dlg.editStart->text().toInt();
-    int step = dlg.editStep->text().toInt();
-    int dur = dlg.editDuration->text().toInt();
-
-    timeController->setTime(start);
-    simStep = step;
-    simDuration = dur;
-    simEndTime = timeController->getCurrent() + dur;
-
-    metro->generateLineFromSchedule("MONDAY");
-    rebuildScene(); // чтобы сразу отобразить станции
-    updateTrainsOnScene();
-    update();
-    tick();   // запускаем одиночный цикл
+    paused = false;
+    timer.start();
 }
 
 void Widget::tick()
 {
     if (paused) return;
-    if (timeController->getCurrent() >= simEndTime)
-    {
-        timer.stop();
-        return;
-    }
 
     timeController->advance();
     manager->update(simStep);
 
-    updateTrainsOnScene();
-
     labelTime->setText(
-        QString::fromLocal8Bit(timeController->getFormattedTime())
-    );
+        QString::fromStdString(timeController->getFormattedTime())
+        );
 
+    updateTrainsOnScene();
     update();
+
+    if (timeController->getCurrent() >= simEndTime)
+        timer.stop();
+}
+
+void Widget::paintEvent(QPaintEvent *)
+{
+    QPainter p(this);
+    p.setRenderHint(QPainter::Antialiasing);
+
+    // линия
+    p.setPen(QPen(Qt::black, 2));
+    for (auto& l : drawLines)
+        for (int i = 1; i < l.points.size(); ++i)
+            p.drawLine(l.points[i - 1], l.points[i]);
+
+    // станции
+    for (auto& s : drawStations)
+    {
+        p.setBrush(Qt::white);
+        p.drawEllipse(s.pos, 6, 6);
+        p.drawText(s.pos + QPointF(-20, -10), s.name);
+    }
+
+    // поезда
+    for (auto& t : drawTrains)
+    {
+        p.setBrush(Qt::blue);
+        p.drawEllipse(t.pos, 5, 5);
+        p.drawText(t.pos + (t.forward ? QPointF(-8, -8) : QPointF(8, 8)), t.id);
+    }
+}
+
+void Widget::onPauseClicked()
+{
+    paused = !paused;
+    btnPause->setText(paused ? "Продолжить" : "Пауза");
+}
+
+StartDialog::StartDialog(QWidget *parent)
+    : QDialog(parent)
+{
+    setWindowTitle("Параметры симуляции");
+    setModal(true);
+
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+
+    QHBoxLayout *rowStart = new QHBoxLayout;
+    rowStart->addWidget(new QLabel("Начальное время:"));
+    editStart = new QLineEdit("21600"); // 6:00 утра
+    editStart->setValidator(new QIntValidator(0, 86400, this));
+    rowStart->addWidget(editStart);
+    mainLayout->addLayout(rowStart);
+
+    QHBoxLayout *rowStep = new QHBoxLayout;
+    rowStep->addWidget(new QLabel("Шаг (сек):"));
+    editStep = new QLineEdit("60");
+    editStep->setValidator(new QIntValidator(1, 3600, this));
+    rowStep->addWidget(editStep);
+    mainLayout->addLayout(rowStep);
+
+    QHBoxLayout *rowDur = new QHBoxLayout;
+    rowDur->addWidget(new QLabel("Длительность (сек):"));
+    editDuration = new QLineEdit("21600"); // 6 часов
+    editDuration->setValidator(new QIntValidator(1, 86400, this));
+    rowDur->addWidget(editDuration);
+    mainLayout->addLayout(rowDur);
+
+    QPushButton *btnOk = new QPushButton("OK");
+    QPushButton *btnCancel = new QPushButton("Отмена");
+
+    QHBoxLayout *rowBtns = new QHBoxLayout;
+    rowBtns->addWidget(btnOk);
+    rowBtns->addWidget(btnCancel);
+    mainLayout->addLayout(rowBtns);
+
+    connect(btnOk, &QPushButton::clicked, this, &QDialog::accept);
+    connect(btnCancel, &QPushButton::clicked, this, &QDialog::reject);
 }
 
 void Widget::applySimParams(int start, int step, int duration)
 {
     simStep = step;
     simDuration = duration;
-
-    timeController->setTime(start);
     simEndTime = start + duration;
 
-    labelParams->setText(
-        QString("Старт: %1  |  Шаг: %2  |  Длительность: %3")
-            .arg(start).arg(step).arg(duration)
-        );
+    if (timeController)
+        timeController->setCurrent(start);
 }
 
-void Widget::startSimulation()
+void Widget::onStartClicked()
 {
-    paused = false;
-    btnPause->setText("Пауза");
-    btnPause->setEnabled(true);
-    timer.start(1000);
+    startSimulation();
 }
 
-void Widget::onPauseClicked()
+void Widget::mousePressEvent(QMouseEvent *event)
 {
-    paused = !paused;
-
-    if (paused)
-    {
-        btnPause->setText("Продолжить");
-    }
-    else
-    {
-        btnPause->setText("Пауза");
-        tick(); // возобновляем симуляцию
-    }
-}
-
-StartDialog::StartDialog(QWidget *parent) : QDialog(parent)
-{
-    setWindowTitle("Параметры симуляции");
-    setModal(true);
-
-    auto *layout = new QFormLayout(this);
-
-    editStart = new QLineEdit("0");
-    editStep = new QLineEdit("1");
-    editDuration = new QLineEdit("3600");
-
-    layout->addRow("Начальное время (сек):", editStart);
-    layout->addRow("Шаг (сек):", editStep);
-    layout->addRow("Длительность (сек):", editDuration);
-
-    auto *btn = new QPushButton("Старт");
-    layout->addRow(btn);
-
-    connect(btn, &QPushButton::clicked, this, &QDialog::accept);
+    // Заглушка — можно добавить взаимодействие с поездами/станциями
 }
