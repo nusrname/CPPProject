@@ -53,6 +53,7 @@ private:
     shared_ptr<Schedule> schedule;
     RandomEventGenerator randomEvents;
     SimulationStats stats;
+    static constexpr int OFFSET_RECOVERY_STEP = 30;
 
     struct State
     {

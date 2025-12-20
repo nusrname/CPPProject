@@ -43,6 +43,7 @@ void TrainManager::update(int step)
 	// if ((now % 86400) < 21600) return;
 
 	int day = (now / 86400) % 7;
+	const int baseInterval = schedule->getCurrentEntry(now).interval;
 	static const vector<string> days =
 	{ "MONDAY","TUESDAY","WEDNESDAY","THURSDAY",
 	  "FRIDAY","SATURDAY","SUNDAY" };
@@ -228,6 +229,13 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 			t->index = candidate;
 			const int interval = schedule->getCurrentEntry(now).interval;
 			station->arrive(t, now, interval);
+
+			if (st.currentOffset > interval)
+			{
+				int delta = min(OFFSET_RECOVERY_STEP,
+					st.currentOffset - interval);
+				st.currentOffset -= delta;
+			}
 
 			// обновляем позицию в расписании: переходим к следующей записи (если есть)
 			st.index = min(st.index + 1, (int)st.timetable.size() - 1);
