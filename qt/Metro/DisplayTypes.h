@@ -18,6 +18,7 @@ struct DrawTrain
     QPointF nextPos;
     bool forward;
     bool aboveLine;
+    bool delayed;
 };
 
 struct DrawLine

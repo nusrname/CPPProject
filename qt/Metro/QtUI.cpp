@@ -52,32 +52,46 @@ void Widget::rebuildScene()
     drawStations.clear();
     drawLines.clear();
 
-    if (!metro) return;
+    if (!metro || !schedule) return;
 
     const auto& lines = metro->getLines();
     if (lines.empty()) return;
 
-    cout << lines.size() << endl;
     auto line = lines.front();
     const auto& stations = line->getStations();
 
+    const Entry& entry = schedule->getCurrentEntry(timeController->getCurrent());
+    const auto& tt = entry.timetable;
+
     const int margin = 100;
     const int y = height() / 2;
-    const int count = stations.size();
-    const double step = (width() - 2 * margin) / double(count - 1);
+
+    double totalTravelTime = 0.0;
+    for (const auto& n : tt)
+        totalTravelTime += n.travelTime;
+
+    if (totalTravelTime <= 0.0)
+        totalTravelTime = 1.0;
+
+    const double usableWidth = width() - 2 * margin;
+    const double scale = usableWidth / totalTravelTime;
 
     DrawLine dl;
-    for (int i = 0; i < count; ++i)
+    double accTime = 0.0;
+    for (size_t i = 0; i < stations.size(); ++i)
     {
-        QPointF p(margin + i * step, y);
+        QPointF p(margin + accTime * scale, y);
         dl.points.push_back(p);
 
         DrawStation ds;
         ds.name = QString::fromStdString(stations[i]->getName());
         ds.pos = p;
         ds.station = stations[i];
-
         drawStations.push_back(ds);
+
+        // прибавляем время до следующей станции
+        if (i < tt.size())
+            accTime += tt[i].travelTime;
     }
 
     drawLines.push_back(dl);
@@ -129,6 +143,7 @@ void Widget::updateTrainsOnScene()
         dt.forward = forward;
         dt.aboveLine = forward;
         dt.id = QString::fromStdString(t->getID());
+        dt.delayed = t->getDelay() > 0;
         drawTrains.push_back(dt);
     }
 }
@@ -179,7 +194,7 @@ void Widget::paintEvent(QPaintEvent *)
     // поезда
     for (auto& t : drawTrains)
     {
-        p.setBrush(Qt::blue);
+        p.setBrush(t.delayed ? Qt::red : Qt::blue);
         p.drawEllipse(t.pos, 5, 5);
         p.drawText(t.pos + (t.forward ? QPointF(-8, -8) : QPointF(8, 8)), t.id);
     }
