@@ -16,13 +16,19 @@ using namespace std;
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
 {
-    setMinimumSize(1000, 400);
+    setMinimumSize(1000, 450);
 
-    labelTime = new QLabel(this);
-    labelTime->setGeometry(10, 10, 300, 20);
+    labelParams = new QLabel(this);
+    labelParams->setAlignment(Qt::AlignCenter);
+    labelParams->setStyleSheet(
+        "background:#f4f4f4;"
+        "border:1px solid #aaa;"
+        "font-weight:600;"
+        );
+    labelParams->setGeometry(200, 10, width() - 400, 30);
 
     btnPause = new QPushButton("Пауза", this);
-    btnPause->setGeometry(10, 40, 100, 30);
+    btnPause->setGeometry(width() / 2 - 50, 40, 100, 30);
 
     connect(btnPause, &QPushButton::clicked,
             this, &Widget::onPauseClicked);
@@ -64,7 +70,7 @@ void Widget::rebuildScene()
     const auto& tt = entry.timetable;
 
     const int margin = 100;
-    const int y = height() / 2;
+    const int y = height() / 2 + 20;
 
     double totalTravelTime = 0.0;
     for (const auto& n : tt)
@@ -161,15 +167,45 @@ void Widget::tick()
     timeController->advance();
     manager->update(simStep);
 
-    labelTime->setText(
-        QString::fromStdString(timeController->getFormattedTime())
+    int activeTrains = manager->getTrains().size();
+    for (const auto& [id, st] : manager->getTrains())
+        if (st.active && !st.train->isOffline())
+            ++activeTrains;
+
+    labelParams->setText(
+        QString("Время: %1 | Шаг: %2 сек | Поездов: %3 | %4")
+            .arg(QString::fromStdString(timeController->getFormattedTime()))
+            .arg(simStep)
+            .arg(activeTrains)
+            .arg(paused ? "Пауза" : "Симуляция")
         );
 
     updateTrainsOnScene();
     update();
 
     if (timeController->getCurrent() >= simEndTime)
+    {
         timer.stop();
+
+        manager->printStats();
+
+        const SimulationStats& s = manager->getStats();
+
+        QString report =
+            "Итоги моделирования:\n\n"
+            "Задержек: " + QString::number(s.delayCount) + "\n"
+            "Средняя задержка: " +
+                QString::number(s.delayCount ? s.totalDelay / s.delayCount : 0) + " сек\n\n"
+            "Макс. интервал: " + QString::number(s.maxInterval) + " сек\n"
+            "Средний интервал: " +
+                QString::number(s.intervalCount ? s.totalIntervals / s.intervalCount : 0) + " сек";
+
+        QMessageBox::information(
+            this,
+            "Симуляция завершена",
+            report
+        );
+    }
 }
 
 void Widget::paintEvent(QPaintEvent *)
@@ -249,13 +285,38 @@ StartDialog::StartDialog(QWidget *parent)
 
 void Widget::applySimParams(int start, int step, int duration)
 {
-    simStep = step;
+    int interval = INT_MAX;
+
+    if (schedule)
+    {
+        const Entry& e = schedule->getCurrentEntry(start);
+        interval = e.interval;
+    }
+
+    if (interval > 0 && step >= interval)
+    {
+        QMessageBox::critical(
+            this,
+            "Ошибка параметров симуляции",
+            "Шаг симуляции должен быть строго меньше интервала движения поездов.\n\n"
+            "Интервал: " + QString::number(interval) + " сек\n"
+                "Заданный шаг: " + QString::number(step) + " сек\n\n"
+                "Работа программы будет завершена."
+            );
+
+        QApplication::exit(EXIT_FAILURE);
+        // не работает завершение программы
+        return;
+    }
+
+    simStep = max(1, step);
     simDuration = duration;
     simEndTime = start + duration;
 
     if (timeController)
         timeController->setCurrent(start);
 }
+
 
 void Widget::onStartClicked()
 {
