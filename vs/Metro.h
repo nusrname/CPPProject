@@ -61,6 +61,7 @@ private:
         bool active = false;
         size_t startTime = 0;
         int index = 0;
+        int currentOffset = 0;
     };
 
     map<string, State> trains;

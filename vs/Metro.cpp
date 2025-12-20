@@ -32,6 +32,7 @@ void TrainManager::attachTrain(shared_ptr<Train> t, int interval)
 
 	// запуск поездов с интервалом
 	st.startTime = now + interval;
+	st.currentOffset = schedule->getCurrentEntry(now).interval;
 	trains[t->getID()] = st;
 }
 
@@ -113,6 +114,7 @@ void TrainManager::update(int step)
 				int d = randomEvents.getRandomDelay();
 				t->addDelay(d);
 				t->remainingStopTime += d;
+				st.currentOffset += d;
 				stats.registerDelay(d);
 
 				cout << "Delay: Train " << t->getID()
@@ -123,6 +125,14 @@ void TrainManager::update(int step)
 
 		// --- обработка движения (включая проскоки) ---
 		processMovementWithOvershoot(st, t, step);
+	}
+
+	for (auto& kv : trains)
+	{
+		const auto& st = kv.second;
+		if (!st.active) continue;
+
+		stats.registerInterval(st.currentOffset);
 	}
 }
 
@@ -218,12 +228,6 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 			t->index = candidate;
 			const int interval = schedule->getCurrentEntry(now).interval;
 			station->arrive(t, now, interval);
-
-			int lastInt = station->lastInterval();
-			if (lastInt > 0)
-			{
-				stats.registerInterval(lastInt);
-			}
 
 			// обновляем позицию в расписании: переходим к следующей записи (если есть)
 			st.index = min(st.index + 1, (int)st.timetable.size() - 1);
