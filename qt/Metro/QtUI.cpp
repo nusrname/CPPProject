@@ -97,29 +97,38 @@ void Widget::updateTrainsOnScene()
 
         auto line = t->getLine();
         int idx = t->getIndex();
+        bool forward = t->isForward();
         const auto& stations = t->getLine()->getStations();
         if (idx < 0 || idx >= (int)stations.size()) continue;
 
-        QPointF base;
-        for (auto& ds : drawStations)
-        {
-            if (ds.station == stations[idx])
-            {
-                base = ds.pos;
-                break;
-            }
-        }
-        QPointF pos = base;
-
-        // смещение для направления
-        pos.setY(pos.y() + (t->isForward() ? -20 : +20));
-
+        QPointF p1, p2;
         DrawTrain dt;
-        dt.id = QString::fromStdString(t->getID());
-        dt.pos = pos;
-        dt.forward = t->isForward();
-        dt.aboveLine = t->isForward();
+        QPointF pos;
+        if (t->isInTunnel())
+        {
+            int from = idx;
+            int to   = forward ? idx + 1 : idx - 1;
 
+            if (to < 0 || to >= drawStations.size())
+                return;
+
+            p1 = drawStations[from].pos;
+            p2 = drawStations[to].pos;
+
+            double k = t->getTravelProgress();
+            pos = p1 + (p2 - p1) * k;
+        }
+        else
+        {
+            // поезд стоит на станции
+            pos = drawStations[idx].pos;
+        }
+
+        pos.setY(pos.y() + (forward ? -20 : +20));
+        dt.pos = pos;
+        dt.forward = forward;
+        dt.aboveLine = forward;
+        dt.id = QString::fromStdString(t->getID());
         drawTrains.push_back(dt);
     }
 }
