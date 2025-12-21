@@ -121,6 +121,7 @@ bool Train::isStopped() const noexcept { return stopped; }
 bool Train::isOffline() const noexcept { return offLine; }
 
 int Train::getIndex() const noexcept { return index; }
+int Train::getLastIndex() const noexcept { return index; }
 int Train::getDelay() const noexcept { return delay; }
 
 void Train::addDelay(int sec) { delay += sec; }

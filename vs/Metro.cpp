@@ -30,21 +30,30 @@ void TrainManager::attachTrain(shared_ptr<Train> t, int interval)
 
 	t->setTimetable(st.timetable);
 
-	// запуск поездов с интервалом
-    st.startTime = now + interval;
-    if (t->getID().find("01") == 1 && t->getID().size() < 3)
+    int openTime = (now / 86400) * 86400 + 21600;
+
+    if ((now % 86400) < 21600)
+    {
+        // если ночь — считаем от открытия метро
+        st.startTime = openTime + interval;
+    }
+    else
+    {
+        st.startTime = now + interval;
+    }
+    /*if (t->getID().find("01") == 1 && t->getID().size() < 3)
     {
         t->index = 0;
         st.index = 0;
-        st.startTime = 0;
-    }
+        st.startTime = now;
+    }*/
 	st.currentOffset = schedule->getCurrentEntry(now).interval;
 	trains[t->getID()] = st;
 }
 
 void TrainManager::update(int step)
 {
-	int now = time->getCurrent();
+    int now = time->getCurrent();
     // по времени работы метро
     if ((now % 86400) < 21600) return;
 
@@ -75,6 +84,7 @@ void TrainManager::update(int step)
 				t->setTimetable(st.timetable);
 
 				// переводим поезд обратно в "фейковое депо" (offline)
+                t->lastIndex = t->index;
                 t->index = -1;
                 st.index = -1;
                 if (t->getID().find("01") == 1 && t->getID().size() < 3)
@@ -100,6 +110,7 @@ void TrainManager::update(int step)
 
 			st.active = true;
 			t->offLine = false;
+            t->lastIndex = t->index;
 			t->index = 0;
 			st.index = 0;
 			t->stopped = true;
@@ -112,7 +123,7 @@ void TrainManager::update(int step)
 
 			// прибываем на начальную (фиктивную) станцию
 			const int interval = schedule->getCurrentEntry(now).interval;
-			t->line->getStations()[t->index]->arrive(t, time->getCurrent(), interval);
+            t->line->getStations()[t->index]->arrive(t, now, interval);
 			continue;
 		}
 
@@ -174,7 +185,7 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
                 int delay = t->getDelay();
 
                 double mult = 1.0;
-                if (delay > 0)
+                if (st.currentOffset > schedule->getCurrentEntry(time->getCurrent()).interval)
                 {
                     mult = 1.5; // ускорение до ×1.5
 
@@ -193,7 +204,10 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 
                 // КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ
                 if (gained > 0)
+                {
                     t->consumeDelay(gained);
+                    st.currentOffset -= gained;
+                }
 
                 // удаляем поезда из станций (защита от артефактов)
                 for (auto& s : t->line->getStations())
@@ -243,6 +257,7 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 */
 
 			// Успешный заезд на станцию:
+            t->lastIndex = t->index;
             t->index = candidate;
             const int interval = schedule->getCurrentEntry(now).interval;
 			station->arrive(t, now, interval);
@@ -300,8 +315,8 @@ void Metro::simulate(int periodSeconds, int stepSeconds)
 		{
 			//ConsoleUI::displayLineStatus(*line);
 			line->printStatus();
-		}
-		manager->update(stepSeconds);
+        }
+        manager->update(stepSeconds);
 		//this_thread::sleep_for(chrono::seconds(1));
 	}
 	manager->printStats();

@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QSpinBox>
 #include <QSlider>
+#include <QToolButton>
 #include <vector>
 #include <memory>
 using namespace std;
@@ -49,11 +50,16 @@ private slots:
     void tick();
 
 private:
+    QPixmap sceneBuffer;
+    void paintSceneBuffer();
+
     QLabel *labelParams;
     QPushButton *btnPause;
 
     QLabel *labelSpeed;
+    QToolButton *btnSpeed;
     QSlider *sliderSpeed;
+    QWidget *speedPopup;
 
     bool paused = false;
 

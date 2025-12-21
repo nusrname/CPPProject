@@ -10,6 +10,7 @@
 #include <QPen>
 #include <QMessageBox>
 #include <QMouseEvent>
+#include <QToolButton>
 #include <cmath>
 using namespace std;
 
@@ -27,35 +28,39 @@ Widget::Widget(QWidget *parent)
         );
     labelParams->setGeometry(200, 10, width() - 400, 30);
 
-    // Панель скорости
-    labelSpeed = new QLabel("Скорость: x1", this);
-    labelSpeed->setGeometry(20, 10, 120, 30);
-
-    sliderSpeed = new QSlider(Qt::Horizontal, this);
-    sliderSpeed->setGeometry(20, 40, 160, 30);
-    sliderSpeed->setRange(1, 10);
-    sliderSpeed->setValue(1);
-    sliderSpeed->setTickInterval(1);
-    sliderSpeed->setTickPosition(QSlider::TicksBelow);
-
-    connect(sliderSpeed, &QSlider::valueChanged, this,
-            [this](int value)
-    {
-        // 1000 мс / value → xN
-        int interval = 1000 / value;
-        timer.setInterval(interval);
-
-        labelSpeed->setText("Скорость: x" + QString::number(value));
-    });
     timer.setInterval(1000);
     connect(&timer, &QTimer::timeout,
             this, &Widget::tick);
 
     btnPause = new QPushButton("Пауза", this);
-    btnPause->setGeometry(width() / 2 - 50, 40, 100, 30);
+    btnPause->setGeometry(width() / 2, 40, 100, 30);
 
     connect(btnPause, &QPushButton::clicked,
             this, &Widget::onPauseClicked);
+
+    btnSpeed = new QToolButton(this);
+    btnSpeed->setText("Скорость x1");
+    btnSpeed->setGeometry(width() / 2 - 100, 40, 100, 30);
+
+    speedPopup = new QWidget(this, Qt::Popup);
+    speedPopup->setFixedSize(180, 60);
+
+    sliderSpeed = new QSlider(Qt::Horizontal, speedPopup);
+    sliderSpeed->setRange(1, 10);
+    sliderSpeed->setValue(1);
+    sliderSpeed->setGeometry(10, 20, 160, 20);
+    connect(btnSpeed, &QToolButton::clicked, this, [this]()
+    {
+        QPoint p = btnSpeed->mapToGlobal(QPoint(0, btnSpeed->height()));
+        speedPopup->move(p);
+        speedPopup->show();
+    });
+    connect(sliderSpeed, &QSlider::valueChanged, this, [this](int value)
+    {
+        timer.setInterval(1000 / value);
+        btnSpeed->setText("Скорость x" + QString::number(value));
+    });
+
 }
 
 Widget::~Widget() {}
@@ -146,21 +151,26 @@ void Widget::updateTrainsOnScene()
         QPointF pos;
         if (t->isInTunnel())
         {
-            int from = idx;
-            int to   = forward ? idx + 1 : idx - 1;
+            int from = t->getLastIndex();
+            int to   = t->getIndex();
 
-            if (to < 0 || to >= drawStations.size())
-                return;
+            if (from >= 0 && to >= 0 &&
+                from < drawStations.size() &&
+                to   < drawStations.size())
+            {
+                p1 = drawStations[from].pos;
+                p2 = drawStations[to].pos;
 
-            p1 = drawStations[from].pos;
-            p2 = drawStations[to].pos;
-
-            double k = t->getTravelProgress();
-            pos = p1 + (p2 - p1) * k;
+                double k = t->getTravelProgress();
+                pos = p1 + (p2 - p1) * k;
+            }
+            else
+            {
+                pos = drawStations[idx].pos;
+            }
         }
         else
         {
-            // поезд стоит на станции
             pos = drawStations[idx].pos;
         }
 
@@ -238,18 +248,23 @@ void Widget::tick()
     }
 }
 
-void Widget::paintEvent(QPaintEvent *)
+void Widget::paintSceneBuffer()
 {
-    QPainter p(this);
+    if (sceneBuffer.size() != size())
+        sceneBuffer = QPixmap(size());
+
+    sceneBuffer.fill(Qt::white); // или фон сцены
+
+    QPainter p(&sceneBuffer);
     p.setRenderHint(QPainter::Antialiasing);
 
-    // линия
+    // Линии
     p.setPen(QPen(Qt::black, 2));
     for (auto& l : drawLines)
         for (int i = 1; i < l.points.size(); ++i)
             p.drawLine(l.points[i - 1], l.points[i]);
 
-    // станции
+    // Станции
     for (auto& s : drawStations)
     {
         p.setBrush(Qt::white);
@@ -257,13 +272,23 @@ void Widget::paintEvent(QPaintEvent *)
         p.drawText(s.pos + QPointF(-20, -10), s.name);
     }
 
-    // поезда
+    // Поезда
     for (auto& t : drawTrains)
     {
         p.setBrush(t.delayed ? Qt::red : Qt::blue);
         p.drawEllipse(t.pos, 5, 5);
         p.drawText(t.pos + (t.forward ? QPointF(-8, -8) : QPointF(8, 8)), t.id);
     }
+}
+
+void Widget::paintEvent(QPaintEvent *)
+{
+    // Сначала обновляем буфер
+    paintSceneBuffer();
+
+    // А затем выводим на экран за один вызов
+    QPainter p(this);
+    p.drawPixmap(0, 0, sceneBuffer);
 }
 
 void Widget::onPauseClicked()

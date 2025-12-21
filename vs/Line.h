@@ -63,7 +63,8 @@ private:
 	string id;
 	shared_ptr<Line> line;
 
-	int index = -1;
+    int index = -1;
+    int lastIndex = -1;
 	bool forward = true;
 	bool stopped = true;
 	bool offLine = true;
@@ -92,7 +93,8 @@ public:
 	bool isStopped() const noexcept;
 	bool isOffline() const noexcept;
 
-	int getIndex() const noexcept;
+    int getIndex() const noexcept;
+    int getLastIndex() const noexcept;
 	int getDelay() const noexcept;
 
 	void addDelay(int sec);
