@@ -11,6 +11,8 @@
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QToolButton>
+#include <QMenuBar>
+#include <QAction>
 #include <cmath>
 using namespace std;
 
@@ -19,6 +21,24 @@ Widget::Widget(QWidget *parent)
 {
     setMinimumSize(1000, 450);
 
+    // Верхнее меню
+    QMenuBar *menuBar = new QMenuBar(this);
+    QMenu *infoMenu = new QMenu("Информация", menuBar);
+    QAction *usageInfo = new QAction("О программе", infoMenu);
+
+    connect(usageInfo, &QAction::triggered, this, [this]() {
+        QString text =
+            "Информация о симуляции:\n\n"
+            "- Щелкните на поезд, чтобы посмотреть его статус и направление.\n"
+            "- Щелкните на станцию, чтобы посмотреть её имя и другую информацию.\n"
+            "- Шаг моделирования ограничен от четверти интервала до полного интервала движения поездов.\n"
+            "- Используйте панель скорости для ускорения симуляции (не рекомендуется ставить большую скорость при маленьком шаге).\n";
+        QMessageBox::information(this, "Информация о симуляции", text);
+    });
+
+    infoMenu->addAction(usageInfo);
+    menuBar->addMenu(infoMenu);
+
     labelParams = new QLabel(this);
     labelParams->setAlignment(Qt::AlignCenter);
     labelParams->setStyleSheet(
@@ -26,21 +46,21 @@ Widget::Widget(QWidget *parent)
         "border:1px solid #aaa;"
         "font-weight:600;"
         );
-    labelParams->setGeometry(200, 10, width() - 400, 30);
+    labelParams->setGeometry(200, 30, width() - 400, 30);
 
     timer.setInterval(1000);
     connect(&timer, &QTimer::timeout,
             this, &Widget::tick);
 
     btnPause = new QPushButton("Пауза", this);
-    btnPause->setGeometry(width() / 2, 40, 100, 30);
+    btnPause->setGeometry(width() / 2, 60, 100, 30);
 
     connect(btnPause, &QPushButton::clicked,
             this, &Widget::onPauseClicked);
 
     btnSpeed = new QToolButton(this);
     btnSpeed->setText("Скорость x1");
-    btnSpeed->setGeometry(width() / 2 - 100, 40, 100, 30);
+    btnSpeed->setGeometry(width() / 2 - 100, 60, 100, 30);
 
     speedPopup = new QWidget(this, Qt::Popup);
     speedPopup->setFixedSize(180, 60);
@@ -308,13 +328,13 @@ StartDialog::StartDialog(QWidget *parent)
     QHBoxLayout *rowStart = new QHBoxLayout;
     rowStart->addWidget(new QLabel("Начальное время:"));
     editStart = new QLineEdit("21600"); // 6:00 утра
-    editStart->setValidator(new QIntValidator(0, 86400, this));
+    editStart->setValidator(new QIntValidator(0, 604800, this));
     rowStart->addWidget(editStart);
     mainLayout->addLayout(rowStart);
 
     QHBoxLayout *rowStep = new QHBoxLayout;
     rowStep->addWidget(new QLabel("Шаг (сек):"));
-    editStep = new QLineEdit("60");
+    editStep = new QLineEdit("120");
     editStep->setValidator(new QIntValidator(1, 3600, this));
     rowStep->addWidget(editStep);
     mainLayout->addLayout(rowStep);
@@ -322,7 +342,7 @@ StartDialog::StartDialog(QWidget *parent)
     QHBoxLayout *rowDur = new QHBoxLayout;
     rowDur->addWidget(new QLabel("Длительность (сек):"));
     editDuration = new QLineEdit("21600"); // 6 часов
-    editDuration->setValidator(new QIntValidator(1, 86400, this));
+    editDuration->setValidator(new QIntValidator(1, 691200, this));
     rowDur->addWidget(editDuration);
     mainLayout->addLayout(rowDur);
 
@@ -348,16 +368,16 @@ bool Widget::applySimParams(int start, int step, int duration)
         interval = e.interval;
     }
 
-    if (interval > 0 && step >= interval)
+    if (!(interval < step * 4 && step <= interval))
     {
         timer.stop();
         QMessageBox *box = new QMessageBox(
             QMessageBox::Critical,
             "Ошибка параметров симуляции",
-            "Шаг симуляции должен быть строго меньше интервала движения поездов.\n\n"
+            "Шаг симуляции должен быть строго меньше интервала движения поездов и больше или равна четвёртой части интервала.\n\n"
             "Интервал: " + QString::number(interval) + " сек\n"
-                "Заданный шаг: " + QString::number(step) + " сек\n\n"
-                "Работа программы будет завершена.",
+            "Заданный шаг: " + QString::number(step) + " сек\n\n"
+            "Работа программы будет завершена.",
             QMessageBox::Ok,
             this
             );
@@ -368,7 +388,7 @@ bool Widget::applySimParams(int start, int step, int duration)
             QCoreApplication::quit();
         });
 
-        box->open();   // НЕ exec()
+        box->open();
         return false;
     }
 
