@@ -23,7 +23,8 @@ int main(int argc, char *argv[])
 
     auto metro = make_shared<Metro>(timeController, trainManager);
     metro->setSchedule(schedule);
-    metro->generateLineFromSchedule("MONDAY");
+    int N = dlg.editStations->text().toInt();
+    metro->generateLineFromSchedule("MONDAY", N);
     w.setMetro(metro, schedule, trainManager, timeController);
 
     if (w.applySimParams(

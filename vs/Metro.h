@@ -87,6 +87,7 @@ public:
     {
         return stats;
     }
+    shared_ptr<RandomEventGenerator> getRandom(){ return make_shared<RandomEventGenerator>(randomEvents); }
 };
 
 class Metro
@@ -112,5 +113,5 @@ public:
     shared_ptr<Schedule> getSchedule() const { return schedule; }
 
     //void generateSimpleLine(int stationCount, int trainCount);
-    void generateLineFromSchedule(const string& day);
+    void generateLineFromSchedule(const string& day, int N = 20);
 };

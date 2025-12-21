@@ -90,7 +90,7 @@ class StartDialog : public QDialog
 {
     Q_OBJECT
 public:
-    QLineEdit *editStart, *editStep, *editDuration;
+    QLineEdit *editStart, *editStep, *editDuration, *editStations;
     StartDialog(QWidget *parent = nullptr);
 protected:
     bool eventFilter(QObject *obj, QEvent *event) override;

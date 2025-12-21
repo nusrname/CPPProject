@@ -64,21 +64,82 @@ public:
 class RandomEventGenerator
 {
 private:
-	mt19937 rng{ random_device{}() };
-    normal_distribution<double> norm{ 60, 20 }; // средняя задержка 90 сек
-	uniform_real_distribution<double> chance{ 0.0, 1.0 };
+    mt19937 rng{ random_device{}() };
+
+    // 1–5% базовый шанс
+    uniform_real_distribution<double> baseChance{ 0.01, 0.05 };
+    uniform_real_distribution<double> roll{ 0.0, 1.0 };
+
+    // Задержка строго 20–60 секунд
+    uniform_int_distribution<int> delayDist{ 20, 60 };
+
+    bool isRushHour(int secondsFromWeek) const
+    {
+        int daySeconds = secondsFromWeek % 86400;
+        int hour = daySeconds / 3600;
+
+        // 7–10 и 17–20 — часы пик
+        return (hour >= 7 && hour < 10) ||
+               (hour >= 17 && hour < 20);
+    }
+
+    bool isLowTrafficHour(int secondsFromWeek) const
+    {
+        int daySeconds = secondsFromWeek % 86400;
+        int hour = daySeconds / 3600;
+
+        // Минимальный трафик днём
+        return hour >= 11 && hour < 16;
+    }
+
+    double dayMultiplier(int secondsFromWeek) const
+    {
+        int day = (secondsFromWeek / 86400) % 7;
+
+        // Пример:
+        // 0 — Пн, 4 — Пт → проблемные дни
+        if (day == 0 || day == 4)
+            return 1.5;
+
+        // Сб, Вс — спокойнее
+        if (day == 5 || day == 6)
+            return 0.7;
+
+        return 1.0;
+    }
 
 public:
 
-	bool isDelayEvent(int currentTime)
-	{
-        return chance(rng) < 0.03; // 3% шанс задержки на станции
-	}
-
-	int getRandomDelay()
+    double getChance(int currentTime)
     {
-        int d = static_cast<int>(norm(rng));
-        d = max(10, d);            // минимум 10 сек
-        return min(d, 120);        // максимум 2 минуты
-	}
+        double chance = baseChance(rng);
+
+        if (isRushHour(currentTime))
+            chance *= 1.8;
+        else if (isLowTrafficHour(currentTime))
+            chance *= 0.6;
+
+        chance *= dayMultiplier(currentTime);
+        return chance * 100;
+    }
+
+    bool isDelayEvent(int currentTime)
+    {
+        double chance = baseChance(rng);
+
+        if (isRushHour(currentTime))
+            chance *= 1.8;
+        else if (isLowTrafficHour(currentTime))
+            chance *= 0.6;
+
+        chance *= dayMultiplier(currentTime);
+
+        return roll(rng) < chance;
+    }
+
+    int getRandomDelay()
+    {
+        return delayDist(rng);
+    }
 };
+

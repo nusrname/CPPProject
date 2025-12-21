@@ -382,41 +382,43 @@ void Metro::loadLines(const string& fileName)
 	}
 }
 
-int computeCycleTime(const Entry& e)
+int computeCycleTime(const Entry& e, int N)
 {
-	int sum = 0;
-	for (const auto& n : e.timetable)
-		sum += n.travelTime + n.stopTime;
+    int sum = 0;
+    for (int i = 0; i < N && i < e.timetable.size(); i++)
+    {
+        sum += e.timetable[i].travelTime + e.timetable[i].stopTime;
+    }
 
     return sum * 2;
 }
 
-void Metro::generateLineFromSchedule(const string& day)
+void Metro::generateLineFromSchedule(const string& day, int N)
 {
-	auto it = schedule->get().find(day);
-	if (it == schedule->get().end() || it->second.empty())
-		throw runtime_error("Нет записей расписания для дня " + day);
+    auto it = schedule->get().find(day);
+    if (it == schedule->get().end() || it->second.empty())
+        throw runtime_error("Нет записей расписания для дня " + day);
 
-	const Entry& base = it->second.front();
+    const Entry& base = it->second.front();
 
-	int cycleTime = computeCycleTime(base);
+    if (N < 7) N = 7;
+    if (N > 20) N = 20;
+
+    auto line = make_shared<Line>("Line-1");
+
+    size_t stationCount = min<size_t>(base.timetable.size(), N);
+    for (size_t i = 0; i < stationCount; ++i)
+        line->addStation(make_shared<Station>("st" + to_string(i + 1)));
+
+    lines.push_back(line);
+
+    int cycleTime = computeCycleTime(base, N);
     int interval = max(1, base.interval) + 120;
+    int trainCount = (cycleTime + interval - 1) / interval + 2;
 
-    int trainCount = (cycleTime + interval - 1) / interval - 1;
-
-	auto line = make_shared<Line>("Line-1");
-
-	for (size_t i = 0; i < base.timetable.size(); ++i)
-		line->addStation(
-			make_shared<Station>("st" + to_string(i + 1))
-		);
-
-	lines.push_back(line);
-
-	for (int i = 0; i < trainCount; ++i)
+    for (int i = 0; i < trainCount; ++i)
     {
         auto train = make_shared<Train>("T" + to_string(i + 1), line);
-
-		manager->attachTrain(train, i * interval);
-	}
+        manager->attachTrain(train, i * interval);
+    }
 }

@@ -50,7 +50,7 @@ Widget::Widget(QWidget *parent)
         "border:1px solid #aaa;"
         "font-weight:600;"
         );
-    labelParams->setGeometry(200, 30, width() - 400, 30);
+    labelParams->setGeometry(100, 30, width() - 200, 30);
 
     timer.setInterval(1000);
     connect(&timer, &QTimer::timeout,
@@ -228,11 +228,12 @@ void Widget::tick()
 
     auto stats = manager->getStats();
     labelParams->setText(
-        QString("Время: %1 | Шаг: %2 сек | Поездов: %3 | Средний интервал: %4")
+        QString("Время: %1 | Шаг: %2 сек | Поездов: %3 | Средний интервал: %4 | Вероятность задержки: %5\%")
             .arg(QString::fromStdString(timeController->getFormattedTime()))
             .arg(simStep)
             .arg(activeTrains)
             .arg(stats.totalIntervals / stats.intervalCount)
+            .arg(manager->getRandom()->getChance(timeController->getCurrent()), 0, 'f', 2)
         );
 
     updateTrainsOnScene();
@@ -251,9 +252,7 @@ void Widget::tick()
             "Задержек: " + QString::number(s.delayCount) + "\n"
             "Средняя задержка: " +
                 QString::number(s.delayCount ? s.totalDelay / s.delayCount : 0) + " сек\n\n"
-            "Макс. интервал: " + QString::number(s.maxInterval) + " сек\n"
-            "Средний интервал: " +
-                QString::number(s.intervalCount ? s.totalIntervals / s.intervalCount : 0) + " сек";
+            "Макс. интервал: " + QString::number(s.maxInterval) + " сек\n";
 
         QMessageBox *box = new QMessageBox(
             QMessageBox::Information,
@@ -332,16 +331,14 @@ bool Widget::applySimParams(int start, int step, int duration)
         interval = e.interval;
     }
 
-    if (!(interval < step * 4 && step <= interval))
+    if (step > 120 || 30 > step)
     {
         timer.stop();
         QMessageBox *box = new QMessageBox(
             QMessageBox::Critical,
             "Ошибка параметров симуляции",
-            "Шаг симуляции должен быть строго меньше интервала движения поездов и больше или равна четвёртой части интервала.\n\n"
-            "Интервал: " + QString::number(interval) + " сек\n"
-                "Заданный шаг: " + QString::number(step) + " сек\n\n"
-                "Работа программы будет завершена.",
+            "Шаг симуляции должен быть в диапазоне от 30 до 120.\n"
+            "Работа программы будет завершена.",
             QMessageBox::Ok,
             this
             );
@@ -412,6 +409,16 @@ StartDialog::StartDialog(QWidget *parent)
 
     QVBoxLayout *mainLayout = new QVBoxLayout(this);
 
+    QHBoxLayout *rowStations = new QHBoxLayout;
+    rowStations->addWidget(new QLabel("Число станций (7–20):"));
+    editStations = new QLineEdit("10"); // по умолчанию 10
+    editStations->setValidator(new QIntValidator(7, 20, this));
+    rowStations->addWidget(editStations);
+    mainLayout->addLayout(rowStations);
+    editStations->setToolTip(
+        "Число станций на линии метро:"
+    );
+
     QHBoxLayout *rowStart = new QHBoxLayout;
     rowStart->addWidget(new QLabel("Начальное время:"));
     editStart = new QLineEdit("21600"); // 6:00 утра
@@ -433,10 +440,16 @@ StartDialog::StartDialog(QWidget *parent)
     rowDur->addWidget(editDuration);
     mainLayout->addLayout(rowDur);
 
+    editStations->installEventFilter(this);
     editStart->installEventFilter(this);
     editStep->installEventFilter(this);
     editDuration->installEventFilter(this);
 
+    editStations->setToolTip(
+        "Число станций, которые будут загружены из файла\n"
+        "для проведения симуляции. При неверном числе\n"
+        "будет выставлена ближайшая граница допустимого значения."
+    );
     editStart->setToolTip(
         "Начальное время симуляции в секундах от начала недели.\n"
         "Пример:\n"
@@ -447,18 +460,15 @@ StartDialog::StartDialog(QWidget *parent)
     );
 
     editStep->setToolTip(
-        "Шаг моделирования в секундах.\n\n"
-        "Ограничения:\n"
-        "— не меньше 1/4 интервала движения поездов\n"
-        "— не больше самого интервала\n\n"
+        "Шаг моделирования в секундах.\n"
+        "Ограничения: от 30 до 120 секунд\n"
         "Малый шаг повышает точность,\n"
         "но при высокой скорости может\n"
-        "нарушить синхронизацию отрисовки.\n"
-        "Минимальный интервал по умолчанию: 200"
+        "нарушить синхронизацию отрисовки."
     );
 
     editDuration->setToolTip(
-        "Общая длительность симуляции в секундах.\n\n"
+        "Общая длительность симуляции в секундах.\n"
         "Пример:\n"
         "  3600  — 1 час\n"
         "  21600 — 6 часов\n"

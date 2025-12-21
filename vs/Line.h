@@ -37,6 +37,9 @@ public:
 	int getNextAllowedArrival(bool forward);
 
 	void printStatus() const;
+
+    int getLastArrivalForward() { return lastArrivalForward; }
+    int getLastArrivalBackward() { return lastArrivalBackward; }
 };
 
 class Line
