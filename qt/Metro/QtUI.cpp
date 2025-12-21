@@ -27,15 +27,35 @@ Widget::Widget(QWidget *parent)
         );
     labelParams->setGeometry(200, 10, width() - 400, 30);
 
+    // Панель скорости
+    labelSpeed = new QLabel("Скорость: x1", this);
+    labelSpeed->setGeometry(20, 10, 120, 30);
+
+    sliderSpeed = new QSlider(Qt::Horizontal, this);
+    sliderSpeed->setGeometry(20, 40, 160, 30);
+    sliderSpeed->setRange(1, 10);
+    sliderSpeed->setValue(1);
+    sliderSpeed->setTickInterval(1);
+    sliderSpeed->setTickPosition(QSlider::TicksBelow);
+
+    connect(sliderSpeed, &QSlider::valueChanged, this,
+            [this](int value)
+    {
+        // 1000 мс / value → xN
+        int interval = 1000 / value;
+        timer.setInterval(interval);
+
+        labelSpeed->setText("Скорость: x" + QString::number(value));
+    });
+    timer.setInterval(1000);
+    connect(&timer, &QTimer::timeout,
+            this, &Widget::tick);
+
     btnPause = new QPushButton("Пауза", this);
     btnPause->setGeometry(width() / 2 - 50, 40, 100, 30);
 
     connect(btnPause, &QPushButton::clicked,
             this, &Widget::onPauseClicked);
-
-    timer.setInterval(1000);
-    connect(&timer, &QTimer::timeout,
-            this, &Widget::tick);
 }
 
 Widget::~Widget() {}
@@ -168,9 +188,9 @@ void Widget::tick()
     manager->update(simStep);
 
     int activeTrains = manager->getTrains().size();
-    for (const auto& [id, st] : manager->getTrains())
+    /*for (const auto& [id, st] : manager->getTrains())
         if (st.active && !st.train->isOffline())
-            ++activeTrains;
+            ++activeTrains;*/
 
     labelParams->setText(
         QString("Время: %1 | Шаг: %2 сек | Поездов: %3 | %4")
@@ -200,11 +220,21 @@ void Widget::tick()
             "Средний интервал: " +
                 QString::number(s.intervalCount ? s.totalIntervals / s.intervalCount : 0) + " сек";
 
-        QMessageBox::information(
-            this,
+        QMessageBox *box = new QMessageBox(
+            QMessageBox::Information,
             "Симуляция завершена",
-            report
-        );
+            report,
+            QMessageBox::Ok,
+            this
+            );
+
+        box->setAttribute(Qt::WA_DeleteOnClose);
+
+        connect(box, &QMessageBox::finished, this, [] {
+            QCoreApplication::quit();
+        });
+
+        box->open();
     }
 }
 
@@ -283,7 +313,7 @@ StartDialog::StartDialog(QWidget *parent)
     connect(btnCancel, &QPushButton::clicked, this, &QDialog::reject);
 }
 
-void Widget::applySimParams(int start, int step, int duration)
+bool Widget::applySimParams(int start, int step, int duration)
 {
     int interval = INT_MAX;
 
@@ -295,18 +325,26 @@ void Widget::applySimParams(int start, int step, int duration)
 
     if (interval > 0 && step >= interval)
     {
-        QMessageBox::critical(
-            this,
+        timer.stop();
+        QMessageBox *box = new QMessageBox(
+            QMessageBox::Critical,
             "Ошибка параметров симуляции",
             "Шаг симуляции должен быть строго меньше интервала движения поездов.\n\n"
             "Интервал: " + QString::number(interval) + " сек\n"
                 "Заданный шаг: " + QString::number(step) + " сек\n\n"
-                "Работа программы будет завершена."
+                "Работа программы будет завершена.",
+            QMessageBox::Ok,
+            this
             );
 
-        QApplication::exit(EXIT_FAILURE);
-        // не работает завершение программы
-        return;
+        box->setAttribute(Qt::WA_DeleteOnClose);
+
+        connect(box, &QMessageBox::finished, this, [] {
+            QCoreApplication::quit();
+        });
+
+        box->open();   // НЕ exec()
+        return false;
     }
 
     simStep = max(1, step);
@@ -315,6 +353,8 @@ void Widget::applySimParams(int start, int step, int duration)
 
     if (timeController)
         timeController->setCurrent(start);
+
+    return true;
 }
 
 
@@ -325,5 +365,32 @@ void Widget::onStartClicked()
 
 void Widget::mousePressEvent(QMouseEvent *event)
 {
-    // Заглушка — можно добавить взаимодействие с поездами/станциями
+    const QPointF click = event->pos();
+
+    // 1. Проверка поездов (приоритет)
+    for (const auto& t : drawTrains)
+    {
+        if (QLineF(click, t.pos).length() <= TRAIN_RADIUS + 3)
+        {
+            QString info =
+                "Поезд: " + t.id + "\n" +
+                "Направление: " + (t.forward ? "прямое" : "обратное") + "\n" +
+                "Статус: " + (t.delayed ? "задержка" : "норма");
+
+            QMessageBox::information(this, "Информация о поезде", info);
+            return;
+        }
+    }
+
+    // 2. Проверка станций
+    for (const auto& s : drawStations)
+    {
+        if (QLineF(click, s.pos).length() <= STATION_RADIUS + 3)
+        {
+            QString info = "Станция: " + s.name + "\n";
+
+            QMessageBox::information(this, "Информация о станции", info);
+            return;
+        }
+    }
 }

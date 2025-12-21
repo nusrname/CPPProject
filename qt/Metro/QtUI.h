@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QSpinBox>
+#include <QSlider>
 #include <vector>
 #include <memory>
 using namespace std;
@@ -36,7 +37,7 @@ public:
                   shared_ptr<TrainManager> manager,
                   shared_ptr<TimeController> time);
 
-    void applySimParams(int start, int step, int duration);
+    bool applySimParams(int start, int step, int duration);
     void startSimulation();
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -49,11 +50,13 @@ private slots:
 
 private:
     QLabel *labelParams;
-    QLabel *labelTime;
     QPushButton *btnPause;
-    QSpinBox *spinStep;
+
+    QLabel *labelSpeed;
+    QSlider *sliderSpeed;
 
     bool paused = false;
+
     // simulation
     QTimer timer;
     int simStep = 1;
@@ -72,7 +75,9 @@ private:
 
     void rebuildScene();
     void updateTrainsOnScene();
-    static constexpr double PIXELS_PER_SECOND = 0.5;
+
+    static constexpr double STATION_RADIUS = 6.0;
+    static constexpr double TRAIN_RADIUS   = 5.0;
 };
 
 class StartDialog : public QDialog

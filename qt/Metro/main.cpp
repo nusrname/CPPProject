@@ -26,12 +26,11 @@ int main(int argc, char *argv[])
     metro->generateLineFromSchedule("MONDAY");
     w.setMetro(metro, schedule, trainManager, timeController);
 
-    w.applySimParams(
+    if (w.applySimParams(
         dlg.editStart->text().toInt(),
         dlg.editStep->text().toInt(),
         dlg.editDuration->text().toInt()
-        );
-
-    w.startSimulation();
+    ))
+        w.startSimulation();
     return a.exec();
 }
