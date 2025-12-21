@@ -63,7 +63,8 @@ void TrainManager::update(int step)
 	{ "MONDAY","TUESDAY","WEDNESDAY","THURSDAY",
 	  "FRIDAY","SATURDAY","SUNDAY" };
 
-	auto& all = schedule->get();
+    auto& all = schedule->get();
+    stats.clearInterval();
 
 	for (auto& kv : trains)
 	{

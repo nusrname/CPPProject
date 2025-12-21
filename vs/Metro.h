@@ -34,6 +34,12 @@ struct SimulationStats
         maxInterval = max(maxInterval, i);
     }
 
+    void clearInterval()
+    {
+        totalIntervals = 0;
+        intervalCount = 0;
+    }
+
     void print() const
     {
         cout << "\n=== Итоги моделирования ===\n"

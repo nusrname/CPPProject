@@ -72,7 +72,7 @@ public:
 
 	bool isDelayEvent(int currentTime)
 	{
-        return chance(rng) < 0.01; // 3% шанс задержки на станции
+        return chance(rng) < 0.03; // 3% шанс задержки на станции
 	}
 
 	int getRandomDelay()
