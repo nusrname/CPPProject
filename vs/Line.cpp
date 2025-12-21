@@ -127,3 +127,20 @@ void Train::addDelay(int sec) { delay += sec; }
 void Train::resetDelay() { delay = 0; }
 
 void Train::setTimetable(vector<Entry::Node> table) { timetable = table; }
+bool Train::isInTunnel() const
+{
+    return !stopped && remainingTravelTime > 0;
+}
+
+double Train::getTravelProgress() const
+{
+    if (stopped || travelTimeTotal <= 0)
+        return 0.0;
+
+    return 1.0 - double(remainingTravelTime) / travelTimeTotal;
+}
+
+void Train::consumeDelay(int value)
+{
+    delay = max(0, delay - value);
+}

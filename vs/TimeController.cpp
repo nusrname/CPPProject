@@ -35,7 +35,7 @@ void Schedule::loadSchedule(const string& file)
 {
 	ifstream in(file);
 	if (!in.is_open())
-		throw "Не удалось открыть файл Schedule.txt";
+        throw "Не удалось открыть файл Schedule.txt";
 
 	string line;
 	string currentDay;
@@ -94,7 +94,7 @@ void Schedule::loadSchedule(const string& file)
 		currentEntry.timetable.push_back(node);
 	}
 
-	cout << "Расписание успешно загружено" << endl;
+    cout << "Расписание успешно загружено" << endl;
 }
 
 int Schedule::parseTime(const string& txt) const

@@ -31,7 +31,13 @@ void TrainManager::attachTrain(shared_ptr<Train> t, int interval)
 	t->setTimetable(st.timetable);
 
 	// запуск поездов с интервалом
-	st.startTime = now + interval;
+    st.startTime = now + interval;
+    if (t->getID().find("01") == 1 && t->getID().size() < 3)
+    {
+        t->index = 0;
+        st.index = 0;
+        st.startTime = 0;
+    }
 	st.currentOffset = schedule->getCurrentEntry(now).interval;
 	trains[t->getID()] = st;
 }
@@ -39,8 +45,8 @@ void TrainManager::attachTrain(shared_ptr<Train> t, int interval)
 void TrainManager::update(int step)
 {
 	int now = time->getCurrent();
-	// при желании можно снова включить ограничение по времени работы метро
-	// if ((now % 86400) < 21600) return;
+    // по времени работы метро
+    if ((now % 86400) < 21600) return;
 
 	int day = (now / 86400) % 7;
 	const int baseInterval = schedule->getCurrentEntry(now).interval;
@@ -69,14 +75,19 @@ void TrainManager::update(int step)
 				t->setTimetable(st.timetable);
 
 				// переводим поезд обратно в "фейковое депо" (offline)
-				t->index = 0;
-				st.index = 0;
+                t->index = -1;
+                st.index = -1;
+                if (t->getID().find("01") == 1 && t->getID().size() < 3)
+                {
+                    t->index = 0;
+                    st.index = 0;
+                }
 				t->offLine = true;
 				t->forward = true;
 				t->stopped = true;
 				t->remainingStopTime = st.timetable[0].stopTime;
 
-				int interval = st.timetable[0].stopTime + st.timetable[0].travelTime;
+                int interval = st.timetable[0].stopTime + st.timetable[0].travelTime;
 				st.startTime = now + interval;
 				st.active = false;
 			}
@@ -140,9 +151,7 @@ void TrainManager::update(int step)
 void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t, int step)
 {
 	// оставшееся время для обработки в этом тике
-	int remaining = step;
-	// время ожидания в туннеле при занятости станции
-	constexpr int WAIT_WHEN_OCCUPIED = 60;
+    int remaining = step;
 
 	while (remaining > 0)
 	{
@@ -153,25 +162,44 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 			remaining -= consume;
 			t->remainingStopTime -= consume;
 
-			if (t->remainingStopTime > 0) return;
+            if (t->remainingStopTime <= 0)
+            {
+                // стоянка закончилась — готовимся к отправлению
+                t->stopped = false;
 
-			// стоянка закончилась — готовимся к отправлению
-			t->stopped = false;
+                int travel = 0;
+                if (st.index >= 0 && st.index < (int)st.timetable.size())
+                    travel = st.timetable[st.index].travelTime;
 
-			int travel = 0;
-			if (st.index >= 0 && st.index < (int)st.timetable.size())
-				travel = st.timetable[st.index].travelTime;
+                int delay = t->getDelay();
 
-			double mult = (t->getDelay() > 0) ? t->accelMultiplier : t->speedMultiplier;
-			int calc = max(1, (int)ceil(travel / mult));
-			t->remainingTravelTime = calc;
+                double mult = 1.0;
+                if (delay > 0)
+                {
+                    mult = 1.5; // ускорение до ×1.5
 
-			// удаляем поезда из станций (защита от артефактов)
-			for (auto& s : t->line->getStations())
-				s->depart(t);
+                    // защита от ухода "вперёд расписания"
+                    int maxGain = delay;
+                    int reduced = travel - static_cast<int>(travel / mult);
+                    if (reduced > maxGain)
+                        mult = static_cast<double>(travel) / (travel - maxGain);
+                }
+                int realTravel = travel;
+                int fastTravel = max(1, (int)ceil(travel / mult));
+                int gained = realTravel - fastTravel;
 
-			// если ещё нет оставшегося времени в тике — продолжаем цикл (remaining > 0)
-			if (remaining == 0) return;
+                t->remainingTravelTime = fastTravel;
+                t->travelTimeTotal = fastTravel;
+
+                // КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ
+                if (gained > 0)
+                    t->consumeDelay(gained);
+
+                // удаляем поезда из станций (защита от артефактов)
+                for (auto& s : t->line->getStations())
+                    s->depart(t);
+            }
+            else break;
 		}
 		else
 		{
@@ -180,7 +208,7 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 			remaining -= consume;
 			t->remainingTravelTime -= consume;
 
-			if (remaining > 0) return;
+            if (t->remainingTravelTime > 0) break;
 
 			// поезд завершил перегон — нужно принять решение о заезде на следующую станцию
 			int N = (int)t->line->getStations().size();
@@ -190,16 +218,12 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 			if (candidate < 0)
 			{
 				t->forward = true;
-				candidate = 0;
-				for (auto& s : t->line->getStations())
-					s->resetArrivalForDirection(true);
+                candidate = 0;
 			}
 			else if (candidate >= N)
 			{
 				t->forward = false;
-				candidate = N - 1;
-				for (auto& s : t->line->getStations())
-					s->resetArrivalForDirection(false);
+                candidate = N - 1;
 			}
 
 			// Перед попыткой arrive: убеждаемся, что мы полностью удалены из любых станций
@@ -210,24 +234,17 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 			// остаёмся в туннеле и ждём небольшую паузу
 			auto station = t->line->getStations()[candidate];
 			int now = time->getCurrent();
-			if (!station->canArrive(t) || !station->isIntervalSafe(now, t->isForward()))
-			{
-				// Логическая ошибка — поезд не должен заезжать на занятую станцию при корректном интервале
-				// Для симуляции фиксированного интервала можно просто игнорировать этот тик
-				// и зафиксировать предупреждение для отладки
-				cout << "Warning: Train " << t->getID() << " attempted to arrive at occupied station "
-					<< station->getName() << " — проверьте интервал." << endl;
-				int waitUntil = station->getNextAllowedArrival(t->isForward());
-				int delaySec = max(1, waitUntil - now);
-				// поезд остаётся в туннеле и будет ждать до разрешённого времени
-				t->remainingTravelTime = delaySec;
-				// НЕ переводим в stopped: он всё ещё в туннеле
+/*            if (!station->canArrive(t))
+            {
+                t->remainingTravelTime = 1;
+                remaining = 0;
 				return;
 			}
+*/
 
 			// Успешный заезд на станцию:
-			t->index = candidate;
-			const int interval = schedule->getCurrentEntry(now).interval;
+            t->index = candidate;
+            const int interval = schedule->getCurrentEntry(now).interval;
 			station->arrive(t, now, interval);
 
 			if (st.currentOffset > interval)
@@ -240,22 +257,29 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 			// обновляем позицию в расписании: переходим к следующей записи (если есть)
 			st.index = min(st.index + 1, (int)st.timetable.size() - 1);
 
-			// устанавливаем время стоянки на новой станции
-			int baseStop = st.timetable[st.index].stopTime * t->stopMultiplier;
+            // устанавливаем время стоянки на новой станции
+            int baseStop = st.timetable[st.index].stopTime;
 
-			if (t->getDelay() > 0)
-			{
-				// сокращаем стоянку (но не меньше некоторого минимума)
-				int newStop = max(t->stopTimeMin, baseStop - t->getDelay() / 2);
-				t->remainingStopTime = newStop;
-				t->resetDelay();
+            if (t->getDelay() > 0)
+            {
+                int delay = t->getDelay();
 
-				cout << "Train " << t->getID() << " shortens stop to " << newStop << " sec\n";
-			}
-			else
-			{
-				t->remainingStopTime = baseStop;
-			}
+                int minStop = 60; // как вы и предложили
+                int maxReduction = delay;
+
+                int reduced = baseStop - minStop;
+                if (reduced > maxReduction)
+                    reduced = maxReduction;
+
+                t->remainingStopTime = baseStop - reduced;
+                t->remainingStopTime = max(minStop, t->remainingStopTime);
+
+                t->consumeDelay(reduced);
+            }
+            else
+            {
+                t->remainingStopTime = baseStop;
+            }
 
 			t->stopped = true;
 		}
@@ -348,7 +372,7 @@ int computeCycleTime(const Entry& e)
 	for (const auto& n : e.timetable)
 		sum += n.travelTime + n.stopTime;
 
-	return sum * 2;
+    return sum * 2;
 }
 
 void Metro::generateLineFromSchedule(const string& day)
@@ -360,9 +384,9 @@ void Metro::generateLineFromSchedule(const string& day)
 	const Entry& base = it->second.front();
 
 	int cycleTime = computeCycleTime(base);
-	int interval = max(1, base.interval);
+    int interval = max(1, base.interval) + 120;
 
-	int trainCount = (cycleTime + interval - 1) / interval;
+    int trainCount = (cycleTime + interval - 1) / interval - 1;
 
 	auto line = make_shared<Line>("Line-1");
 
@@ -374,8 +398,8 @@ void Metro::generateLineFromSchedule(const string& day)
 	lines.push_back(line);
 
 	for (int i = 0; i < trainCount; ++i)
-	{
-		auto train = make_shared<Train>("T" + to_string(i + 1), line);
+    {
+        auto train = make_shared<Train>("T" + to_string(i + 1), line);
 
 		manager->attachTrain(train, i * interval);
 	}

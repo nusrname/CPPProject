@@ -78,6 +78,8 @@ private:
 	int remainingStopTime = 0;
 	int remainingTravelTime = 0;
 
+    int travelTimeTotal = 0;
+
 	vector<Entry::Node> timetable;
 
 public:
@@ -95,8 +97,13 @@ public:
 
 	void addDelay(int sec);
 	void resetDelay();
+    void consumeDelay(int value);
 
-	void setTimetable(vector<Entry::Node> table);
+    void setTimetable(vector<Entry::Node> table);
+    bool isInTunnel() const;
+    double getTravelProgress() const; // 0..1
+    int getTravelTime() const;
+    int getRemainingTravelTime() const;
 
 	friend class TrainManager;
 };

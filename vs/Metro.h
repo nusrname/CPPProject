@@ -77,6 +77,10 @@ public:
     void processMovementWithOvershoot(State& st, shared_ptr<Train>& t, int step);
     map<string, State> getTrains() { return trains; }
     void printStats() const { stats.print(); }
+    const SimulationStats& getStats() const
+    {
+        return stats;
+    }
 };
 
 class Metro

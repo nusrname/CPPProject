@@ -37,7 +37,7 @@ public:
 	void advance();
 	string getFormattedTime() const;
 	int getCurrent() const;
-    void setTime(int time) {currentTime = time;}
+    void setCurrent(int time) {currentTime = time;}
 };
 
 class Schedule
@@ -65,19 +65,20 @@ class RandomEventGenerator
 {
 private:
 	mt19937 rng{ random_device{}() };
-	normal_distribution<double> norm{ 90, 30 }; // средняя задержка 90 сек
+    normal_distribution<double> norm{ 60, 20 }; // средняя задержка 90 сек
 	uniform_real_distribution<double> chance{ 0.0, 1.0 };
 
 public:
 
 	bool isDelayEvent(int currentTime)
 	{
-		return chance(rng) < 0.03; // 3% шанс задержки на станции
+        return chance(rng) < 0.01; // 3% шанс задержки на станции
 	}
 
 	int getRandomDelay()
-	{
-		int d = (int)norm(rng);
-		return max(30, d);
+    {
+        int d = static_cast<int>(norm(rng));
+        d = max(10, d);            // минимум 10 сек
+        return min(d, 120);        // максимум 2 минуты
 	}
 };
