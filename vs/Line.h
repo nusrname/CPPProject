@@ -14,7 +14,9 @@ private:
 	vector<shared_ptr<Train>> trains;
 	
 	int lastArrivalForward = -1;
-	int lastArrivalBackward = -1;
+    int lastArrivalBackward = -1;
+    int lastDepartForward = -1;
+    int lastDepartBackward = -1;
 	int lastIntervalValue = 0;
 	int nextAllowedArrivalForward = 0;
 	int nextAllowedArrivalBackward = 0;
@@ -40,6 +42,14 @@ public:
 
     int getLastArrivalForward() { return lastArrivalForward; }
     int getLastArrivalBackward() { return lastArrivalBackward; }
+    void setLastArrivalForward(int time) { lastArrivalForward = time; }
+    void setLastArrivalBackward(int time) { lastArrivalBackward = time; }
+
+
+    int getLastDepartForward() { return lastDepartForward; }
+    int getLastDepartBackward() { return lastDepartBackward; }
+    void setLastDepartForward(int time) { lastDepartForward = time; }
+    void setLastDepartBackward(int time) { lastDepartBackward = time; }
 };
 
 class Line

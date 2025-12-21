@@ -31,6 +31,14 @@ string TimeController::getFormattedTime() const
 	return temp;
 }
 
+const string TimeController::getCurrentDayName()
+{
+    static const char* days[] = {"MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY","SUNDAY"};
+    int day = (currentTime / 86400) % 7;
+    return days[day];
+}
+
+
 void Schedule::loadSchedule(const string& file)
 {
 	ifstream in(file);

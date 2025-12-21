@@ -33,7 +33,8 @@ Widget::Widget(QWidget *parent)
             "Информация о симуляции:\n\n"
             "- Щелкните на поезд, чтобы посмотреть его статус и направление.\n"
             "- Щелкните на станцию, чтобы посмотреть её имя и другую информацию.\n"
-            "- Шаг моделирования ограничен от четверти интервала до полного интервала движения поездов.\n"
+            "- Шаг моделирования ограничен от 30 до 120.\n"
+            "- Изменить расписание поездов можно в файле Schedule.txt из директории проекта по указанному шаблону.\n"
             "- Используйте панель скорости для ускорения симуляции.\n"
             "- Не рекомендуется ставить большую скорость при маленьком шаге в виду возможной рассинхронизации"
                        " отрисовки и тиков (последовательная, а не параллельная отрисовка объектов).\n";
@@ -139,7 +140,7 @@ void Widget::rebuildScene()
         dl.points.push_back(p);
 
         DrawStation ds;
-        ds.name = QString::fromStdString(stations[i]->getName());
+        ds.name = QString("Станция %1").arg(i + 1);
         ds.pos = p;
         ds.station = stations[i];
         drawStations.push_back(ds);
@@ -198,11 +199,26 @@ void Widget::updateTrainsOnScene()
             pos = drawStations[idx].pos;
         }
 
-        pos.setY(pos.y() + (forward ? -20 : +20));
+        pos.setY(pos.y() + (forward ? -35 : +35));
         dt.pos = pos;
         dt.forward = forward;
         dt.aboveLine = forward;
-        dt.id = QString::fromStdString(t->getID());
+
+        QString trainId = QString::fromStdString(t->getID());
+        if (trainId.startsWith("T"))
+        {
+            bool ok;
+            int num = trainId.mid(1).toInt(&ok);
+            if (ok)
+                dt.id = QString("П%1").arg(num);
+            else
+                dt.id = trainId;
+        }
+        else
+        {
+            dt.id = trainId;
+        }
+
         dt.delayed = t->getDelay() > 0;
         drawTrains.push_back(dt);
     }
@@ -288,12 +304,12 @@ void Widget::paintSceneBuffer()
         for (int i = 1; i < l.points.size(); ++i)
             p.drawLine(l.points[i - 1], l.points[i]);
 
-    // Станции
-    for (auto& s : drawStations)
+    for (int i = 0; i < drawStations.size(); i++)
     {
+        auto& s = drawStations[i];
         p.setBrush(Qt::white);
         p.drawEllipse(s.pos, 6, 6);
-        p.drawText(s.pos + QPointF(-20, -10), s.name);
+        p.drawText(s.pos + QPointF(-20, -10 * (i % 2 ? -2 : 1)), s.name);
     }
 
     // Поезда
@@ -388,14 +404,47 @@ void Widget::mousePressEvent(QMouseEvent *event)
         }
     }
 
-    // 2. Проверка станций
     for (const auto& s : drawStations)
     {
         if (QLineF(click, s.pos).length() <= STATION_RADIUS + 3)
         {
             QString info = "Станция: " + s.name + "\n";
 
-                                                        QMessageBox::information(this, "Информация о станции", info);
+            // Время стоянки для текущего дня
+            int stopTimeToday = 0;
+            if (schedule && timeController)
+            {
+                const string& dayName = timeController->getCurrentDayName(); // нужно реализовать метод
+                auto it = schedule->get().find(dayName);
+                if (it != schedule->get().end() && !it->second.empty())
+                {
+                    const Entry& e = it->second.front(); // берём первый Entry на день
+                    for (const auto& node : e.timetable)
+                    {
+                        if (node.station == s.station->getName()) // нашли нужную станцию
+                        {
+                            stopTimeToday = node.stopTime;
+                            break;
+                        }
+                    }
+                }
+            }
+            info += "Текущее время стоянки: " + QString::number(stopTimeToday) + " сек\n";
+
+            /*int forwardTime = timeController->getCurrent() - s.station->getLastArrivalForward(),
+                backwardTime = timeController->getCurrent() - s.station->getLastArrivalBackward();
+
+            if (forwardTime > -1)
+                info += "Последняя отправка вперед была " + QString::number(forwardTime) + " секунд назад\n";
+            else
+                info += "Последней отправки вперед ещё не было\n";
+
+            if (backwardTime > -1)
+                info += "Последняя отправка назад была " + QString::number(backwardTime) + " секунд назад\n";
+            else
+                info += "Последней отправки назад ещё не было\n";*/
+
+            QMessageBox::information(this, "Информация о станции", info);
             return;
         }
     }

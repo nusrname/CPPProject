@@ -9,21 +9,18 @@ Station::Station(string name) : name(move(name)) {}
 
 void Station::arrive(const shared_ptr<Train>& train, int time, int interval)
 {
-	int& lastArrival = train->isForward()
-		? lastArrivalForward
-		: lastArrivalBackward;
+    int& lastArrival = train->isForward() ? lastArrivalForward : lastArrivalBackward;
+    int& nextAllowed = train->isForward() ? nextAllowedArrivalForward : nextAllowedArrivalBackward;
 
-	int& nextAllowed = train->isForward()
-		? nextAllowedArrivalForward
-		: nextAllowedArrivalBackward;
+    if (lastArrival >= 0)
+        lastIntervalValue = time - lastArrival;
 
-	if (lastArrival >= 0)
-		lastIntervalValue = time - lastArrival;
+    lastArrival = time;                 // фиксируем момент прибытия
+    nextAllowed = time + SAFE_INTERVAL; // безопасный интервал до следующего прибытия
 
-	lastArrival = time;
-	nextAllowed = time + SAFE_INTERVAL;   // ← КЛЮЧЕВОЕ МЕСТО
-
-	trains.push_back(train);
+    // проверка на повторное добавление
+    if (find(trains.begin(), trains.end(), train) == trains.end())
+        trains.push_back(train);
 }
 
 void Station::depart(const shared_ptr<Train>& train)

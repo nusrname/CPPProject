@@ -37,7 +37,8 @@ public:
 	void advance();
 	string getFormattedTime() const;
 	int getCurrent() const;
-    void setCurrent(int time) {currentTime = time;}
+    void setCurrent(int time) { currentTime = time; }
+    const string getCurrentDayName();
 };
 
 class Schedule
@@ -58,7 +59,7 @@ public:
             return nullptr;
         return &it->second;
     }
-	const Entry& getCurrentEntry(int time) const { return data.at("MONDAY")[0]; }
+    const Entry& getCurrentEntry(int time) const { return data.at("MONDAY")[0]; }
 };
 
 class RandomEventGenerator

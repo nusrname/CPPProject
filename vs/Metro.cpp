@@ -297,7 +297,7 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
                 t->remainingStopTime = baseStop;
             }
 
-			t->stopped = true;
+            t->stopped = true;
 		}
 	}
 }
@@ -413,8 +413,8 @@ void Metro::generateLineFromSchedule(const string& day, int N)
     lines.push_back(line);
 
     int cycleTime = computeCycleTime(base, N);
-    int interval = max(1, base.interval) + 120;
-    int trainCount = (cycleTime + interval - 1) / interval + 2;
+    int interval = max(1, base.interval);
+    int trainCount = cycleTime / interval * 1.25;
 
     for (int i = 0; i < trainCount; ++i)
     {
