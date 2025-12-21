@@ -92,6 +92,8 @@ class StartDialog : public QDialog
 public:
     QLineEdit *editStart, *editStep, *editDuration;
     StartDialog(QWidget *parent = nullptr);
+protected:
+    bool eventFilter(QObject *obj, QEvent *event) override;
 };
 
 #endif // WIDGET_H

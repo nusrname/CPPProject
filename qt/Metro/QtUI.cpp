@@ -13,6 +13,8 @@
 #include <QToolButton>
 #include <QMenuBar>
 #include <QAction>
+#include <QToolTip>
+#include <QHelpEvent>
 #include <cmath>
 using namespace std;
 
@@ -224,12 +226,13 @@ void Widget::tick()
         if (st.active && !st.train->isOffline())
             ++activeTrains;*/
 
+    auto stats = manager->getStats();
     labelParams->setText(
-        QString("Время: %1 | Шаг: %2 сек | Поездов: %3 | %4")
+        QString("Время: %1 | Шаг: %2 сек | Поездов: %3 | Средний интервал: %4")
             .arg(QString::fromStdString(timeController->getFormattedTime()))
             .arg(simStep)
             .arg(activeTrains)
-            .arg(paused ? "Пауза" : "Симуляция")
+            .arg(stats.totalIntervals / stats.intervalCount)
         );
 
     updateTrainsOnScene();
@@ -319,47 +322,6 @@ void Widget::onPauseClicked()
     btnPause->setText(paused ? "Продолжить" : "Пауза");
 }
 
-StartDialog::StartDialog(QWidget *parent)
-    : QDialog(parent)
-{
-    setWindowTitle("Параметры симуляции");
-    setModal(true);
-
-    QVBoxLayout *mainLayout = new QVBoxLayout(this);
-
-    QHBoxLayout *rowStart = new QHBoxLayout;
-    rowStart->addWidget(new QLabel("Начальное время:"));
-    editStart = new QLineEdit("21600"); // 6:00 утра
-    editStart->setValidator(new QIntValidator(0, 604800, this));
-    rowStart->addWidget(editStart);
-    mainLayout->addLayout(rowStart);
-
-    QHBoxLayout *rowStep = new QHBoxLayout;
-    rowStep->addWidget(new QLabel("Шаг (сек):"));
-    editStep = new QLineEdit("120");
-    editStep->setValidator(new QIntValidator(1, 3600, this));
-    rowStep->addWidget(editStep);
-    mainLayout->addLayout(rowStep);
-
-    QHBoxLayout *rowDur = new QHBoxLayout;
-    rowDur->addWidget(new QLabel("Длительность (сек):"));
-    editDuration = new QLineEdit("21600"); // 6 часов
-    editDuration->setValidator(new QIntValidator(1, 691200, this));
-    rowDur->addWidget(editDuration);
-    mainLayout->addLayout(rowDur);
-
-    QPushButton *btnOk = new QPushButton("OK");
-    QPushButton *btnCancel = new QPushButton("Отмена");
-
-    QHBoxLayout *rowBtns = new QHBoxLayout;
-    rowBtns->addWidget(btnOk);
-    rowBtns->addWidget(btnCancel);
-    mainLayout->addLayout(rowBtns);
-
-    connect(btnOk, &QPushButton::clicked, this, &QDialog::accept);
-    connect(btnCancel, &QPushButton::clicked, this, &QDialog::reject);
-}
-
 bool Widget::applySimParams(int start, int step, int duration)
 {
     int interval = INT_MAX;
@@ -378,8 +340,8 @@ bool Widget::applySimParams(int start, int step, int duration)
             "Ошибка параметров симуляции",
             "Шаг симуляции должен быть строго меньше интервала движения поездов и больше или равна четвёртой части интервала.\n\n"
             "Интервал: " + QString::number(interval) + " сек\n"
-            "Заданный шаг: " + QString::number(step) + " сек\n\n"
-            "Работа программы будет завершена.",
+                "Заданный шаг: " + QString::number(step) + " сек\n\n"
+                "Работа программы будет завершена.",
             QMessageBox::Ok,
             this
             );
@@ -436,8 +398,106 @@ void Widget::mousePressEvent(QMouseEvent *event)
         {
             QString info = "Станция: " + s.name + "\n";
 
-            QMessageBox::information(this, "Информация о станции", info);
+                                                        QMessageBox::information(this, "Информация о станции", info);
             return;
         }
     }
+}
+
+StartDialog::StartDialog(QWidget *parent)
+    : QDialog(parent)
+{
+    setWindowTitle("Параметры симуляции");
+    setModal(true);
+
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+
+    QHBoxLayout *rowStart = new QHBoxLayout;
+    rowStart->addWidget(new QLabel("Начальное время:"));
+    editStart = new QLineEdit("21600"); // 6:00 утра
+    editStart->setValidator(new QIntValidator(0, 604800, this));
+    rowStart->addWidget(editStart);
+    mainLayout->addLayout(rowStart);
+
+    QHBoxLayout *rowStep = new QHBoxLayout;
+    rowStep->addWidget(new QLabel("Шаг (сек):"));
+    editStep = new QLineEdit("120");
+    editStep->setValidator(new QIntValidator(1, 3600, this));
+    rowStep->addWidget(editStep);
+    mainLayout->addLayout(rowStep);
+
+    QHBoxLayout *rowDur = new QHBoxLayout;
+    rowDur->addWidget(new QLabel("Длительность (сек):"));
+    editDuration = new QLineEdit("21600"); // 6 часов
+    editDuration->setValidator(new QIntValidator(1, 691200, this));
+    rowDur->addWidget(editDuration);
+    mainLayout->addLayout(rowDur);
+
+    editStart->installEventFilter(this);
+    editStep->installEventFilter(this);
+    editDuration->installEventFilter(this);
+
+    editStart->setToolTip(
+        "Начальное время симуляции в секундах от начала недели.\n"
+        "Пример:\n"
+        "  0     — 00:00 Понедельник\n"
+        "  21600 — 06:00 Понеднельник\n"
+        "  43200 — 12:00 Понедельник\n"
+        "  86400 — 00:00 Вторник"
+    );
+
+    editStep->setToolTip(
+        "Шаг моделирования в секундах.\n\n"
+        "Ограничения:\n"
+        "— не меньше 1/4 интервала движения поездов\n"
+        "— не больше самого интервала\n\n"
+        "Малый шаг повышает точность,\n"
+        "но при высокой скорости может\n"
+        "нарушить синхронизацию отрисовки.\n"
+        "Минимальный интервал по умолчанию: 200"
+    );
+
+    editDuration->setToolTip(
+        "Общая длительность симуляции в секундах.\n\n"
+        "Пример:\n"
+        "  3600  — 1 час\n"
+        "  21600 — 6 часов\n"
+        "  86400 — 24 часа"
+    );
+
+    QPushButton *btnOk = new QPushButton("OK");
+    QPushButton *btnCancel = new QPushButton("Отмена");
+
+    QHBoxLayout *rowBtns = new QHBoxLayout;
+    rowBtns->addWidget(btnOk);
+    rowBtns->addWidget(btnCancel);
+    mainLayout->addLayout(rowBtns);
+
+    connect(btnOk, &QPushButton::clicked, this, &QDialog::accept);
+    connect(btnCancel, &QPushButton::clicked, this, &QDialog::reject);
+}
+
+
+bool StartDialog::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::Enter)
+    {
+        QWidget *w = qobject_cast<QWidget *>(obj);
+        if (!w) return false;
+
+        QToolTip::showText(
+            w->mapToGlobal(QPoint(w->width() / 2, w->height())),
+            w->toolTip(),
+            w
+            );
+        return true;
+    }
+
+    if (event->type() == QEvent::Leave)
+    {
+        QToolTip::hideText();
+        return true;
+    }
+
+    return QDialog::eventFilter(obj, event);
 }
