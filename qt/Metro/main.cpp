@@ -18,8 +18,8 @@ int main(int argc, char *argv[])
 
 
     auto timeController = make_shared<TimeController>(dlg.editStart->text().toInt(), dlg.editStep->text().toInt());
-    //auto schedule       = make_shared<Schedule>("../../vs/Schedule.txt");
-    auto schedule       = make_shared<Schedule>("Schedule.txt");
+    auto schedule       = make_shared<Schedule>("../../vs/Schedule.txt");
+    //auto schedule       = make_shared<Schedule>("Schedule.txt");
     auto trainManager   = make_shared<TrainManager>(schedule, timeController);
 
     auto metro = make_shared<Metro>(timeController, trainManager);

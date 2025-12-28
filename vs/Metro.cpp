@@ -18,15 +18,12 @@ void TrainManager::attachTrain(shared_ptr<Train> t, int interval)
 	State st;
 	st.train = t;
 
-	int now = time->getCurrent();
-	int day = (now / 86400) % 7;
-	static const vector<string> days =
-	{ "MONDAY","TUESDAY","WEDNESDAY","THURSDAY",
-	 "FRIDAY","SATURDAY","SUNDAY" };
+    int now = time->getCurrent();
+    const string day = time->getCurrentDayName();
 
 	auto& d = schedule->get();
-	if (d.count(days[day]))
-		st.timetable = d.at(days[day])[0].timetable;
+    if (d.count(day))
+        st.timetable = d.at(day)[0].timetable;
 
 	t->setTimetable(st.timetable);
 
@@ -41,12 +38,6 @@ void TrainManager::attachTrain(shared_ptr<Train> t, int interval)
     {
         st.startTime = now + interval;
     }
-    /*if (t->getID().find("01") == 1 && t->getID().size() < 3)
-    {
-        t->index = 0;
-        st.index = 0;
-        st.startTime = now;
-    }*/
 	st.currentOffset = schedule->getCurrentEntry(now).interval;
 	trains[t->getID()] = st;
 }
@@ -57,11 +48,7 @@ void TrainManager::update(int step)
     // по времени работы метро
     if ((now % 86400) < 21600) return;
 
-	int day = (now / 86400) % 7;
-	const int baseInterval = schedule->getCurrentEntry(now).interval;
-	static const vector<string> days =
-	{ "MONDAY","TUESDAY","WEDNESDAY","THURSDAY",
-	  "FRIDAY","SATURDAY","SUNDAY" };
+    const string day = time->getCurrentDayName();
 
     auto& all = schedule->get();
     stats.clearInterval();
@@ -72,9 +59,9 @@ void TrainManager::update(int step)
 		auto& t = st.train;
 
 		// --- смена расписания (телепортация/перезапуск поезда) ---
-		if (all.count(days[day]))
+        if (all.count(day))
 		{
-			auto& timetable = all.at(days[day])[0].timetable;
+            auto& timetable = all.at(day)[0].timetable;
 			if (st.timetable != timetable)
 			{
 				// если поезд всё ещё отображается на станции — удаляем его
@@ -302,84 +289,11 @@ void TrainManager::processMovementWithOvershoot(State& st, shared_ptr<Train>& t,
 	}
 }
 
-
-void Metro::simulate(int periodSeconds, int stepSeconds)
-{
-	generateLineFromSchedule("MONDAY");
-	int time = timeController->getCurrent();
-	for (int t = time; t < periodSeconds + time; t += stepSeconds)
-	{
-		//ConsoleUI::ClearConsole();
-		timeController->advance();
-		cout << endl << timeController->getFormattedTime() << endl;
-		for (auto& line : lines)
-		{
-			//ConsoleUI::displayLineStatus(*line);
-			line->printStatus();
-        }
-        manager->update(stepSeconds);
-		//this_thread::sleep_for(chrono::seconds(1));
-	}
-	manager->printStats();
-}
-
 void Metro::addLine(shared_ptr<Line> line)
 {
 	if (!line) return;
 	if (find(lines.begin(), lines.end(), line) == lines.end())
 		lines.push_back(line);
-}
-
-void Metro::loadLines(const string& fileName)
-{
-	ifstream in(fileName);
-	if (!in.is_open())
-		throw "Не удалось открыть файл MetroData.txt";
-
-	string line;
-
-	shared_ptr<Line> currentLine = nullptr;
-
-	while (getline(in, line))
-	{
-		size_t start = line.find_first_not_of(" \t\r\n");
-		line = (start == string::npos) ? "" : line.substr(start);
-
-		if (line.empty() || line.find_first_of('#') == 0) continue;
-
-		istringstream ss(line);
-		string cmd;
-		ss >> cmd;
-
-		if (cmd == "LINE")
-		{
-			string name;
-			ss >> name;
-			currentLine = make_shared<Line>(name);
-		}
-
-		else if (cmd == "STATION")
-		{
-			string name;
-			ss >> name;
-			currentLine->addStation(make_shared<Station>(name));
-		}
-
-		else if (cmd == "TRAIN")
-		{
-			string id;
-			ss >> id;
-
-			auto t = make_shared<Train>(id, currentLine);
-			manager->attachTrain(t, id.at(3));
-		}
-
-		else if (cmd == "ENDLINE")
-		{
-			addLine(currentLine);
-			currentLine = nullptr;
-		}
-	}
 }
 
 int computeCycleTime(const Entry& e, int N)

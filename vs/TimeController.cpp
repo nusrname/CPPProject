@@ -38,7 +38,6 @@ const string TimeController::getCurrentDayName()
     return days[day];
 }
 
-
 void Schedule::loadSchedule(const string& file)
 {
 	ifstream in(file);
@@ -112,4 +111,21 @@ int Schedule::parseTime(const string& txt) const
 	int m = stoi(txt.substr(3, 2));
 	int s = stoi(txt.substr(6, 2));
 	return h * 3600 + m * 60 + s;
+}
+
+const vector<Entry>* Schedule::getTrainSchedule(const string& trainID) const
+{
+    auto it = data.find(trainID);
+    if (it == data.end())
+        return nullptr;
+    return &it->second;
+}
+
+const Entry& Schedule::getCurrentEntry(int time) const { return data.at("MONDAY")[0]; }
+
+bool Entry::Node::operator==(const Node& other) const
+{
+    return station == other.station &&
+        travelTime == other.travelTime &&
+        stopTime == other.stopTime;
 }

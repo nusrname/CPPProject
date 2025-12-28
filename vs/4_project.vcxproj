@@ -125,18 +125,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="MetroData.txt" />
     <Text Include="Schedule.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ConsoleUI.cpp" />
     <ClCompile Include="Line.cpp" />
-    <ClCompile Include="main\main.cpp" />
     <ClCompile Include="Metro.cpp" />
     <ClCompile Include="TimeController.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ConsoleUI.h" />
     <ClInclude Include="Line.h" />
     <ClInclude Include="Metro.h" />
     <ClInclude Include="TimeController.h" />

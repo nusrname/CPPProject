@@ -60,23 +60,10 @@ int Station::lastInterval() const noexcept { return lastIntervalValue; }
 const string& Station::getName() const noexcept { return name; }
 const vector<shared_ptr<Train>>& Station::getTrains() const noexcept { return trains; }
 
-void Station::printStatus() const
-{
-	constexpr char up = 24;
-	constexpr char down = 25;
-
-	cout << "\t\tСтанция " + name + ": " << endl;
-	cout << "\t\tПоездов на станции: " << trains.size() << "\n\t\tА именно:" << endl;
-	for (auto& train : trains)
-		cout << "\t\t\t" << train->getID() << (train->isForward() ? down : up) << endl;
-	cout << endl;
-}
-
 int Station::getNextAllowedArrival(bool forward)
 {
 	return forward ? nextAllowedArrivalForward : nextAllowedArrivalBackward;
 }
-
 
 Line::Line(string name) : name(move(name)) {}
 
@@ -96,17 +83,6 @@ int Line::getStationIndex(const std::string& name) const
 
 const vector<shared_ptr<Station>>& Line::getStations() const noexcept { return stations; }
 const string& Line::getName() const noexcept { return name; }
-
-void Line::printStatus() const
-{
-	cout << "\n\nЛиния " << name << ":\n";
-	cout << "\tСтанций: " << stations.size() << "\n\tСписок:\n";
-
-	for (auto& st : stations)
-		st->printStatus();
-
-	cout << endl;
-}
 
 Train::Train(string id, shared_ptr<Line> line) : id(move(id)), line(line) {}
 

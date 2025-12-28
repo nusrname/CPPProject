@@ -10,20 +10,14 @@ class Train;
 
 struct Entry
 {
-	int interval = 300;
-	struct Node
-	{
-		string station;
-		int travelTime = 0;   // время движения до следующей станции
-		int stopTime = 60;     // время стоянки на текущей станции
-		bool operator==(const Node& other) const 
-		{
-			return station == other.station &&
-				travelTime == other.travelTime &&
-				stopTime == other.stopTime;
-		}
-	};
-
+    struct Node
+    {
+        string station;
+        int travelTime = 0;   // время движения до следующей станции
+        int stopTime = 60;     // время стоянки на текущей станции
+        bool operator==(const Node& other) const;
+    };
+    int interval = 300;
 	vector<Node> timetable;
 };
 
@@ -49,17 +43,11 @@ private:
 	void loadSchedule(const string& file);
 	int parseTime(const string& txt) const;
 public:
-	Schedule(const string& file = "Schedule.txt") { loadSchedule(file); }
+    Schedule(const string& file = "Schedule.txt") { loadSchedule(file); }
 
     const map<string, vector<Entry>>& get() const { return data; }
-    const vector<Entry>* getTrainSchedule(const string& trainID) const
-    {
-        auto it = data.find(trainID);
-        if (it == data.end())
-            return nullptr;
-        return &it->second;
-    }
-    const Entry& getCurrentEntry(int time) const { return data.at("MONDAY")[0]; }
+    const vector<Entry>* getTrainSchedule(const string& trainID) const;
+    const Entry& getCurrentEntry(int time) const;
 };
 
 class RandomEventGenerator

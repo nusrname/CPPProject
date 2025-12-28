@@ -37,19 +37,6 @@ public:
 	const vector<shared_ptr<Train>>& getTrains() const noexcept;
 
 	int getNextAllowedArrival(bool forward);
-
-	void printStatus() const;
-
-    int getLastArrivalForward() { return lastArrivalForward; }
-    int getLastArrivalBackward() { return lastArrivalBackward; }
-    void setLastArrivalForward(int time) { lastArrivalForward = time; }
-    void setLastArrivalBackward(int time) { lastArrivalBackward = time; }
-
-
-    int getLastDepartForward() { return lastDepartForward; }
-    int getLastDepartBackward() { return lastDepartBackward; }
-    void setLastDepartForward(int time) { lastDepartForward = time; }
-    void setLastDepartBackward(int time) { lastDepartBackward = time; }
 };
 
 class Line
@@ -66,8 +53,6 @@ public:
 
 	const vector<shared_ptr<Station>>& getStations() const noexcept;
 	const string& getName() const noexcept;
-
-	void printStatus() const;
 };
 
 class Train : public enable_shared_from_this<Train>
@@ -86,8 +71,6 @@ private:
          
 	double speedMultiplier = 1.0;
 	double accelMultiplier = 1.5;
-	int stopTimeMin = 60;
-	double stopMultiplier = 1.0;
 
 	int remainingStopTime = 0;
 	int remainingTravelTime = 0;
@@ -117,8 +100,6 @@ public:
     void setTimetable(vector<Entry::Node> table);
     bool isInTunnel() const;
     double getTravelProgress() const; // 0..1
-    int getTravelTime() const;
-    int getRemainingTravelTime() const;
 
 	friend class TrainManager;
 };

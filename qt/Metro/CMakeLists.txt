@@ -27,7 +27,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         ../../vs/Line.h ../../vs/Metro.h ../../vs/TimeController.h
-        ../../vs/Line.cpp ../../vs/Metro.cpp ../../vs/MetroData.txt ../../vs/Schedule.txt ../../vs/TimeController.cpp
+        ../../vs/Line.cpp ../../vs/Metro.cpp  ../../vs/Schedule.txt ../../vs/TimeController.cpp
         DisplayTypes.h
 
     )
